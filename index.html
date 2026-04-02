@@ -253,6 +253,27 @@ html,body{height:100%;background:var(--off);color:var(--black);font-family:'DM S
 .awaken-dot.done{background:#d4a800;border-color:#d4a800}
 .awaken-dot.current{background:var(--white);border-color:#d4a800;box-shadow:0 0 0 2px #d4a80060}
 
+/* ── TRAINING GROUND ───────────────────────────────────── */
+.training-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:8px}
+.training-slot{background:var(--white);border:2px dashed var(--gray-200);border-radius:var(--radius-lg);padding:16px;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:.2s;position:relative}
+.training-slot.occupied{border-style:solid;border-color:var(--gray-200);cursor:pointer}
+.training-slot.occupied:hover{border-color:var(--gray-400);box-shadow:var(--shadow)}
+.training-slot.empty{cursor:default;color:var(--gray-300)}
+.ts-avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.ts-name{font-weight:700;font-size:13px;text-align:center}
+.ts-info{font-size:11px;color:var(--gray-400);text-align:center}
+.ts-exp-bar{width:100%;height:5px;background:var(--gray-100);border-radius:3px;overflow:hidden}
+.ts-exp-fill{height:100%;background:var(--success);border-radius:3px;transition:width .5s}
+.ts-timer{font-size:10px;font-weight:700;color:var(--success);letter-spacing:.5px}
+.ts-remove{position:absolute;top:8px;right:8px;width:20px;height:20px;background:var(--gray-100);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:var(--gray-500);border:none;transition:.15s}
+.ts-remove:hover{background:var(--danger-bg);color:var(--danger)}
+.ts-pending{font-size:11px;font-weight:700;color:var(--success);background:var(--success-bg);border:1px solid #a8d4a8;padding:2px 8px;border-radius:6px}
+.training-bench-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.bench-item{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:10px 8px;text-align:center;cursor:pointer;transition:.15s}
+.bench-item:hover{border-color:var(--gray-400);box-shadow:var(--shadow-sm)}
+.bench-item.busy-h{opacity:.35;cursor:not-allowed;pointer-events:none}
+.bench-avatar{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 5px}
+
 /* ── ACHIEVEMENT & CODEX ───────────────────────────────── */
 .ach-tabs{display:flex;gap:6px;margin-bottom:18px}
 .ach-tab{flex:1;padding:8px;border-radius:8px;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif;letter-spacing:.3px}
@@ -439,6 +460,10 @@ html,body{height:100%;background:var(--off);color:var(--black);font-family:'DM S
     레이드
   </button>
   <div class="nav-section">헌터</div>
+  <button class="nav-item" onclick="goTab('training')" id="nav-training">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M3 12h18"/><circle cx="6.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="6.5" r="1.5"/><circle cx="6.5" cy="17.5" r="1.5"/><circle cx="17.5" cy="17.5" r="1.5"/></svg>
+    훈련소
+  </button>
   <button class="nav-item" onclick="goTab('growth')" id="nav-growth">
     <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
     헌터 성장
@@ -539,6 +564,14 @@ html,body{height:100%;background:var(--off);color:var(--black);font-family:'DM S
   <div class="grid-2" id="raid-grid"></div>
   <div class="section-label">진행 중인 레이드</div>
   <div id="raid-active"></div>
+</div>
+
+<div class="panel" id="panel-training">
+  <div class="page-title">훈련소</div>
+  <div class="page-sub">헌터를 배치하면 1분마다 EXP +1씩 자동으로 획득합니다. 슬롯은 최대 5개입니다.</div>
+  <div id="training-slots"></div>
+  <div class="section-label" style="margin-top:20px">훈련 대기 헌터</div>
+  <div id="training-bench"></div>
 </div>
 
 <div class="panel" id="panel-growth">
@@ -714,6 +747,10 @@ html,body{height:100%;background:var(--off);color:var(--black);font-family:'DM S
     <button class="mob-btn" onclick="goTab('raid')" id="mob-nav-raid">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
       레이드
+    </button>
+    <button class="mob-btn" onclick="goTab('training')" id="mob-nav-training">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M3 12h18"/><circle cx="6.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="6.5" r="1.5"/><circle cx="6.5" cy="17.5" r="1.5"/><circle cx="17.5" cy="17.5" r="1.5"/></svg>
+      훈련소
     </button>
     <button class="mob-btn" onclick="goTab('growth')" id="mob-nav-growth">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -952,6 +989,7 @@ let S = {
   achClaimed:{}, // id → true
   codexSeen:[], // 소환한 S급 헌터 이름 목록
   clearedContent:{}, // contentId → 클리어 횟수
+  trainingSlots:[], // [{hunterId, since}] 최대 5개
 };
 
 function saveState() { try { localStorage.setItem('ag3', JSON.stringify(S)); } catch(e){} }
@@ -1565,6 +1603,7 @@ function goTab(name) {
   if(name==='settings') refreshSaveInfo();
   if(name==='achievement'){ recalcStats(); renderAchPanel(); }
   if(name==='codex') renderCodexPanel();
+  if(name==='training') renderTrainingPanel();
   render();
 }
 
@@ -1670,9 +1709,12 @@ function renderRefreshTimers() {
 function tick() {
   checkMissions();
   checkRefreshes();
+  trainingTick();
   renderAllActiveMissions();
   renderRefreshTimers();
   renderLog();
+  // 훈련소 탭 열려있으면 실시간 갱신
+  if(document.getElementById('panel-training')?.classList.contains('active')) renderTrainingPanel();
 }
 
 function init() {
@@ -1685,6 +1727,7 @@ function init() {
   if(!S.achClaimed) S.achClaimed={};
   if(!S.codexSeen) S.codexSeen=[];
   if(!S.clearedContent) S.clearedContent={};
+  if(!S.trainingSlots) S.trainingSlots=[];
 
   if(!S.hunters.length){
     const used = new Set();
@@ -1700,6 +1743,118 @@ function init() {
   }
   render();
   setInterval(tick,1000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TRAINING GROUND
+// ─────────────────────────────────────────────────────────────────────────────
+const MAX_TRAINING_SLOTS = 5;
+const TRAINING_EXP_INTERVAL = 60; // 초
+
+function trainingTick() {
+  if(!S.trainingSlots || !S.trainingSlots.length) return;
+  const now = Date.now();
+  let changed = false;
+  S.trainingSlots.forEach(slot => {
+    const h = S.hunters.find(x => x.id === slot.hunterId);
+    if(!h) return;
+    const elapsed = Math.floor((now - slot.since) / 1000);
+    const earned = Math.floor(elapsed / TRAINING_EXP_INTERVAL);
+    if(earned > slot.lastEarned) {
+      const gain = earned - slot.lastEarned;
+      h.exp = (h.exp||0) + gain;
+      slot.lastEarned = earned;
+      levelUpIfPossible(h);
+      changed = true;
+    }
+  });
+  if(changed) { saveState(); }
+}
+
+function addToTraining(hunterId) {
+  if(!S.trainingSlots) S.trainingSlots=[];
+  if(S.trainingSlots.length >= MAX_TRAINING_SLOTS) { notify('훈련 슬롯이 가득 찼습니다','err'); return; }
+  if(S.trainingSlots.find(s=>s.hunterId===hunterId)) { notify('이미 훈련 중입니다','err'); return; }
+  const h = S.hunters.find(x=>x.id===hunterId);
+  if(!h) return;
+  if(h.busy) { notify('임무 중인 헌터는 훈련할 수 없습니다','err'); return; }
+  S.trainingSlots.push({hunterId, since:Date.now(), lastEarned:0});
+  notify(`${h.name} 훈련 시작!`,'ok');
+  saveState(); renderTrainingPanel();
+}
+
+function removeFromTraining(hunterId) {
+  S.trainingSlots = S.trainingSlots.filter(s=>s.hunterId!==hunterId);
+  const h = S.hunters.find(x=>x.id===hunterId);
+  if(h) notify(`${h.name} 훈련 종료`,'info');
+  saveState(); renderTrainingPanel();
+}
+
+function renderTrainingPanel() {
+  const slotsEl = document.getElementById('training-slots');
+  const benchEl = document.getElementById('training-bench');
+  if(!slotsEl||!benchEl) return;
+  if(!S.trainingSlots) S.trainingSlots=[];
+
+  const now = Date.now();
+
+  // 슬롯 렌더
+  let slotsHTML = '<div class="training-slots">';
+  for(let i=0; i<MAX_TRAINING_SLOTS; i++) {
+    const slot = S.trainingSlots[i];
+    if(slot) {
+      const h = S.hunters.find(x=>x.id===slot.hunterId);
+      if(!h) { slotsHTML += `<div class="training-slot empty"><div style="font-size:24px">🏋️</div><div style="font-size:12px">빈 슬롯</div></div>`; continue; }
+      const col = rankColor(h.rank);
+      const ico = clsIcon(h.cls);
+      const elapsed = Math.floor((now - slot.since) / 1000);
+      const secToNext = TRAINING_EXP_INTERVAL - (elapsed % TRAINING_EXP_INTERVAL);
+      const totalEarned = Math.floor(elapsed / TRAINING_EXP_INTERVAL);
+      const cap = levelCap(h);
+      const expN = expToNext(h.level||1);
+      const expPct = Math.min(100, Math.round(((h.exp||0)/expN)*100));
+      const ec = elemColor(h.elem||''); const eb = elemBg(h.elem||'');
+      slotsHTML += `<div class="training-slot occupied">
+        <button class="ts-remove" onclick="removeFromTraining(${h.id})">✕</button>
+        <div class="ts-avatar" style="background:${col}15">${strokify(SVG[ico],col,22)}</div>
+        <div class="ts-name">${h.name}</div>
+        <div class="ts-info" style="display:flex;gap:4px;align-items:center">
+          <span style="color:${col};font-weight:700">${h.rank}</span>
+          ${h.elem?`<span class="elem-pill" style="font-size:9px;background:${eb};color:${ec};border-color:${ec}40">${h.elem}</span>`:''}
+        </div>
+        <div class="ts-info">Lv.${h.level||1} / ${cap}</div>
+        <div class="ts-exp-bar"><div class="ts-exp-fill" style="width:${expPct}%"></div></div>
+        <div class="ts-info">EXP ${h.exp||0} / ${expN}</div>
+        <div class="ts-timer">⏱ 다음 EXP: ${secToNext}초 · 누적 +${totalEarned}</div>
+      </div>`;
+    } else {
+      slotsHTML += `<div class="training-slot empty">
+        <div style="font-size:28px;opacity:.3">🏋️</div>
+        <div style="font-size:12px;color:var(--gray-300)">빈 슬롯</div>
+        <div style="font-size:10px;color:var(--gray-200)">아래에서 헌터 선택</div>
+      </div>`;
+    }
+  }
+  slotsHTML += '</div>';
+  slotsEl.innerHTML = slotsHTML;
+
+  // 벤치 (훈련 중이 아니고 임무 중도 아닌 헌터)
+  const trainingIds = new Set(S.trainingSlots.map(s=>s.hunterId));
+  const bench = S.hunters.filter(h=>!trainingIds.has(h.id));
+  if(!bench.length) {
+    benchEl.innerHTML=`<div class="empty"><svg class="empty-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div style="font-size:13px">배치 가능한 헌터가 없습니다.</div></div>`;
+    return;
+  }
+  benchEl.innerHTML = `<div class="training-bench-grid">${bench.map(h=>{
+    const col=rankColor(h.rank); const ico=clsIcon(h.cls);
+    const isBusy=h.busy;
+    return `<div class="bench-item${isBusy?' busy-h':''}" onclick="addToTraining(${h.id})">
+      <div class="bench-avatar" style="background:${col}15;margin:0 auto 5px">${strokify(SVG[ico],col,18)}</div>
+      <div style="font-size:11px;font-weight:700">${h.name}</div>
+      <div style="font-size:10px;color:${col};font-weight:700">${h.rank} · Lv.${h.level||1}</div>
+      ${isBusy?`<div style="font-size:9px;color:var(--warn);margin-top:2px">임무 중</div>`:`<div style="font-size:9px;color:var(--gray-400);margin-top:2px">클릭하여 배치</div>`}
+    </div>`;
+  }).join('')}</div>`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
