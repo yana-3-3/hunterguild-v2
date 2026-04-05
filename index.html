@@ -2448,7 +2448,7 @@ function renderGrowthModal(){
     const awakenHTML=awakenFeeders.length?awakenFeeders.map(f=>{
       const ffc=fieldColor(f.elem||'');const fi=roleIcon(f.role||'센티넬');
       const sel=_awakenSelected.includes(f.id);
-      return `<div class="feed-item${sel?' selected':' same-rank-req'}" onclick="toggleAwakenSelect(${f.id},${needed})">
+      return `<div class="feed-item${sel?' selected':' same-rank-req'}" data-aid="${f.id}" onclick="toggleAwakenSelect(${f.id},${needed})">
         <div class="feed-f-avatar" style="background:${ffc}15">${strokify(SVG[fi],ffc,14)}</div>
         <div class="feed-f-name">${f.name}</div>
         <div class="feed-f-info" style="color:var(--text2)">${f.rank} Lv.${f.level||1}</div>
@@ -2456,10 +2456,10 @@ function renderGrowthModal(){
       </div>`;
     }).join(''):`<div style="font-size:12px;color:var(--text3);padding:12px;text-align:center">동일 등급(${h.rank}) 요원 없음</div>`;
     awakenContent=`
-      <div class="awaken-info-box">★${aw} → ★${aw+1} 공명 각성<br>${h.rank}등급 요원 ${needed}명 선택 (${_awakenSelected.length}/${needed})<br>레벨 상한 Lv.${cap} → Lv.${cap+10}으로 확장됩니다.</div>
+      <div class="awaken-info-box" id="awaken-info">★${aw} → ★${aw+1} 공명 각성<br>${h.rank}등급 요원 ${needed}명 선택 (${_awakenSelected.length}/${needed})<br>레벨 상한 Lv.${cap} → Lv.${cap+10}으로 확장됩니다.</div>
       <div class="feed-section-label">각성 재료 (${h.rank}등급)</div>
       <div class="feed-grid">${awakenHTML}</div>
-      <button class="btn btn-token" style="width:100%;margin-top:10px" ${_awakenSelected.length>=needed?'':'disabled'} onclick="doAwaken()">✦ 공명 각성 (★${aw} → ★${aw+1})</button>`;
+      <button class="btn btn-token" id="awaken-btn" style="width:100%;margin-top:10px" ${_awakenSelected.length>=needed?'':'disabled'} onclick="doAwaken()">✦ 공명 각성 (★${aw} → ★${aw+1})</button>`;
     }
   }
 
@@ -2510,7 +2510,19 @@ function toggleAwakenSelect(id,needed){
   const idx=_awakenSelected.indexOf(id);
   if(idx>=0)_awakenSelected.splice(idx,1);
   else{if(_awakenSelected.length>=needed){notify(`${needed}명만 선택 가능합니다`,'err');return;}_awakenSelected.push(id);}
-  updateGrowthTabContent();
+  // Toggle selected class without rebuilding grid (like feed tab)
+  const items=document.querySelectorAll('#growth-tab-content .feed-item');
+  items.forEach(el=>{
+    const fid=parseInt(el.getAttribute('data-aid'));
+    if(!isNaN(fid))el.classList.toggle('selected',_awakenSelected.includes(fid));
+  });
+  // Update info box and button only
+  const infoEl=document.getElementById('awaken-info');
+  const btnEl=document.getElementById('awaken-btn');
+  const h=_growthTarget;if(!h)return;
+  const aw=h.awakening||0;const cap=levelCap(h);
+  if(infoEl)infoEl.innerHTML=`★${aw} → ★${aw+1} 공명 각성<br>${h.rank}등급 요원 ${needed}명 선택 (${_awakenSelected.length}/${needed})<br>레벨 상한 Lv.${cap} → Lv.${cap+10}으로 확장됩니다.`;
+  if(btnEl){btnEl.disabled=_awakenSelected.length<needed;}
 }
 function updateFeedSummary(){
   const el=document.getElementById('feed-summary');if(!el)return;
