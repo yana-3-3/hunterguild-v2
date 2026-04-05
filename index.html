@@ -2411,6 +2411,7 @@ function renderGrowthPanel(){
 }
 
 let _growthTarget=null,_growthTab='feed',_feedSelected=[],_awakenSelected=[];
+let _feedFilter='all',_feedSort='exp',_awakenFilter='all',_awakenSort='lv';
 
 function openGrowthModal(id){
   _growthTarget=S.hunters.find(h=>h.id===id);
@@ -2433,7 +2434,10 @@ function renderGrowthModal(){
   const stars='★'.repeat(aw)+'☆'.repeat(4-aw);
   const dots=['','','',''].map((_,i)=>`<div class="awaken-dot${i<aw?' done':i===aw?' current':''}" style="width:10px;height:10px;border-radius:50%;background:${i<aw?'var(--accent)':i===aw?'transparent':'var(--border2)'};border:2px solid ${i<=aw?'var(--accent)':'var(--border2)'};display:inline-block;margin:0 2px"></div>`).join('');
   // Feed tab — exclude self, busy, and agents in feed/awaken selection
-  const feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy);
+  let feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy);
+  if(_feedFilter==='special')feedable=feedable.filter(f=>f.isSpecial);
+  else if(_feedFilter==='normal')feedable=feedable.filter(f=>!f.isSpecial);
+  applyGrowthSort(feedable,_feedSort);
   const feedHTML=feedable.length?feedable.map(f=>{
     const ffc=fieldColor(f.elem||'');const fi=roleIcon(f.role||'센티넬');
     const sel=_feedSelected.includes(f.id);
@@ -2446,6 +2450,7 @@ function renderGrowthModal(){
     </div>`;
   }).join(''):`<div style="font-size:12px;color:var(--text3);padding:12px;text-align:center">투입 가능 요원 없음</div>`;
   const feedContent=`
+    ${growthFilterSortBar('feed')}
     <div class="feed-section-label">투입할 요원 선택</div>
     <div class="feed-grid">${feedHTML}</div>
     <div id="feed-summary"></div>`;
@@ -2457,7 +2462,10 @@ function renderGrowthModal(){
     const needed=AWAKEN_COST[aw];
     if(needed===undefined){awakenContent=`<div style="text-align:center;padding:20px;color:var(--success);font-weight:700">최대 공명 달성!</div>`;}
     else{
-    const awakenFeeders=S.hunters.filter(f=>f.id!==h.id&&f.rank===h.rank&&!f.busy);
+    let awakenFeeders=S.hunters.filter(f=>f.id!==h.id&&f.rank===h.rank&&!f.busy);
+    if(_awakenFilter==='special')awakenFeeders=awakenFeeders.filter(f=>f.isSpecial);
+    else if(_awakenFilter==='normal')awakenFeeders=awakenFeeders.filter(f=>!f.isSpecial);
+    applyGrowthSort(awakenFeeders,_awakenSort);
     const awakenHTML=awakenFeeders.length?awakenFeeders.map(f=>{
       const ffc=fieldColor(f.elem||'');const fi=roleIcon(f.role||'센티넬');
       const sel=_awakenSelected.includes(f.id);
@@ -2469,6 +2477,7 @@ function renderGrowthModal(){
       </div>`;
     }).join(''):`<div style="font-size:12px;color:var(--text3);padding:12px;text-align:center">동일 등급(${h.rank}) 요원 없음</div>`;
     awakenContent=`
+      ${growthFilterSortBar('awaken')}
       <div class="awaken-info-box" id="awaken-info">★${aw} → ★${aw+1} 공명 각성<br>${h.rank}등급 요원 ${needed}명 선택 (${_awakenSelected.length}/${needed})<br>레벨 상한 Lv.${cap} → Lv.${cap+10}으로 확장됩니다.</div>
       <div class="feed-section-label">각성 재료 (${h.rank}등급)</div>
       <div class="feed-grid">${awakenHTML}</div>
@@ -2506,7 +2515,96 @@ function renderGrowthModal(){
   if(_growthTab==='feed')updateFeedSummary();
 }
 
-function switchGrowthTab(tab){_growthTab=tab;_feedSelected=[];_awakenSelected=[];renderGrowthModal();}
+function switchGrowthTab(tab){_growthTab=tab;_feedSelected=[];_awakenSelected=[];_feedFilter='all';_feedSort='exp';_awakenFilter='all';_awakenSort='lv';renderGrowthModal();}
+
+function growthFilterSortBar(mode){
+  const f=mode==='feed'?_feedFilter:_awakenFilter;
+  const s=mode==='feed'?_feedSort:_awakenSort;
+  const setF=mode==='feed'?'setFeedFilter':'setAwakenFilter';
+  const setS=mode==='feed'?'setFeedSort':'setAwakenSort';
+  const sortOpts=mode==='feed'
+    ?[['exp','EXP'],['pwr','전투력'],['lv','레벨'],['rank','등급']]
+    :[['lv','레벨'],['pwr','전투력'],['elem','속성']];
+  return `<div style="display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap">
+    <button class="btn ${f==='all'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setF}('all')">전체</button>
+    <button class="btn ${f==='normal'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setF}('normal')">일반</button>
+    <button class="btn ${f==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setF}('special')">특수</button>
+    <span style="width:1px;background:var(--border);margin:0 4px"></span>
+    ${sortOpts.map(([k,v])=>`<button class="btn ${s===k?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setS}('${k}')">${v}</button>`).join('')}
+  </div>`;
+}
+
+function applyGrowthSort(list,sort){
+  const rankOrd={SS:0,S:1,A:2,B:3,C:4,D:5};
+  const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
+  if(sort==='pwr')list.sort((a,b)=>power(b)-power(a));
+  else if(sort==='lv')list.sort((a,b)=>(b.level||1)-(a.level||1));
+  else if(sort==='rank')list.sort((a,b)=>(rankOrd[a.rank]||9)-(rankOrd[b.rank]||9));
+  else if(sort==='elem')list.sort((a,b)=>(elemOrd[a.elem]||9)-(elemOrd[b.elem]||9));
+  else if(sort==='exp')list.sort((a,b)=>feedExp(b)-feedExp(a));
+  return list;
+}
+
+function setFeedFilter(v){_feedFilter=v;rebuildFeedGrid();}
+function setFeedSort(v){_feedSort=v;rebuildFeedGrid();}
+function setAwakenFilter(v){_awakenFilter=v;rebuildAwakenGrid();}
+function setAwakenSort(v){_awakenSort=v;rebuildAwakenGrid();}
+
+function rebuildFeedGrid(){
+  const container=document.getElementById('growth-tab-content');
+  if(!container)return;
+  const h=_growthTarget;if(!h)return;
+  let feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy);
+  if(_feedFilter==='special')feedable=feedable.filter(f=>f.isSpecial);
+  else if(_feedFilter==='normal')feedable=feedable.filter(f=>!f.isSpecial);
+  applyGrowthSort(feedable,_feedSort);
+  const feedHTML=feedable.length?feedable.map(f=>{
+    const ffc=fieldColor(f.elem||'');const fi=roleIcon(f.role||'센티넬');
+    const sel=_feedSelected.includes(f.id);
+    const expVal=feedExp(f);
+    return `<div class="feed-item${sel?' selected':''}" data-fid="${f.id}" onclick="toggleFeedSelect(${f.id})">
+      <div class="feed-f-avatar" style="background:${ffc}12">${strokify(SVG[fi],ffc,14)}</div>
+      <div class="feed-f-name">${f.name}</div>
+      <div class="feed-f-info" style="color:var(--text2)">${f.rank} Lv.${f.level||1}</div>
+      <div class="feed-exp-preview">+${fmtNum(expVal)}</div>
+    </div>`;
+  }).join(''):`<div style="font-size:12px;color:var(--text3);padding:12px;text-align:center">투입 가능 요원 없음</div>`;
+  container.innerHTML=`
+    ${growthFilterSortBar('feed')}
+    <div class="feed-section-label">투입할 요원 선택</div>
+    <div class="feed-grid">${feedHTML}</div>
+    <div id="feed-summary"></div>`;
+  updateFeedSummary();
+}
+
+function rebuildAwakenGrid(){
+  const container=document.getElementById('growth-tab-content');
+  if(!container)return;
+  const h=_growthTarget;if(!h)return;
+  const aw=h.awakening||0;const cap=levelCap(h);
+  const needed=AWAKEN_COST[aw];
+  if(needed===undefined)return;
+  let awakenFeeders=S.hunters.filter(f=>f.id!==h.id&&f.rank===h.rank&&!f.busy);
+  if(_awakenFilter==='special')awakenFeeders=awakenFeeders.filter(f=>f.isSpecial);
+  else if(_awakenFilter==='normal')awakenFeeders=awakenFeeders.filter(f=>!f.isSpecial);
+  applyGrowthSort(awakenFeeders,_awakenSort);
+  const awakenHTML=awakenFeeders.length?awakenFeeders.map(f=>{
+    const ffc=fieldColor(f.elem||'');const fi=roleIcon(f.role||'센티넬');
+    const sel=_awakenSelected.includes(f.id);
+    return `<div class="feed-item${sel?' selected':' same-rank-req'}" data-aid="${f.id}" onclick="toggleAwakenSelect(${f.id},${needed})">
+      <div class="feed-f-avatar" style="background:${ffc}15">${strokify(SVG[fi],ffc,14)}</div>
+      <div class="feed-f-name">${f.name}</div>
+      <div class="feed-f-info" style="color:var(--text2)">${f.rank} Lv.${f.level||1}</div>
+      <div class="feed-exp-preview" style="color:var(--text2)">동일 등급</div>
+    </div>`;
+  }).join(''):`<div style="font-size:12px;color:var(--text3);padding:12px;text-align:center">동일 등급(${h.rank}) 요원 없음</div>`;
+  container.innerHTML=`
+    ${growthFilterSortBar('awaken')}
+    <div class="awaken-info-box" id="awaken-info">★${aw} → ★${aw+1} 공명 각성<br>${h.rank}등급 요원 ${needed}명 선택 (${_awakenSelected.length}/${needed})<br>레벨 상한 Lv.${cap} → Lv.${cap+10}으로 확장됩니다.</div>
+    <div class="feed-section-label">각성 재료 (${h.rank}등급)</div>
+    <div class="feed-grid">${awakenHTML}</div>
+    <button class="btn btn-token" id="awaken-btn" style="width:100%;margin-top:10px" ${_awakenSelected.length>=needed?'':'disabled'} onclick="doAwaken()">✦ 공명 각성 (★${aw} → ★${aw+1})</button>`;
+}
 function toggleFeedSelect(id){
   const idx=_feedSelected.indexOf(id);
   if(idx>=0)_feedSelected.splice(idx,1);else _feedSelected.push(id);
@@ -2580,26 +2678,10 @@ function updateGrowthTabContent(){
   const aw=h.awakening||0;const cap=levelCap(h);
   const atCap=(h.level||1)>=cap&&aw<4;
   if(_growthTab==='feed'){
-    const feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy);
-    const feedHTML=feedable.length?feedable.map(f=>{
-      const ffc=fieldColor(f.elem||'');const fi=roleIcon(f.role||'센티넬');
-      const sel=_feedSelected.includes(f.id);
-      const expVal=feedExp(f);
-      return `<div class="feed-item${sel?' selected':''}" data-fid="${f.id}" onclick="toggleFeedSelect(${f.id})">
-        <div class="feed-f-avatar" style="background:${ffc}12">${strokify(SVG[fi],ffc,14)}</div>
-        <div class="feed-f-name">${f.name}</div>
-        <div class="feed-f-info" style="color:var(--text2)">${f.rank} Lv.${f.level||1}</div>
-        <div class="feed-exp-preview">+${fmtNum(expVal)}</div>
-      </div>`;
-    }).join(''):`<div style="font-size:12px;color:var(--text3);padding:12px;text-align:center">투입 가능 요원 없음</div>`;
-    container.innerHTML=`
-      <div class="feed-section-label">투입할 요원 선택</div>
-      <div class="feed-grid">${feedHTML}</div>
-      <div id="feed-summary"></div>`;
-    updateFeedSummary();
+    rebuildFeedGrid();
   } else {
-    // Awaken tab - full re-render is fine since it's less interactive
-    renderGrowthModal();
+    // Awaken tab - use rebuildAwakenGrid to apply filter/sort
+    rebuildAwakenGrid();
   }
 }
 
