@@ -770,7 +770,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   <div class="page-title">설정</div>
   <div class="page-sub">시스템 설정 및 데이터 관리</div>
 
-  <div class="section-label">위험 구역</div>
+  <div class="section-label">데이터 관리</div>
+  <div class="settings-card">
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title">데이터 내보내기</div>
+        <div class="settings-desc">현재 진행 데이터를 JSON 파일로 저장합니다.</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="exportData()">내보내기</button>
+    </div>
+  </div>
+  <div class="settings-card" style="margin-top:8px">
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title">데이터 불러오기</div>
+        <div class="settings-desc">JSON 파일에서 진행 데이터를 복원합니다.</div>
+      </div>
+      <label class="btn btn-outline btn-sm" style="cursor:pointer">
+        불러오기
+        <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+      </label>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:24px">위험 구역</div>
   <div class="settings-card" style="border-color:rgba(239,68,68,0.2)">
     <div class="settings-row">
       <div class="settings-info">
@@ -3381,6 +3404,54 @@ function doExchange(){
   notify(`✓ 골드 → 다이아 ${amt}개 교환 완료`,'ok');
   addLog(`골드 ${fmtNum(cost)} → 다이아 ${amt} 교환`);
   saveState();render();renderExchangeModal();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DATA EXPORT / IMPORT
+// ═══════════════════════════════════════════════════════════════════
+function exportData(){
+  const data=JSON.stringify(S,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`arch_save_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  notify('✓ 데이터 내보내기 완료','ok');
+}
+function importData(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!data.hunters||!Array.isArray(data.hunters)){notify('올바른 세이브 파일이 아닙니다','err');return;}
+      showModal(`
+        <div class="modal-title">데이터 불러오기</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:16px">
+          현재 진행 데이터가 파일의 데이터로 대체됩니다.<br>
+          요원 ${data.hunters.length}명 · 명성 ${fmtNum(data.fame||0)} · 골드 ${fmtNum(data.gold||0)}
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" style="flex:1" onclick="confirmImport()">확인</button>
+          <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+        </div>
+      `);
+      window._pendingImport=data;
+    }catch(err){notify('파일을 읽을 수 없습니다','err');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+function confirmImport(){
+  if(!window._pendingImport)return;
+  S={...S,...window._pendingImport};
+  window._pendingImport=null;
+  saveState();closeModal();
+  notify('✓ 데이터 불러오기 완료 — 새로고침합니다','ok');
+  setTimeout(()=>location.reload(),800);
 }
 
 // ═══════════════════════════════════════════════════════════════════
