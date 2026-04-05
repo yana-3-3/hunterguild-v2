@@ -2214,7 +2214,7 @@ function tickTraining(){
       changed=true;
     }
   });
-  if(changed){saveState();if(_curTab==='training')renderTraining();}
+  if(changed){saveState();if(_curTab==='training')renderTrainingSlots();}
 }
 
 function renderTraining(){
@@ -2297,6 +2297,37 @@ function renderTraining(){
       <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
     </div>`;
   }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">페어링 가능한 가이드 없음</div>';
+}
+
+function renderTrainingSlots(){
+  const slotsEl=document.getElementById('pairing-slots');
+  if(!slotsEl)return;
+  S.pairSlots=S.pairSlots||[];
+  const slots=[];
+  const maxSlots=getAvailPairSlots();
+  for(let i=0;i<maxSlots;i++){
+    const pair=S.pairSlots[i];
+    if(pair){
+      const s=S.hunters.find(x=>x.id===pair.sentinelId);
+      const g=S.hunters.find(x=>x.id===pair.guideId);
+      if(s&&g){
+        const sc=fieldColor(s.elem||'');const gc=fieldColor(g.elem||'');
+        const bonus=getPairBonus(s,g);
+        const sameTag=bonus.sameElem?`<span style="color:var(--success);font-size:9px;font-weight:700">속성 일치!</span>`:'';
+        slots.push(`<div class="training-slot filled-slot" style="border-color:${sc}30">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="text-align:center"><div style="background:${sc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div><div style="font-size:9px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div></div>
+            <div style="font-size:16px;color:var(--text3)">⇄</div>
+            <div style="text-align:center"><div style="background:${gc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div><div style="font-size:9px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div></div>
+          </div>${sameTag}
+          <div style="font-size:9px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">ATK ×${bonus.atkMult.toFixed(2)} · DEF +${bonus.defBonus} · SPD +${bonus.spdBonus}<br>폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)}</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:9px;width:100%" onclick="removePair(${i})">해제</button>
+        </div>`);
+      } else {slots.push(emptyPairSlot(i));}
+    } else {slots.push(emptyPairSlot(i));}
+  }
+  const buyBtn=getPairSlotCount()<MAX_PAIRS?`<div style="margin-top:12px;display:flex;align-items:center;gap:10px"><button class="btn btn-token btn-sm" onclick="buyPairSlot()">슬롯 추가 (D ${PAIR_SLOT_COST})</button><span style="font-size:12px;color:var(--text3)">${getPairSlotCount()} / ${MAX_PAIRS} 슬롯</span></div>`:`<div style="font-size:12px;color:var(--text3);margin-top:8px">최대 슬롯 도달 (${MAX_PAIRS})</div>`;
+  slotsEl.innerHTML=`<div class="training-slots">${slots.join('')}</div>${buyBtn}`;
 }
 
 function emptyPairSlot(i){
@@ -2964,7 +2995,7 @@ function tickGuiding(){
       }
     }
   });
-  if(changed){saveState();if(_curTab==='guiding')renderGuiding();}
+  if(changed){saveState();if(_curTab==='guiding')renderGuidingSlots();}
 }
 
 // 작전 완료 시 폭주율 증가
@@ -3152,6 +3183,36 @@ function renderGuiding(){
       <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
     </div>`;
   }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">가이드 없음</div>';
+}
+
+function renderGuidingSlots(){
+  const slotsEl=document.getElementById('guiding-slots');
+  if(!slotsEl)return;
+  S.guidingSlots=S.guidingSlots||[];
+  const slots=[];
+  for(let i=0;i<GUIDING_SLOTS;i++){
+    const slot=S.guidingSlots[i];
+    if(slot){
+      const s=S.hunters.find(x=>x.id===slot.sentinelId);
+      const g=S.hunters.find(x=>x.id===slot.guideId);
+      if(s&&g){
+        const sc=fieldColor(s.elem||'');const gc=fieldColor(g.elem||'');
+        const rw=s.runaway||0;
+        const incapTag=s.incapacitated?`<span style="font-size:8px;color:var(--danger);font-weight:700;background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px">행동불능</span>`:'';
+        slots.push(`<div class="training-slot filled-slot" style="border-color:${sc}30">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="text-align:center"><div style="background:${sc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div><div style="font-size:9px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div></div>
+            <div style="font-size:16px;color:var(--text3)">⇄</div>
+            <div style="text-align:center"><div style="background:${gc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div><div style="font-size:9px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div></div>
+          </div>${incapTag}
+          <div class="runaway-bar" style="margin-top:6px"><div class="runaway-fill" style="width:${rw}%"></div></div>
+          <div style="font-size:9px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace;margin-top:2px">폭주 ${Math.round(rw)}%${rw>0?' · 해소 중':' · 안정'}</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:9px;width:100%" onclick="removeGuiding(${i})">해제</button>
+        </div>`);
+      } else {S.guidingSlots.splice(i,1);i--;slots.push(emptyGuidingSlot(i));}
+    } else {slots.push(emptyGuidingSlot(i));}
+  }
+  slotsEl.innerHTML=`<div class="training-slots">${slots.join('')}</div>`;
 }
 
 function emptyGuidingSlot(i){
@@ -3373,8 +3434,8 @@ function init(){
     renderRefreshTimers();
     renderAllActiveMissions();
     updateFreeLabel();
-    if(_curTab==='training')renderTraining();
-    if(_curTab==='guiding')renderGuiding();
+    if(_curTab==='training')renderTrainingSlots();
+    if(_curTab==='guiding')renderGuidingSlots();
   },1000);
 }
 
