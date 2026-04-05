@@ -76,7 +76,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.agent-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;transition:.2s;cursor:pointer;box-shadow:var(--shadow)}
+.agent-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;transition:.2s;cursor:pointer;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:280px}
 .agent-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow-hover)}
 .agent-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
 .agent-avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative}
@@ -93,7 +93,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .sbar-track{flex:1;height:5px;background:var(--surface3);border-radius:3px;overflow:hidden}
 .sbar-fill{height:100%;border-radius:3px;transition:width .5s}
 .sbar-val{color:var(--text);width:28px;text-align:right;font-size:12px;font-weight:700}
-.agent-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.agent-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
 .agent-lv{font-size:13px;font-weight:700;color:var(--text)}
 .agent-pwr{font-size:12px;color:var(--text3)}
 .busy-tag{font-size:10px;background:var(--warn-bg);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700}
@@ -125,7 +125,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;line-height:1;white-space:nowrap;letter-spacing:-0.01em}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#fff;border:1px solid var(--accent)}
 .btn-primary:hover{background:var(--accent2)}
 .btn-outline{background:var(--surface);border:1px solid var(--border);color:var(--text2)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
@@ -477,9 +477,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     페어링
   </button>
-  <button class="nav-item" onclick="goTab('growth')" id="nav-growth">
+  <button class="nav-item" onclick="goTab('enhance')" id="nav-enhance">
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-    공명 각성
+    강화
+  </button>
+  <button class="nav-item" onclick="goTab('dismantle')" id="nav-dismantle">
+    <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M2 9h20"/></svg>
+    분해
   </button>
   <button class="nav-item" onclick="goTab('gacha')" id="nav-gacha">
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -530,7 +534,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <button class="btn btn-outline btn-sm" id="agent-tab-special" onclick="switchAgentTab('special')">특수 요원</button>
   </div>
   <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
-    <button class="btn btn-outline btn-sm" style="font-size:10px" id="agent-sort-pwr" onclick="setAgentSort('pwr')">전투력순</button>
+    <button class="btn btn-outline btn-sm" style="font-size:10px" id="agent-sort-pwr" onclick="setAgentSort('pwr')">전투력</button>
     <button class="btn btn-outline btn-sm" style="font-size:10px" id="agent-sort-lv" onclick="setAgentSort('lv')">레벨순</button>
     <button class="btn btn-outline btn-sm" style="font-size:10px" id="agent-sort-rank" onclick="setAgentSort('rank')">등급순</button>
     <button class="btn btn-outline btn-sm" style="font-size:10px" id="agent-sort-elem" onclick="setAgentSort('elem')">속성순</button>
@@ -638,21 +642,42 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   <div id="pairing-guide-bench"></div>
 </div>
 
-<!-- GROWTH -->
-<div class="panel" id="panel-growth">
-  <div class="page-title">공명 각성</div>
-  <div class="page-sub">요원을 경험치 재료로 투입하여 레벨업 · 공명 각성으로 잠재력 개방</div>
-  <div class="info-box">
-    <strong>공명 각성 가이드</strong><br>
-    · 요원을 경험치 재료로 투입하면 레벨업합니다. 투입된 요원은 소멸합니다.<br>
-    · Lv.10 / 20 / 30 / 40에서 레벨 상한에 도달합니다.<br>
-    · 공명 각성: 동일 등급 요원 2/3/4/5명을 재료로 공명(★)을 올리면 다음 구간 레벨업이 가능합니다.<br>
-    · 최대 레벨은 Lv.50이며, ★4 공명이 필요합니다. 속성 센티넬은 공명 각성으로 폭주 억제 수치가 상승합니다.
+<!-- ENHANCE (강화: 공명/각성/개화) -->
+<div class="panel" id="panel-enhance">
+  <div class="page-title">강화</div>
+  <div class="page-sub">요원의 능력을 강화합니다 · 공명 / 각성 / 개화</div>
+  <div style="display:flex;gap:8px;margin-bottom:16px">
+    <button class="btn btn-primary" id="enhance-tab-resonance" onclick="switchEnhanceTab('resonance')" style="flex:1;justify-content:center">공명</button>
+    <button class="btn btn-outline" id="enhance-tab-awaken" onclick="switchEnhanceTab('awaken')" style="flex:1;justify-content:center">각성</button>
+    <button class="btn btn-outline" id="enhance-tab-bloom" onclick="switchEnhanceTab('bloom')" style="flex:1;justify-content:center">개화</button>
   </div>
-  <div class="section-label">성장할 요원 선택</div>
-  <div class="grid-auto" id="growth-agent-grid"></div>
-  <div id="growth-agent-empty" style="display:none">
-    <div class="empty"><svg class="empty-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div style="font-size:12px">요원이 없습니다.</div></div>
+  <div id="enhance-content"></div>
+</div>
+
+<!-- DISMANTLE (분해) -->
+<div class="panel" id="panel-dismantle">
+  <div class="page-title">분해</div>
+  <div class="page-sub">불필요한 요원을 분해하여 결정 파편 획득 · 결정 파편으로 속성 결정 교환</div>
+  <div class="info-box">
+    <strong>분해 안내</strong><br>
+    · 요원을 분해하면 등급에 따라 결정 파편을 획득합니다. 분해된 요원은 소멸합니다.<br>
+    · D: 0~2개 / C: 3~5개 / B: 7~15개 / A: 20~50개 / S: 70~100개 / SS: 300~500개<br>
+    · 결정 파편 10개를 소모하여 랜덤 속성 결정 1개를 획득할 수 있습니다.
+  </div>
+  <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:11px;color:var(--text3)">결정 파편</span>
+      <span style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:var(--text)" id="shard-count">0</span>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="craftCrystal()">파편 10개 → 결정 교환</button>
+  </div>
+  <div class="section-label">보유 결정</div>
+  <div id="dismantle-crystals"></div>
+  <div class="section-label" style="margin-top:16px">분해할 요원 선택</div>
+  <div id="dismantle-filter"></div>
+  <div class="grid-auto" id="dismantle-grid"></div>
+  <div id="dismantle-empty" style="display:none">
+    <div class="empty"><div style="font-size:12px">분해할 요원이 없습니다.</div></div>
   </div>
 </div>
 
@@ -842,8 +867,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <button class="mob-btn" onclick="goTab('training')" id="mob-nav-training">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>페어링
     </button>
-    <button class="mob-btn" onclick="goTab('growth')" id="mob-nav-growth">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>공명
+    <button class="mob-btn" onclick="goTab('enhance')" id="mob-nav-enhance">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>강화
+    </button>
+    <button class="mob-btn" onclick="goTab('dismantle')" id="mob-nav-dismantle">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M2 9h20"/></svg>분해
     </button>
     <button class="mob-btn" onclick="goTab('gacha')" id="mob-nav-gacha">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>모집
@@ -1193,7 +1221,7 @@ const S_CODEX=[
 // STATE
 // ═══════════════════════════════════════════════════════════════════
 let S={
-  gold:50000, dia:0,
+  gold:50000, dia:0, shards:0, crystals:{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0},
   hunters:[], missions:[],
   completed:0, fame:0, guildLv:1,
   pity:0, pitySS:0, specialPulls:0, nextId:1,
@@ -1224,6 +1252,33 @@ function fieldLabel(e){return FIELD_LABEL[e]||'';}function fmtNum(n){return (n||
 function fmtTime(s){if(s<=0)return '완료';if(s<60)return `${s}s`;const m=Math.floor(s/60),sec=s%60;return sec>0?`${m}m ${sec}s`:`${m}m`;}
 function timeStr(){return new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});}
 function diffLabel(d){return {easy:'낮음',normal:'보통',hard:'높음',extreme:'위험'}[d]||d;}
+
+// ── 정렬 방향 토글 시스템 ──
+const _sortDir={};
+function toggleSortDir(ctx,key){
+  const k=ctx+'_'+key;
+  if(!_sortDir[k])_sortDir[k]=1;
+  else _sortDir[k]*=-1;
+  return _sortDir[k];
+}
+function getSortDir(ctx,key){return _sortDir[ctx+'_'+key]||1;}
+function sortList(list,key,ctx){
+  const dir=getSortDir(ctx,key);
+  const rankOrd={SS:0,S:1,A:2,B:3,C:4,D:5};
+  const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
+  if(key==='pwr')list.sort((a,b)=>(power(b)-power(a))*dir);
+  else if(key==='lv')list.sort((a,b)=>((b.level||1)-(a.level||1))*dir);
+  else if(key==='rank')list.sort((a,b)=>((rankOrd[a.rank]??9)-(rankOrd[b.rank]??9))*dir);
+  else if(key==='elem')list.sort((a,b)=>((elemOrd[a.elem]??9)-(elemOrd[b.elem]??9))*dir);
+  else if(key==='exp')list.sort((a,b)=>(feedExp(b)-feedExp(a))*dir);
+  else if(key==='adv'&&arguments[3])list.sort((a,b)=>(elemBonus(b.elem,arguments[3])-elemBonus(a.elem,arguments[3]))*dir);
+  else if(key==='match'&&arguments[3]){const tgt=arguments[3];list.sort((a,b)=>{const sa=tgt&&a.elem===tgt?0:1;const sb=tgt&&b.elem===tgt?0:1;return ((sa-sb)||power(b)-power(a))*dir;});}
+  return list;
+}
+function sortDirArrow(ctx,curKey,btnKey){
+  if(curKey!==btnKey)return '';
+  return getSortDir(ctx,btnKey)===1?' ↓':' ↑';
+}
 
 function notify(msg,type='info'){
   const icons={ok:SVG.check,err:SVG.x,info:SVG.info};
@@ -1291,9 +1346,10 @@ function goTab(tab){
   _curTab=tab;
   if(tab==='achievement')renderAchievements();
   if(tab==='codex')renderCodex();
-  if(tab==='growth')renderGrowthPanel();
+  if(tab==='enhance')renderEnhance();
   if(tab==='training')renderTraining();
   if(tab==='guiding')renderGuiding();
+  if(tab==='dismantle')renderDismantle();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1314,7 +1370,7 @@ function render(){
   document.getElementById('st-ops').textContent=S.missions.length;
   document.getElementById('st-completed').textContent=S.completed;
   document.getElementById('st-fame').textContent=fmtNum(S.fame);
-  renderLog();renderAgents();renderGrowthPanel();
+  renderLog();renderAgents();if(_curTab==='enhance')renderEnhance();
   renderQuestList();renderExpeditionList();renderDungeonGrid();renderRaidGrid();
   renderAllActiveMissions();renderGachaHistory();renderRefreshTimers();
   updateFreeLabel();
@@ -1339,7 +1395,7 @@ function agentCardHTML(h,onclick=''){
   const fLabel=h.elem?`<span class="elem-icon">${fSvg}</span> ${h.elem}`:'';
   const fieldTag=h.elem?`<span class="field-badge ${fieldCls(h.elem)}">${fLabel}</span>`:'';
   const aw=h.awakening||0;
-  const stars='★'.repeat(aw)+'☆'.repeat(4-aw);
+  const stars='★'.repeat(aw)+'☆'.repeat(4-aw)+(h.bloomed?'<span style="color:var(--gold)">★</span>':'<span style="color:var(--border2)">☆</span>');
   const capLv=levelCap(h);
   const atCap=(h.level||1)>=capLv&&aw<4;
   const capBadge=atCap?`<span class="level-cap-badge" style="font-size:8px;padding:1px 5px">CAP</span>`:'';
@@ -1352,9 +1408,9 @@ function agentCardHTML(h,onclick=''){
   const groupBadge=h.group?`<span class="group-badge ${groupCss}">${groupLabel}</span>`:'';
   const runawayVal=h.runaway||0;
   const runawayBar=isSentinel?`<div class="runaway-bar"><div class="runaway-fill" style="width:${runawayVal}%;${h.incapacitated?"background:var(--danger)":""}"></div></div><div class="runaway-label" style="${h.incapacitated?"color:var(--danger)":""}">폭주 ${Math.round(runawayVal)}%${h.incapacitated?" · 행동불능":""}</div>`:'<div style="font-size:9px;color:var(--guide);font-family:\'Space Mono\',monospace;margin-top:4px">가이딩 가능</div>';
-  const lblA=isSentinel?'ATK':'가이딩';
-  const lblD=isSentinel?'DEF':'방호';
-  const lblS=isSentinel?'SPD':'반응';
+  const lblA=isSentinel?'능력':'가이딩';
+  const lblD=isSentinel?'방어':'방호';
+  const lblS=isSentinel?'속도':'반응';
   return `<div class="agent-card" style="border-color:${fc}18" ${onclick?`onclick="${onclick}"`:''}">
     <div class="agent-top">
       <div class="agent-avatar" style="color:${fc};background:${fb}">
@@ -1380,8 +1436,15 @@ function agentCardHTML(h,onclick=''){
     <div class="agent-footer">
       <span class="agent-lv">Lv.${h.level||1}</span>
       <span class="agent-pwr">PWR ${pwr}</span>
+      <span style="cursor:pointer;margin-left:auto;display:flex;align-items:center;opacity:${h.locked?1:0.3}" onclick="event.stopPropagation();toggleLock(${h.id})" title="${h.locked?'잠금 해제':'잠금'}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${h.locked?'var(--accent)':'var(--text3)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${h.locked?'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>':'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>'}</svg></span>
     </div>
   </div>`;
+}
+
+function toggleLock(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  h.locked=!h.locked;
+  saveState();render();
 }
 
 let _agentTab='all',_agentSort='pwr';
@@ -1394,11 +1457,11 @@ function switchAgentTab(tab){
   renderAgents();
 }
 function setAgentSort(sort){
-  _agentSort=sort;
+  if(_agentSort===sort)toggleSortDir('agent',sort);
+  else{_agentSort=sort;_sortDir['agent_'+sort]=1;}
   ['pwr','lv','rank','elem'].forEach(s=>{
     const btn=document.getElementById('agent-sort-'+s);
-    if(btn)btn.className='btn '+(s===sort?'btn-primary':'btn-outline')+' btn-sm';
-    if(btn)btn.style.fontSize='10px';
+    if(btn){btn.className='btn '+(s===sort?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='10px';btn.textContent={'pwr':'전투력','lv':'레벨순','rank':'등급순','elem':'속성순'}[s];}
   });
   renderAgents();
 }
@@ -1413,12 +1476,7 @@ function renderAgents(){
   if(!list.length){grid.innerHTML='';emp.style.display='';return;}
   emp.style.display='none';
   // 정렬
-  const rankOrd={SS:0,S:1,A:2,B:3,C:4,D:5};
-  const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
-  if(_agentSort==='pwr')list.sort((a,b)=>power(b)-power(a));
-  else if(_agentSort==='lv')list.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(_agentSort==='rank')list.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
-  else if(_agentSort==='elem')list.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
+  sortList(list,_agentSort,'agent');
   grid.innerHTML=list.map(h=>agentCardHTML(h,`openGrowthModal(${h.id})`)).join('');
 }
 
@@ -1609,9 +1667,9 @@ function openSelect(contentId){
       <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="sf-special" onclick="setSelFilter('special')">특수</button>
       <span style="width:1px;background:var(--border);margin:0 4px"></span>
       <button class="btn btn-primary btn-sm" style="font-size:9px;padding:4px 8px" id="ss-pwr" onclick="setSelSort('pwr')">전투력</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-lv" onclick="setSelSort('lv')">레벨</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-rank" onclick="setSelSort('rank')">등급</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-elem" onclick="setSelSort('elem')">속성</button>
+      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-lv" onclick="setSelSort('lv')">레벨순</button>
+      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-rank" onclick="setSelSort('rank')">등급순</button>
+      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-elem" onclick="setSelSort('elem')">속성순</button>
       <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-adv" onclick="setSelSort('adv')">상성</button>
     </div>
     <div class="pick-grid" id="sel-pick-grid"></div>
@@ -1633,10 +1691,11 @@ function setSelFilter(f){
   renderSelGrid();
 }
 function setSelSort(s){
-  _selSort=s;
+  if(_selSort===s)toggleSortDir('sel',s);
+  else{_selSort=s;_sortDir['sel_'+s]=1;}
   ['pwr','lv','rank','elem','adv'].forEach(t=>{
     const btn=document.getElementById('ss-'+t);
-    if(btn){btn.className='btn '+(t===s?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='9px';btn.style.padding='4px 8px';}
+    if(btn){btn.className='btn '+(t===s?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='9px';btn.style.padding='4px 8px';btn.textContent={'pwr':'전투력','lv':'레벨순','rank':'등급순','elem':'속성순','adv':'상성'}[t];}
   });
   renderSelGrid();
 }
@@ -1648,13 +1707,7 @@ function renderSelGrid(){
   if(_selFilter==='special')avail=avail.filter(h=>h.isSpecial);
   else if(_selFilter==='normal')avail=avail.filter(h=>!h.isSpecial);
   // 정렬
-  const rankOrd={SS:0,S:1,A:2,B:3,C:4,D:5};
-  const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
-  if(_selSort==='pwr')avail.sort((a,b)=>power(b)-power(a));
-  else if(_selSort==='lv')avail.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(_selSort==='rank')avail.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
-  else if(_selSort==='elem')avail.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
-  else if(_selSort==='adv')avail.sort((a,b)=>elemBonus(b.elem,mElem)-elemBonus(a.elem,mElem));
+  sortList(avail,_selSort,'sel',mElem);
 
   grid.innerHTML=avail.map(h=>{
     const fc=fieldColor(h.elem||'');
@@ -2393,8 +2446,8 @@ function renderPairPartnerModal(h){
       <button class="btn ${_pairFilter==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairFilter='special';renderPairPartnerModal()">특수</button>
       <span style="width:1px;background:var(--border);margin:0 4px"></span>
       <button class="btn ${_pairSort==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairSort='pwr';renderPairPartnerModal()">전투력</button>
-      <button class="btn ${_pairSort==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairSort='lv';renderPairPartnerModal()">레벨</button>
-      <button class="btn ${_pairSort==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairSort='elem';renderPairPartnerModal()">속성</button>
+      <button class="btn ${_pairSort==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairSort='lv';renderPairPartnerModal()">레벨순</button>
+      <button class="btn ${_pairSort==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairSort='elem';renderPairPartnerModal()">속성순</button>
       <button class="btn ${_pairSort==='match'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairSort='match';renderPairPartnerModal()">상성</button>
     </div>
     <div class="pick-grid">${picks}</div>
@@ -2476,8 +2529,8 @@ function renderPairPickModal(){
       <button class="btn ${_pairPickFilter==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairPickFilter='special';renderPairPickModal()">특수</button>
       <span style="width:1px;background:var(--border);margin:0 4px"></span>
       <button class="btn ${_pairPickSort==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairPickSort='pwr';renderPairPickModal()">전투력</button>
-      <button class="btn ${_pairPickSort==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairPickSort='lv';renderPairPickModal()">레벨</button>
-      <button class="btn ${_pairPickSort==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairPickSort='elem';renderPairPickModal()">속성</button>
+      <button class="btn ${_pairPickSort==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairPickSort='lv';renderPairPickModal()">레벨순</button>
+      <button class="btn ${_pairPickSort==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="_pairPickSort='elem';renderPairPickModal()">속성순</button>
     </div>
     <div class="pick-grid">${picks}</div>
     <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="closeModal()">닫기</button>
@@ -2487,6 +2540,64 @@ function renderPairPickModal(){
 // ═══════════════════════════════════════════════════════════════════
 // GROWTH SYSTEM
 // ═══════════════════════════════════════════════════════════════════
+let _enhanceTab='resonance';
+function switchEnhanceTab(tab){
+  _enhanceTab=tab;
+  ['resonance','awaken','bloom'].forEach(t=>{
+    const btn=document.getElementById('enhance-tab-'+t);
+    if(btn)btn.className='btn '+(t===tab?'btn-primary':'btn-outline');
+    if(btn)btn.style.flex='1';if(btn)btn.style.justifyContent='center';
+  });
+  renderEnhanceContent();
+}
+function renderEnhance(){
+  switchEnhanceTab(_enhanceTab);
+}
+function renderEnhanceContent(){
+  const el=document.getElementById('enhance-content');if(!el)return;
+  if(_enhanceTab==='resonance'){
+    // 공명 (EXP 투입) — 요원 선택 그리드
+    const list=S.hunters.length?S.hunters.map(h=>agentCardHTML(h,`openGrowthModal(${h.id})`)).join(''):'';
+    el.innerHTML=`
+      <div class="info-box"><strong>공명</strong><br>· 요원을 경험치 재료로 투입하면 레벨업합니다. 투입된 요원은 소멸합니다.<br>· Lv.10 / 20 / 30 / 40에서 레벨 상한에 도달합니다.</div>
+      <div class="section-label">성장할 요원 선택</div>
+      <div class="grid-auto">${list||'<div class="empty"><div style="font-size:12px">요원이 없습니다.</div></div>'}</div>`;
+  } else if(_enhanceTab==='awaken'){
+    // 각성 (공명 각성) — 레벨캡 요원만 표시
+    const eligible=S.hunters.filter(h=>{const aw=h.awakening||0;const cap=levelCap(h);return (h.level||1)>=cap&&aw<4;});
+    const list=eligible.map(h=>agentCardHTML(h,`openGrowthModal(${h.id})`)).join('');
+    el.innerHTML=`
+      <div class="info-box"><strong>각성</strong><br>· 동일 등급 요원 2/3/4/5명을 재료로 공명(★)을 올리면 다음 구간 레벨업이 가능합니다.<br>· 최대 ★4 공명이며, 각성 후 레벨 상한이 +10 확장됩니다.</div>
+      <div class="section-label">각성 가능 요원</div>
+      <div class="grid-auto">${list||'<div class="empty"><div style="font-size:12px">각성 가능한 요원이 없습니다.<br><span style="color:var(--text3)">레벨 상한(Lv.10/20/30/40)에 도달한 요원이 필요합니다.</span></div></div>'}</div>`;
+  } else if(_enhanceTab==='bloom'){
+    renderBloomInEnhance(el);
+  }
+}
+function renderBloomInEnhance(el){
+  if(!el)el=document.getElementById('enhance-content');
+  if(!el)return;
+  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0};
+  const crystalsBar=`<div style="display:flex;gap:8px;flex-wrap:wrap">${FIELDS.map(f=>{
+    const c=S.crystals[f]||0;const fc=fieldColor(f);
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;display:flex;align-items:center;gap:6px;min-width:90px">
+      ${fieldIcon(f,14)}<span style="font-size:11px;color:var(--text2)">${f}</span>
+      <span style="font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:${fc};margin-left:auto">${c}</span>
+    </div>`;
+  }).join('')}</div>`;
+  let eligible=S.hunters.filter(h=>canBloom(h));
+  eligible=applyGridFilterSort([...eligible],_bloomFilter,_bloomSort,'bloom');
+  const filterBar=gridFilterBar('Bloom',_bloomFilter,_bloomSort,'bloom');
+  const list=eligible.map(h=>agentCardHTML(h,`openBloomModal(${h.id})`)).join('');
+  el.innerHTML=`
+    <div class="info-box"><strong>개화</strong><br>· Lv.50, ★4 공명 완료된 특수 요원만 개화할 수 있습니다.<br>· 동일 속성 결정 + 골드 + 동일 이름 요원 카드가 필요합니다.<br>· C: 결정5+G1M / A: 결정10+G3M / S: 결정30+G5M / SS: 결정100+G10M</div>
+    <div class="section-label">보유 결정</div>
+    ${crystalsBar}
+    <div class="section-label" style="margin-top:16px">개화 가능 요원</div>
+    ${filterBar}
+    <div class="grid-auto">${list||'<div class="empty"><div style="font-size:12px">개화 가능한 요원이 없습니다.</div></div>'}</div>`;
+}
+
 function renderGrowthPanel(){
   const grid=document.getElementById('growth-agent-grid');
   const emp=document.getElementById('growth-agent-empty');
@@ -2517,10 +2628,10 @@ function renderGrowthModal(){
   const cap=levelCap(h);
   const atCap=(h.level||1)>=cap&&aw<4;
   const expPct=atCap?100:Math.min(100,((h.exp||0)/expToNext(h.level||1))*100);
-  const stars='★'.repeat(aw)+'☆'.repeat(4-aw);
+  const stars='★'.repeat(aw)+'☆'.repeat(4-aw)+(h.bloomed?'<span style="color:var(--gold)">★</span>':'<span style="color:var(--border2)">☆</span>');
   const dots=['','','',''].map((_,i)=>`<div class="awaken-dot${i<aw?' done':i===aw?' current':''}" style="width:10px;height:10px;border-radius:50%;background:${i<aw?'var(--accent)':i===aw?'transparent':'var(--border2)'};border:2px solid ${i<=aw?'var(--accent)':'var(--border2)'};display:inline-block;margin:0 2px"></div>`).join('');
   // Feed tab — exclude self, busy, and agents in feed/awaken selection
-  let feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy);
+  let feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy&&!f.locked);
   if(_feedFilter==='special')feedable=feedable.filter(f=>f.isSpecial);
   else if(_feedFilter==='normal')feedable=feedable.filter(f=>!f.isSpecial);
   applyGrowthSort(feedable,_feedSort);
@@ -2548,7 +2659,7 @@ function renderGrowthModal(){
     const needed=AWAKEN_COST[aw];
     if(needed===undefined){awakenContent=`<div style="text-align:center;padding:20px;color:var(--success);font-weight:700">최대 공명 달성!</div>`;}
     else{
-    let awakenFeeders=S.hunters.filter(f=>f.id!==h.id&&f.rank===h.rank&&!f.busy);
+    let awakenFeeders=S.hunters.filter(f=>f.id!==h.id&&f.rank===h.rank&&!f.busy&&!f.locked);
     if(_awakenFilter==='special')awakenFeeders=awakenFeeders.filter(f=>f.isSpecial);
     else if(_awakenFilter==='normal')awakenFeeders=awakenFeeders.filter(f=>!f.isSpecial);
     applyGrowthSort(awakenFeeders,_awakenSort);
@@ -2609,8 +2720,8 @@ function growthFilterSortBar(mode){
   const setF=mode==='feed'?'setFeedFilter':'setAwakenFilter';
   const setS=mode==='feed'?'setFeedSort':'setAwakenSort';
   const sortOpts=mode==='feed'
-    ?[['exp','EXP'],['pwr','전투력'],['lv','레벨'],['rank','등급']]
-    :[['lv','레벨'],['pwr','전투력'],['elem','속성']];
+    ?[['exp','EXP'],['pwr','전투력'],['lv','레벨순'],['rank','등급순']]
+    :[['lv','레벨순'],['pwr','전투력'],['elem','속성순']];
   return `<div style="display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap">
     <button class="btn ${f==='all'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setF}('all')">전체</button>
     <button class="btn ${f==='normal'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setF}('normal')">일반</button>
@@ -2621,26 +2732,20 @@ function growthFilterSortBar(mode){
 }
 
 function applyGrowthSort(list,sort){
-  const rankOrd={SS:0,S:1,A:2,B:3,C:4,D:5};
-  const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
-  if(sort==='pwr')list.sort((a,b)=>power(b)-power(a));
-  else if(sort==='lv')list.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(sort==='rank')list.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
-  else if(sort==='elem')list.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
-  else if(sort==='exp')list.sort((a,b)=>feedExp(b)-feedExp(a));
+  sortList(list,sort,'growth_feed');
   return list;
 }
 
 function setFeedFilter(v){_feedFilter=v;rebuildFeedGrid();}
-function setFeedSort(v){_feedSort=v;rebuildFeedGrid();}
+function setFeedSort(v){if(_feedSort===v)toggleSortDir('growth_feed',v);else{_feedSort=v;_sortDir['growth_feed_'+v]=1;}rebuildFeedGrid();}
 function setAwakenFilter(v){_awakenFilter=v;rebuildAwakenGrid();}
-function setAwakenSort(v){_awakenSort=v;rebuildAwakenGrid();}
+function setAwakenSort(v){if(_awakenSort===v)toggleSortDir('growth_awaken',v);else{_awakenSort=v;_sortDir['growth_awaken_'+v]=1;}rebuildAwakenGrid();}
 
 function rebuildFeedGrid(){
   const container=document.getElementById('growth-tab-content');
   if(!container)return;
   const h=_growthTarget;if(!h)return;
-  let feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy);
+  let feedable=S.hunters.filter(f=>f.id!==h.id&&!f.busy&&!f.locked);
   if(_feedFilter==='special')feedable=feedable.filter(f=>f.isSpecial);
   else if(_feedFilter==='normal')feedable=feedable.filter(f=>!f.isSpecial);
   applyGrowthSort(feedable,_feedSort);
@@ -2670,7 +2775,7 @@ function rebuildAwakenGrid(){
   const aw=h.awakening||0;const cap=levelCap(h);
   const needed=AWAKEN_COST[aw];
   if(needed===undefined)return;
-  let awakenFeeders=S.hunters.filter(f=>f.id!==h.id&&f.rank===h.rank&&!f.busy);
+  let awakenFeeders=S.hunters.filter(f=>f.id!==h.id&&f.rank===h.rank&&!f.busy&&!f.locked);
   if(_awakenFilter==='special')awakenFeeders=awakenFeeders.filter(f=>f.isSpecial);
   else if(_awakenFilter==='normal')awakenFeeders=awakenFeeders.filter(f=>!f.isSpecial);
   applyGrowthSort(awakenFeeders,_awakenSort);
@@ -2781,7 +2886,7 @@ function doFeedExp(){
   S.stats.totalFeeds=(S.stats.totalFeeds||0)+1;
   addLog(`강화: ${h.name}에 ${names.join(', ')} 투입 (+${actualExp} EXP)`,'good');
   notify(`✓ ${h.name} EXP +${actualExp}`,'ok');
-  _feedSelected=[];saveState();render();renderGrowthPanel();renderGrowthModal();
+  _feedSelected=[];saveState();render();renderEnhance();renderGrowthModal();
 }
 
 function doAwaken(){
@@ -2800,7 +2905,7 @@ function doAwaken(){
   if((h.awakening||0)>S.stats.maxAwakening)S.stats.maxAwakening=h.awakening;
   recalcStats();updateAchBadge();
   _awakenSelected=[];_growthTab='feed';
-  saveState();render();renderGrowthPanel();renderGrowthModal();
+  saveState();render();renderEnhance();renderGrowthModal();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -3018,7 +3123,7 @@ let _benchFilter={guidingS:'all',guidingG:'all',pairingS:'all',pairingG:'all'};
 let _benchSort={guidingS:'pwr',guidingG:'pwr',pairingS:'pwr',pairingG:'pwr'};
 
 function setBenchFilter(tab,role,v){_benchFilter[tab+role]=v;rebuildBench(tab,role);}
-function setBenchSort(tab,role,v){_benchSort[tab+role]=v;rebuildBench(tab,role);}
+function setBenchSort(tab,role,v){const ctx='bench_'+tab+role;if(_benchSort[tab+role]===v)toggleSortDir(ctx,v);else{_benchSort[tab+role]=v;_sortDir[ctx+'_'+v]=1;}rebuildBench(tab,role);}
 
 function rebuildBench(tab,role){
   const isS=role==='S';
@@ -3086,9 +3191,9 @@ function benchFilterBar(tab,role){
     <button class="btn ${f==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchFilter('${tab}','${role}','special')">특수</button>
     <span style="width:1px;background:var(--border);margin:0 4px"></span>
     <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','pwr')">전투력</button>
-    <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','lv')">레벨</button>
-    <button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','rank')">등급</button>
-    <button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','elem')">속성</button>
+    <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','lv')">레벨순</button>
+    <button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','rank')">등급순</button>
+    <button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','elem')">속성순</button>
   </div>`;
 }
 
@@ -3097,12 +3202,7 @@ function applyBenchFilterSort(list,tab,role){
   const s=_benchSort[tab+role];
   if(f==='special')list=list.filter(h=>h.isSpecial);
   else if(f==='normal')list=list.filter(h=>!h.isSpecial);
-  const rankOrd={SS:0,S:1,A:2,B:3,C:4,D:5};
-  const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
-  if(s==='pwr')list.sort((a,b)=>power(b)-power(a));
-  else if(s==='lv')list.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(s==='rank')list.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
-  else if(s==='elem')list.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
+  sortList(list,s,'bench_'+tab+role);
   return list;
 }
 
@@ -3327,6 +3427,179 @@ function removeGuiding(idx){
   S.guidingSlots.splice(idx,1);
   notify(`${s?s.name:'?'} ⇄ ${g?g.name:'?'} 가이딩 해제`,'info');
   saveState();renderGuiding();render();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BLOOM SYSTEM (개화)
+// ═══════════════════════════════════════════════════════════════════
+const BLOOM_COST={C:{crystals:5,gold:1000000},A:{crystals:10,gold:3000000},S:{crystals:30,gold:5000000},SS:{crystals:100,gold:10000000}};
+
+function canBloom(h){
+  return h.isSpecial&&(h.level||1)>=50&&(h.awakening||0)>=4&&!h.bloomed&&BLOOM_COST[h.rank];
+}
+
+function renderCrystalsBar(targetId){
+  const el=document.getElementById(targetId);if(!el)return;
+  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0};
+  el.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap">${FIELDS.map(f=>{
+    const c=S.crystals[f]||0;const fc=fieldColor(f);
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;display:flex;align-items:center;gap:6px;min-width:90px">
+      ${fieldIcon(f,14)}<span style="font-size:11px;color:var(--text2)">${f}</span>
+      <span style="font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:${fc};margin-left:auto">${c}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+let _bloomFilter='all',_bloomSort='pwr';
+let _dismantleFilter='all',_dismantleSort='pwr';
+
+function setBloomFilter(v){_bloomFilter=v;renderBloom();}
+function setBloomSort(v){if(_bloomSort===v)toggleSortDir('bloom',v);else{_bloomSort=v;_sortDir['bloom_'+v]=1;}renderBloom();}
+function setDismantleFilter(v){_dismantleFilter=v;renderDismantle();}
+function setDismantleSort(v){if(_dismantleSort===v)toggleSortDir('dismantle',v);else{_dismantleSort=v;_sortDir['dismantle_'+v]=1;}renderDismantle();}
+
+function gridFilterBar(prefix,filter,sort,ctx){
+  const sortOpts=[['pwr','전투력'],['lv','레벨순'],['rank','등급순'],['elem','속성순']];
+  const c=ctx||prefix.toLowerCase();
+  return `<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
+    <button class="btn ${filter==='all'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="set${prefix}Filter('all')">전체</button>
+    <button class="btn ${filter==='normal'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="set${prefix}Filter('normal')">일반</button>
+    <button class="btn ${filter==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="set${prefix}Filter('special')">특수</button>
+    <span style="width:1px;background:var(--border);margin:0 4px"></span>
+    ${sortOpts.map(([k,v])=>`<button class="btn ${sort===k?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="set${prefix}Sort('${k}')">${v}</button>`).join('')}
+  </div>`;
+}
+
+function applyGridFilterSort(list,filter,sort,ctx){
+  if(filter==='special')list=list.filter(h=>h.isSpecial);
+  else if(filter==='normal')list=list.filter(h=>!h.isSpecial);
+  sortList(list,sort,ctx||'grid');
+  return list;
+}
+
+function renderBloom(){
+  if(_curTab==='enhance'&&_enhanceTab==='bloom')renderBloomInEnhance();
+}
+
+function openBloomModal(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h||!canBloom(h))return;
+  const cost=BLOOM_COST[h.rank];
+  const elem=h.elem||'불';
+  const fc=fieldColor(elem);
+  const hasCrystals=(S.crystals[elem]||0)>=cost.crystals;
+  const hasGold=S.gold>=cost.gold;
+  // 동일 이름 요원 카드 찾기
+  const dupes=S.hunters.filter(x=>x.id!==h.id&&x.name===h.name&&x.isSpecial&&!x.busy);
+  const hasDupe=dupes.length>0;
+  const canDo=hasCrystals&&hasGold&&hasDupe;
+  showModal(`
+    <div class="modal-title">개화 — ${h.name}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px">${h.rank}등급 · ${h.role} · ${elem} 속성 · Lv.${h.level||1}</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:var(--radius);font-size:12px">
+        <span style="display:flex;align-items:center;gap:6px">${fieldIcon(elem,14)} ${elem} 결정</span>
+        <span style="font-weight:700;color:${hasCrystals?'var(--success)':'var(--danger)'}">${S.crystals[elem]||0} / ${cost.crystals}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:var(--radius);font-size:12px">
+        <span>골드</span>
+        <span style="font-weight:700;color:${hasGold?'var(--success)':'var(--danger)'}">${fmtNum(S.gold)} / ${fmtNum(cost.gold)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:var(--radius);font-size:12px">
+        <span>동일 요원 카드 (${h.name})</span>
+        <span style="font-weight:700;color:${hasDupe?'var(--success)':'var(--danger)'}">${dupes.length}장 보유</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="doBloom(${h.id})" ${canDo?'':'disabled'}>개화 실행</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  `);
+}
+
+function doBloom(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h||!canBloom(h))return;
+  const cost=BLOOM_COST[h.rank];
+  const elem=h.elem||'불';
+  if((S.crystals[elem]||0)<cost.crystals||S.gold<cost.gold){notify('재료 부족','err');return;}
+  const dupes=S.hunters.filter(x=>x.id!==h.id&&x.name===h.name&&x.isSpecial&&!x.busy);
+  if(!dupes.length){notify('동일 요원 카드 부족','err');return;}
+  // 재료 소모
+  S.crystals[elem]-=cost.crystals;
+  S.gold-=cost.gold;
+  S.hunters=S.hunters.filter(x=>x.id!==dupes[0].id); // 1장 소모
+  // 개화 적용
+  h.bloomed=true;
+  h.atk=Math.floor(h.atk*1.35);
+  h.def=Math.floor(h.def*1.35);
+  h.spd=Math.floor(h.spd*1.35);
+  addLog(`✦ ${h.name} 개화 완료! 능력치 대폭 상승`,'special');
+  notify(`✦ ${h.name} 개화 성공!`,'ok');
+  recalcStats();updateAchBadge();
+  closeModal();saveState();render();renderEnhance();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DISMANTLE SYSTEM (분해)
+// ═══════════════════════════════════════════════════════════════════
+const SHARD_RANGE={D:[0,2],C:[3,5],B:[7,15],A:[20,50],S:[70,100],SS:[300,500]};
+
+function renderDismantle(){
+  renderCrystalsBar('dismantle-crystals');
+  const shardEl=document.getElementById('shard-count');
+  if(shardEl)shardEl.textContent=fmtNum(S.shards||0);
+  const filterEl=document.getElementById('dismantle-filter');
+  if(filterEl)filterEl.innerHTML=gridFilterBar('Dismantle',_dismantleFilter,_dismantleSort,'dismantle');
+  const grid=document.getElementById('dismantle-grid');
+  const emp=document.getElementById('dismantle-empty');
+  if(!grid||!emp)return;
+  let available=S.hunters.filter(h=>!h.busy&&!isInGuiding(h.id)&&!h.locked);
+  available=applyGridFilterSort([...available],_dismantleFilter,_dismantleSort,'dismantle');
+  if(!available.length){grid.innerHTML='';emp.style.display='';return;}
+  emp.style.display='none';
+  grid.innerHTML=available.map(h=>agentCardHTML(h,`openDismantleModal(${h.id})`)).join('');
+}
+
+function openDismantleModal(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  const range=SHARD_RANGE[h.rank]||[0,0];
+  const fc=fieldColor(h.elem||'');
+  showModal(`
+    <div class="modal-title">분해 — ${h.name}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:16px">${h.rank}등급 · ${h.role} · Lv.${h.level||1}${h.isSpecial?' · 특수 요원':''}</div>
+    <div style="background:var(--surface2);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--text2)">
+      분해 시 <strong style="color:var(--text)">결정 파편 ${range[0]}~${range[1]}개</strong>를 획득합니다.<br>
+      <span style="color:var(--danger);font-size:11px">이 요원은 영구적으로 소멸합니다.</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-danger" style="flex:1" onclick="doDismantle(${h.id})">분해 실행</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  `);
+}
+
+function doDismantle(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  const range=SHARD_RANGE[h.rank]||[0,0];
+  const gained=range[0]+Math.floor(Math.random()*(range[1]-range[0]+1));
+  S.shards=(S.shards||0)+gained;
+  const name=h.name;const rank=h.rank;
+  S.hunters=S.hunters.filter(x=>x.id!==id);
+  addLog(`분해: ${name}(${rank}) → 결정 파편 +${gained}`);
+  notify(`✓ ${name} 분해 — 파편 +${gained}`,'ok');
+  recalcStats();updateAchBadge();
+  closeModal();saveState();render();renderDismantle();
+}
+
+function craftCrystal(){
+  if((S.shards||0)<10){notify('결정 파편이 부족합니다 (필요: 10)','err');return;}
+  S.shards-=10;
+  const elem=FIELDS[Math.floor(Math.random()*FIELDS.length)];
+  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0};
+  S.crystals[elem]=(S.crystals[elem]||0)+1;
+  const fc=fieldColor(elem);
+  addLog(`결정 제작: 파편 10 → ${elem} 결정 +1`,'good');
+  notify(`✓ ${elem} 결정 획득!`,'ok');
+  saveState();render();renderDismantle();
 }
 
 // ═══════════════════════════════════════════════════════════════════
