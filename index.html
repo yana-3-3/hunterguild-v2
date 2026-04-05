@@ -719,7 +719,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <div class="panel" id="panel-achievement">
   <div class="page-title">공적 기록</div>
   <div class="page-sub">ARCH 공적 기록 · 완료 시 골드 & 다이아 지급</div>
-  <div id="ach-cat-btns" style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap"></div>
+  <div id="ach-cat-btns" style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center;justify-content:space-between"></div>
   <div class="ach-grid" id="ach-grid"></div>
 </div>
 
@@ -2680,7 +2680,14 @@ function updateAchBadge(){
 function renderAchievements(){
   const cats={all:'전체',collect:'수집',battle:'작전',growth:'성장'};
   const catBtns=document.getElementById('ach-cat-btns');
-  if(catBtns){catBtns.innerHTML=Object.entries(cats).map(([k,v])=>`<button class="btn ${_achCat===k?'btn-primary':'btn-outline'} btn-sm" onclick="_achCat='${k}';renderAchievements()">${v}</button>`).join('');}
+  if(catBtns){
+    const claimableCount=ACHIEVEMENTS.filter(a=>{
+      if(S.achClaimed[a.id])return false;
+      if(a.prev&&!S.achClaimed[a.prev])return false;
+      return (S.stats[a.stat]||0)>=a.goal;
+    }).length;
+    catBtns.innerHTML=`<div style="display:flex;gap:6px;flex:1;flex-wrap:wrap">${Object.entries(cats).map(([k,v])=>`<button class="btn ${_achCat===k?'btn-primary':'btn-outline'} btn-sm" onclick="_achCat='${k}';renderAchievements()">${v}</button>`).join('')}</div>${claimableCount?`<button class="btn btn-token btn-sm" onclick="claimAllAch()" style="white-space:nowrap">전체 수령 (${claimableCount})</button>`:''}`;
+  }
   const grid=document.getElementById('ach-grid');if(!grid)return;
   let all=_achCat==='all'?ACHIEVEMENTS:ACHIEVEMENTS.filter(a=>a.cat===_achCat);
   // Chain: for each chain, only show the CURRENT step (first unclaimed, or last claimed if all done)
@@ -2741,6 +2748,32 @@ function claimAch(id){
   if(a.dia){S.dia+=a.dia;S.stats.totalDiaEarned=(S.stats.totalDiaEarned||0)+a.dia;}
   addLog(`업적 달성: [${a.name}] — G +${a.gold}${a.dia?` · D +${a.dia}`:''}`, 'special');
   notify(`✦ [${a.name}] 업적 수령!`,'ok');
+  updateAchBadge();saveState();render();renderAchievements();
+}
+function claimAllAch(){
+  const claimable=ACHIEVEMENTS.filter(a=>{
+    if(S.achClaimed[a.id])return false;
+    if(a.prev&&!S.achClaimed[a.prev])return false;
+    return (S.stats[a.stat]||0)>=a.goal;
+  });
+  if(!claimable.length){notify('수령할 업적이 없습니다','err');return;}
+  let totalGold=0,totalDia=0,count=0;
+  // 체인 순서 보장을 위해 반복 수령
+  let claimed=true;
+  while(claimed){
+    claimed=false;
+    ACHIEVEMENTS.forEach(a=>{
+      if(S.achClaimed[a.id])return;
+      if(a.prev&&!S.achClaimed[a.prev])return;
+      if((S.stats[a.stat]||0)<a.goal)return;
+      S.achClaimed[a.id]=true;
+      if(a.gold){S.gold+=a.gold;totalGold+=a.gold;}
+      if(a.dia){S.dia+=a.dia;S.stats.totalDiaEarned=(S.stats.totalDiaEarned||0)+a.dia;totalDia+=a.dia;}
+      count++;claimed=true;
+    });
+  }
+  addLog(`업적 일괄 수령: ${count}건 — G +${fmtNum(totalGold)}${totalDia?` · D +${totalDia}`:''}`,'special');
+  notify(`✦ 업적 ${count}건 일괄 수령! G +${fmtNum(totalGold)}${totalDia?` · D +${totalDia}`:''}`,'ok');
   updateAchBadge();saveState();render();renderAchievements();
 }
 
