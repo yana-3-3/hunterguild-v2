@@ -442,6 +442,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .hd-simple-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .hd-simple-stats{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 
+/* ── TUTORIAL ────────────────────────────────────────────────── */
+.tut-overlay{position:fixed;inset:0;background:rgba(15,17,26,0.82);z-index:300;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.tut-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;max-width:460px;width:92%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.25);animation:tutSlide .35s cubic-bezier(.34,1.2,.64,1)}
+@keyframes tutSlide{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+.tut-inner{padding:32px 28px 24px}
+.tut-icon{width:56px;height:56px;border-radius:14px;background:var(--accent-glow);border:1px solid var(--accent-line);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.tut-icon svg{width:26px;height:26px;stroke:var(--accent);fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.tut-title{font-family:'Syne','Pretendard Variable',sans-serif;font-size:20px;font-weight:800;text-align:center;margin-bottom:6px;color:var(--text)}
+.tut-desc{font-size:13px;color:var(--text2);line-height:1.85;text-align:center;margin-bottom:20px}
+.tut-desc strong{color:var(--text);font-weight:700}
+.tut-desc .tg{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;vertical-align:middle;margin:0 2px}
+.tut-dots{display:flex;justify-content:center;gap:6px;margin-bottom:20px}
+.tut-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:.2s}
+.tut-dot.on{background:var(--accent);box-shadow:0 0 6px rgba(79,70,229,0.4)}
+.tut-btns{display:flex;gap:8px}
+.tut-btns .btn{flex:1}
+
 </style>
 </head>
 <body>
@@ -891,6 +908,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
         불러오기
         <input type="file" accept=".json" onchange="importData(event)" style="display:none">
       </label>
+    </div>
+  </div>
+  
+  <div class="section-label" style="margin-top:24px">도움말</div>
+  <div class="settings-card">
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title">튜토리얼</div>
+        <div class="settings-desc">시스템 가이드를 다시 확인합니다.</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="localStorage.removeItem('arch_tut_done');showTutorial()">다시 보기</button>
     </div>
   </div>
 
@@ -2569,7 +2597,7 @@ function doGachaSpecial(count){
     notify(`★ ${SPECIAL_BONUS_INTERVAL}회 달성 보너스! 다이아 +${bonusDia}`,'ok');
     addLog(`특수 모집 ${SPECIAL_BONUS_INTERVAL}회 보너스: 다이아 +${bonusDia}`,'special');
   }
-  S.stats.sOwned=S.hunters.filter(h=>h.rank==='S'||h.rank==='SS').length;
+  S.stats.sOwned=new Set(S.hunters.filter(h=>h.rank==='S'||h.rank==='SS').map(h=>h.name)).size;
   recalcStats();updateAchBadge();
   showGachaResult(results,'special');
   const specials=results.filter(r=>r.isSpecial);
@@ -3674,8 +3702,8 @@ function doAwaken(){
 // ═══════════════════════════════════════════════════════════════════
 let _achCat='all';
 function recalcStats(){
-  S.stats.sOwned=S.hunters.filter(h=>h.rank==='S'||h.rank==='SS').length;
-  S.stats.ssOwned=S.hunters.filter(h=>h.rank==='SS').length;
+  S.stats.sOwned=new Set(S.hunters.filter(h=>h.rank==='S'||h.rank==='SS').map(h=>h.name)).size;
+  S.stats.ssOwned=new Set(S.hunters.filter(h=>h.rank==='SS').map(h=>h.name)).size;
   S.stats.hunterCount=S.hunters.length;
   S.stats.elemVariety=new Set(S.hunters.map(h=>h.elem).filter(Boolean)).size;
   S.stats.clsVariety=new Set(S.hunters.map(h=>h.role).filter(Boolean)).size;
@@ -4568,6 +4596,115 @@ function closeModal(){
 function onModalBg(e){if(e.target.id==='modal')closeModal();}
 
 // ═══════════════════════════════════════════════════════════════════
+// TUTORIAL
+// ═══════════════════════════════════════════════════════════════════
+const TUT_STEPS=[
+  {
+    icon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><text x="12" y="16" text-anchor="middle" font-size="12" font-weight="800" fill="currentColor" stroke="none">G</text></svg>',
+    title:'재화 시스템',
+    desc:`ARCH 운영에는 두 가지 핵심 재화가 필요합니다.<br><br>
+<span class="tg" style="background:rgba(194,134,12,0.1);color:var(--gold)">G 골드</span> 강화, 작전 보상 등 범용 재화<br>
+<span class="tg" style="background:var(--accent-glow);color:var(--accent)">◆ 다이아</span> 요원 모집에 사용되는 프리미엄 재화<br><br>
+상단 헤더에서 보유량을 확인할 수 있으며,<br>다이아를 클릭하면 <strong>골드 ↔ 다이아 환전</strong>도 가능합니다.`
+  },
+  {
+    icon:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>',
+    title:'작전 시스템',
+    desc:`요원을 파견하여 보상을 획득하는 4가지 작전이 있습니다.<br><br>
+<span class="tg" style="background:var(--surface2);color:var(--text2)">의뢰</span> 단독 파견 · 가벼운 임무<br>
+<span class="tg" style="background:var(--surface2);color:var(--text2)">파견</span> 3인 편대 · 중규모 작전<br>
+<span class="tg" style="background:var(--surface2);color:var(--text2)">이상 구역</span> 2인 진입 · 던전 탐사<br>
+<span class="tg" style="background:var(--surface2);color:var(--text2)">폭주 진압</span> 대규모 레이드 · 최고 보상<br><br>
+요원 배치 후 <strong>자동 진행</strong>되며, 난이도가 높을수록 보상이 큽니다.<br>요원의 <strong>전투력</strong>이 높을수록 성공률이 올라갑니다.`
+  },
+  {
+    icon:'<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    title:'가이딩 & 페어링',
+    desc:`요원을 육성하는 두 가지 핵심 시스템입니다.<br><br>
+<span class="tg" style="background:var(--guide-bg);color:var(--guide)">가이딩</span><br>
+<strong>가이드</strong>가 <strong>센티넬</strong>의 폭주를 억제합니다.<br>가이드의 집중력이 높을수록 폭주 수치가 빠르게 내려갑니다.<br><br>
+<span class="tg" style="background:var(--accent-glow);color:var(--accent)">페어링</span><br>
+가이드와 센티넬을 짝지어 <strong>스탯 성장</strong>을 시킵니다.<br><strong>같은 속성</strong> 조합이면 보너스 효과가 붙습니다.<br><br>페어링된 가이드는 센티넬이 작전에서 획득한 <strong>경험치의 20%</strong>를 받습니다.<br>(단, 같은 작전에 함께 파견된 경우는 제외)`
+  },
+  {
+    icon:'<svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+    title:'강화 & 분해',
+    desc:`요원의 성장과 자원 순환 시스템입니다.<br><br>
+<span class="tg" style="background:var(--success-bg);color:var(--success)">강화</span><br>
+다른 요원을 <strong>소재로 투입</strong>하여 EXP를 획득합니다.<br>레벨이 오르면 전투력이 상승하고, 각성·개화로 한계를 돌파할 수 있습니다.<br><br>
+<span class="tg" style="background:var(--accent-glow);color:var(--accent)">분해</span><br>
+불필요한 요원을 분해하여 <strong>다이아와 속성 파편</strong>을 획득합니다.<br>높은 등급일수록 더 많은 자원을 돌려받습니다.`
+  },
+  {
+    icon:'<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    title:'준비 완료',
+    desc:`모든 기본 시스템 확인이 완료되었습니다.<br><br>
+그럼, <strong>첫 요원 모집</strong>부터 시작해볼까요?<br>
+모집 탭으로 이동합니다.`
+  }
+];
+
+let _tutStep=0;
+
+function showTutorial(){
+  _tutStep=0;
+  renderTutorial();
+}
+
+function renderTutorial(){
+  const s=TUT_STEPS[_tutStep];
+  const isFirst=_tutStep===0;
+  const isLast=_tutStep===TUT_STEPS.length-1;
+  const dots=TUT_STEPS.map((_,i)=>`<div class="tut-dot${i===_tutStep?' on':''}"></div>`).join('');
+
+  const html=`
+    <div class="tut-overlay" id="tut-overlay" onclick="if(event.target===this)return">
+      <div class="tut-card">
+        <div class="tut-inner">
+          <div class="tut-icon">${s.icon}</div>
+          <div class="tut-title">${s.title}</div>
+          <div class="tut-desc">${s.desc}</div>
+          <div class="tut-dots">${dots}</div>
+          <div class="tut-btns">
+            ${isFirst?'':`<button class="btn btn-outline" onclick="tutPrev()">이전</button>`}
+            ${isLast
+              ?`<button class="btn btn-primary" onclick="tutDone()">시작하기</button>`
+              :`<button class="btn btn-primary" onclick="tutNext()">다음</button>`
+            }
+          </div>
+          <div style="text-align:center;margin-top:12px">
+            <span style="font-size:11px;color:var(--text3);cursor:pointer" onclick="tutDone()">건너뛰기</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  // 기존 오버레이가 있으면 교체, 없으면 삽입
+  const existing=document.getElementById('tut-overlay');
+  if(existing){
+    existing.outerHTML=html;
+  }else{
+    document.body.insertAdjacentHTML('beforeend',html);
+  }
+}
+
+function tutNext(){
+  if(_tutStep<TUT_STEPS.length-1){_tutStep++;renderTutorial();}
+}
+function tutPrev(){
+  if(_tutStep>0){_tutStep--;renderTutorial();}
+}
+function tutDone(){
+  const el=document.getElementById('tut-overlay');
+  if(el)el.remove();
+  localStorage.setItem('arch_tut_done','1');
+  // 마지막 스텝이었으면 모집 탭으로 이동
+  if(_tutStep===TUT_STEPS.length-1){
+    goTab('gacha');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // INIT & TICK
 // ═══════════════════════════════════════════════════════════════════
 function init(){
@@ -4620,6 +4757,10 @@ function init(){
     if(_curTab==='training')renderTrainingSlots();
     if(_curTab==='guiding')renderGuidingSlots();
   },1000);
+  // 튜토리얼 (첫 방문 시)
+  if(!localStorage.getItem('arch_tut_done')){
+    setTimeout(()=>showTutorial(), 300);
+  }
 }
 
 // ═══════════════════════════════════════
