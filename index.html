@@ -174,7 +174,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 
 /* ── MODAL ───────────────────────────────────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(32,32,40,0.25);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeUp .2s ease}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:500px;width:100%;max-height:95vh;overflow-y:auto;overflow-y:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.12)}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:540px;width:100%;max-height:95vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,0.12)}
 .modal-title{font-family:'Syne','Pretendard Variable',sans-serif;font-size:20px;font-weight:800;margin-bottom:16px;letter-spacing:.5px}
 .result-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}
 .result-card{width:82px;padding:10px 5px;border-radius:var(--radius);text-align:center;border:1px solid var(--border);animation:popIn .35s cubic-bezier(.34,1.56,.64,1) backwards;background:var(--surface2)}
@@ -189,14 +189,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .r-avatar{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
 
 /* ── PICK MODAL ──────────────────────────────────────────────── */
-.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;max-height:260px;overflow-y:auto;padding:2px}
-.pick-item{border:1px solid var(--border);border-radius:var(--radius);padding:8px 5px;text-align:center;cursor:pointer;transition:.15s;background:var(--surface2)}
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;max-height:320px;overflow-y:auto;padding:2px}
+.pick-item{border:1px solid var(--border);border-radius:var(--radius);padding:10px 8px;text-align:center;cursor:pointer;transition:.15s;background:var(--surface2)}
 .pick-item:hover{border-color:var(--border2)}
 .pick-item.selected{border-color:var(--accent);background:var(--accent-glow)}
 .pick-item.busy-h{opacity:.3;cursor:not-allowed;pointer-events:none}
-.p-avatar{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px}
-.p-name{font-size:10px;font-weight:700;margin-bottom:2px;color:var(--text);font-family:'Syne',sans-serif}
-.p-info{font-size:9px;color:var(--text2);font-family:'Space Mono',monospace}
+.p-avatar{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.p-name{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text);font-family:'Syne',sans-serif}
+.p-info{font-size:11px;color:var(--text2)}
 .sel-info-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin-top:10px;font-size:11px;font-family:'Space Mono',monospace;color:var(--text2)}
 .sel-info-row{display:flex;justify-content:space-between;margin-bottom:3px}
 .sel-info-row:last-child{margin-bottom:0}
@@ -1949,22 +1949,23 @@ function renderSelGrid(){
     const ico=roleIcon(h.role||'센티넬');
     const fSvg=fieldIcon(h.elem||'',12);
     const adv=elemBonus(h.elem,mElem);
-    const advTag=adv>1?`<div style="font-size:8px;font-weight:700;color:var(--success);background:var(--success-bg);border:1px solid rgba(13,150,104,0.2);border-radius:4px;padding:1px 6px;margin-top:2px">▲ 유리</div>`:adv<1?`<div style="font-size:8px;font-weight:700;color:var(--danger);background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px;margin-top:2px">▼ 불리</div>`:'';
+    const advTag=adv>1?`<div style="font-size:10px;font-weight:700;color:var(--success);background:var(--success-bg);border:1px solid rgba(13,150,104,0.2);border-radius:4px;padding:1px 6px;margin-top:2px">▲ 유리</div>`:adv<1?`<div style="font-size:10px;font-weight:700;color:var(--danger);background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px;margin-top:2px">▼ 불리</div>`:'';
     let pairTag='';
     if(h.role==='센티넬'){
       const pg=findPairGuide(h.id);
-      if(pg)pairTag=`<div style="font-size:7px;color:var(--accent);font-weight:700;margin-top:2px">⇄ ${pg.name}</div>`;
+      if(pg)pairTag=`<div style="font-size:10px;color:var(--accent);font-weight:700;margin-top:2px">⇄ ${pg.name}</div>`;
     } else {
       const pp=(S.pairSlots||[]).find(p=>p.guideId===h.id);
-      if(pp){const ps=S.hunters.find(x=>x.id===pp.sentinelId);if(ps)pairTag=`<div style="font-size:7px;color:var(--accent);font-weight:700;margin-top:2px">⇄ ${ps.name}</div>`;}
+      if(pp){const ps=S.hunters.find(x=>x.id===pp.sentinelId);if(ps)pairTag=`<div style="font-size:10px;color:var(--accent);font-weight:700;margin-top:2px">⇄ ${ps.name}</div>`;}
     }
     const sel=_selIds.includes(h.id);
     return `<div class="pick-item${sel?' selected':''}" id="pi-${h.id}" onclick="togglePick(${h.id},${_selContent.maxSlots})">
       <div class="p-avatar" style="background:${fc}12">${strokify(SVG[ico],fc,16)}</div>
       <div class="p-name">${h.name}</div>
-      <div style="display:flex;align-items:center;gap:3px;justify-content:center;margin:2px 0">${fSvg}<span style="font-size:9px;color:var(--text2)">${h.rank} Lv.${h.level||1}</span></div>
+      <div style="display:flex;align-items:center;gap:3px;justify-content:center;margin:2px 0">${fSvg}<span style="font-size:11px;color:var(--text2)">${h.rank} Lv.${h.level||1}</span></div>
       <div class="p-info">PWR ${fmtNum(power(h))}</div>
-      ${pairTag}${advTag}
+      <div style="min-height:18px;margin-top:2px">${pairTag}</div>
+      <div style="min-height:18px">${advTag}</div>
     </div>`;
   }).join('')||'<div style="font-size:11px;color:var(--text2);padding:12px;text-align:center">해당 조건의 요원 없음</div>';
 }
