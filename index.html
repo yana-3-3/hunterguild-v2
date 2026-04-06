@@ -1056,164 +1056,167 @@ const FREE_CD=3*60*1000; // 3min
 // ─── CONTENT DATA ───────────────────────────────────────────────
 const QUESTS=[
   // Easy (PWR 0~200, 시간 20~40초)
-  {id:'q1',name:'낮은 이상 신호 추적',type:'quest',icon:'recon',diff:'easy',time:20,gold:1000,exp:80,gem:0,min_power:0,maxSlots:1,desc:'센티넬 단독 탐색 임무'},
-  {id:'q2',name:'민간인 구조 작전',type:'quest',icon:'contain',diff:'easy',time:30,gold:1500,exp:100,gem:0,min_power:100,maxSlots:1,desc:'이상 구역 인근 대피 지원'},
-  {id:'q3',name:'오염 샘플 채취',type:'quest',icon:'recon',diff:'easy',time:25,gold:1200,exp:90,gem:0,min_power:50,maxSlots:1,desc:'이상 물질 샘플 수거·분석'},
-  {id:'q4',name:'통신탑 복구',type:'quest',icon:'contain',diff:'easy',time:35,gold:1800,exp:120,gem:0,min_power:150,maxSlots:1,desc:'이상 간섭으로 두절된 통신 복구'},
-  {id:'q5',name:'가로등 센서 점검',type:'quest',icon:'recon',diff:'easy',time:20,gold:800,exp:60,gem:0,min_power:0,maxSlots:1,desc:'도심부 이상 감지 센서 유지보수'},
-  {id:'q6',name:'대피소 물자 운반',type:'quest',icon:'contain',diff:'easy',time:25,gold:1000,exp:80,gem:0,min_power:0,maxSlots:1,desc:'인근 대피소에 보급품 전달'},
-  {id:'q19',name:'불 속성 잔열 측정',type:'quest',icon:'recon',diff:'easy',time:22,gold:900,exp:70,gem:0,min_power:0,maxSlots:1,desc:'불 속성 이상 발화 흔적 수치 기록'},
-  {id:'q20',name:'냉기 누출 차단',type:'quest',icon:'contain',diff:'easy',time:28,gold:1100,exp:85,gem:0,min_power:80,maxSlots:1,desc:'얼음 속성 냉기 누출 지점 응급 봉인'},
-  {id:'q21',name:'전기 과부하 지점 점검',type:'quest',icon:'recon',diff:'easy',time:24,gold:1000,exp:75,gem:0,min_power:60,maxSlots:1,desc:'번개 속성 이상 전류 발생지 안전 확인'},
-  {id:'q22',name:'이상 바람 경보 해제',type:'quest',icon:'recon',diff:'easy',time:20,gold:850,exp:65,gem:0,min_power:0,maxSlots:1,desc:'바람 속성 기류 이상으로 발령된 경보 처리'},
-  {id:'q23',name:'오염 웅덩이 표시',type:'quest',icon:'contain',diff:'easy',time:30,gold:1300,exp:95,gem:0,min_power:100,maxSlots:1,desc:'물 속성 오염 고인물 위험 표지 설치'},
-  {id:'q24',name:'이상 식물 제거',type:'quest',icon:'contain',diff:'easy',time:35,gold:1600,exp:110,gem:0,min_power:120,maxSlots:1,desc:'풀 속성 이상 식물 초기 군락 제거'},
-  {id:'q25',name:'구조물 내 이상 잔해 수거',type:'quest',icon:'recon',diff:'easy',time:26,gold:950,exp:72,gem:0,min_power:30,maxSlots:1,desc:'붕괴 건물 내 이상 물질 파편 수거'},
-  {id:'q26',name:'아동 대피소 안전 확인',type:'quest',icon:'contain',diff:'easy',time:20,gold:800,exp:60,gem:0,min_power:0,maxSlots:1,desc:'민간 대피소 내 이상 반응 여부 점검'},
+  {id:'q1',name:'잔류 파형 추적',type:'quest',icon:'recon',diff:'easy',time:20,gold:1000,exp:80,gem:0,min_power:0,maxSlots:1,elem:'무',desc:'D구역 외곽에서 미약한 비정상 파형 포착. 현장 도달 후 좌표 기록 및 파형 데이터 수집'},
+  {id:'q2',name:'민간 소개 호위',type:'quest',icon:'contain',diff:'easy',time:30,gold:1500,exp:100,gem:0,min_power:100,maxSlots:1,elem:'무',desc:'격리선 내 잔류 민간인 확인. 지정 대피로 유도 및 후방 이송 지원'},
+  {id:'q3',name:'오염 표본 채취',type:'quest',icon:'recon',diff:'easy',time:25,gold:1200,exp:90,gem:0,min_power:50,maxSlots:1,elem:'무',desc:'이상 반응 잔존 지점에서 물질 샘플 확보. 밀봉 후 분석팀 인계'},
+  {id:'q4',name:'통신 거점 응급 복구',type:'quest',icon:'contain',diff:'easy',time:35,gold:1800,exp:120,gem:0,min_power:150,maxSlots:1,elem:'무',desc:'이상 간섭으로 마비된 중계 설비 현장 점검. 임시 복구 후 본부 연결 확인'},
+  {id:'q5',name:'감시 장비 정기 점검',type:'quest',icon:'recon',diff:'easy',time:20,gold:800,exp:60,gem:0,min_power:0,maxSlots:1,elem:'무',desc:'도심 관측망 센서 3개소 순회 점검. 이상 징후 발견 시 즉시 보고'},
+  {id:'q6',name:'전방 보급선 유지',type:'quest',icon:'contain',diff:'easy',time:25,gold:1000,exp:80,gem:0,min_power:0,maxSlots:1,elem:'무',desc:'제3대피소 물자 고갈 임박. 보급 차량 호위 및 물자 인계'},
+  {id:'q19',name:'잔열 구역 실측',type:'quest',icon:'recon',diff:'easy',time:22,gold:900,exp:70,gem:0,min_power:0,maxSlots:1,elem:'불',desc:'불 속성 잔존 고온 반응 구역. 표면 온도 및 열 분포 수치 기록'},
+  {id:'q20',name:'냉기 누출 차단',type:'quest',icon:'contain',diff:'easy',time:28,gold:1100,exp:85,gem:0,min_power:80,maxSlots:1,elem:'얼음',desc:'얼음 속성 이상으로 급격한 온도 강하 확인. 누출 지점 봉쇄 및 격리선 설치'},
+  {id:'q21',name:'과부하 구간 안전 확인',type:'quest',icon:'recon',diff:'easy',time:24,gold:1000,exp:75,gem:0,min_power:60,maxSlots:1,elem:'번개',desc:'번개 속성 에너지 집중 구간 감지. 수치 측정 후 접근 제한 여부 판단'},
+  {id:'q22',name:'비정상 기류 원인 제거',type:'quest',icon:'recon',diff:'easy',time:20,gold:850,exp:65,gem:0,min_power:0,maxSlots:1,elem:'바람',desc:'바람 속성 이상으로 발생한 불안정 기류. 발생원 특정 및 현장 조치'},
+  {id:'q23',name:'오염 수역 접근 통제',type:'quest',icon:'contain',diff:'easy',time:30,gold:1300,exp:95,gem:0,min_power:100,maxSlots:1,elem:'물',desc:'물 속성 이상 감지된 수역. 위험 범위 식별 후 접근 금지 표식 설치'},
+  {id:'q24',name:'이상 식생 초기 제거',type:'quest',icon:'contain',diff:'easy',time:35,gold:1600,exp:110,gem:0,min_power:120,maxSlots:1,elem:'풀',desc:'풀 속성 이상 성장 군락 발견. 확산 전 초기 단계에서 제거'},
+  {id:'q25',name:'붕괴 지역 잔해 회수',type:'quest',icon:'recon',diff:'easy',time:26,gold:950,exp:72,gem:0,min_power:30,maxSlots:1,elem:'무',desc:'구조 붕괴 구역 내 이상 물질 잔해 회수. 오염도 측정 후 반출'},
+  {id:'q26',name:'대피소 내부 안전 점검',type:'quest',icon:'contain',diff:'easy',time:20,gold:800,exp:60,gem:0,min_power:0,maxSlots:1,elem:'무',desc:'보호 구역 내 이상 반응 여부 확인. 시설 상태 점검 및 이상 시 보고'},
   // Normal (PWR 300~800, 시간 40~55초)
-  {id:'q7',name:'침식체 격리',type:'quest',icon:'sentinel',diff:'normal',time:45,gold:2500,exp:200,gem:0,min_power:400,maxSlots:1,desc:'B등급 이상체 포획·격리'},
-  {id:'q8',name:'데이터 코어 회수',type:'quest',icon:'recon',diff:'normal',time:40,gold:3000,exp:250,gem:1,min_power:600,maxSlots:1,desc:'붕괴 연구소 내부 데이터 확보'},
-  {id:'q9',name:'이상 감염자 호송',type:'quest',icon:'contain',diff:'normal',time:50,gold:2800,exp:220,gem:1,min_power:500,maxSlots:1,desc:'감염 민간인 안전 구역 이송'},
-  {id:'q10',name:'잔류 이상체 소탕',type:'quest',icon:'sentinel',diff:'normal',time:55,gold:3500,exp:280,gem:1,min_power:800,maxSlots:1,desc:'작전 종료 구역 잔존 개체 제거'},
-  {id:'q11',name:'이상 결계 재설정',type:'quest',icon:'breach',diff:'normal',time:45,gold:3000,exp:240,gem:1,min_power:550,maxSlots:1,desc:'약화된 봉인 결계 재가동'},
-  {id:'q12',name:'오염 수원지 정화',type:'quest',icon:'contain',diff:'normal',time:50,gold:3200,exp:260,gem:1,min_power:700,maxSlots:1,desc:'물 속성 오염원 제거 및 수원 복구'},
-  {id:'q27',name:'불 속성 이상체 추격',type:'quest',icon:'sentinel',diff:'normal',time:48,gold:2700,exp:210,gem:1,min_power:450,maxSlots:1,desc:'불 속성 소형 이상체 단독 추격·처치'},
-  {id:'q28',name:'냉동 격리 장치 수리',type:'quest',icon:'contain',diff:'normal',time:42,gold:2600,exp:205,gem:1,min_power:400,maxSlots:1,desc:'얼음 속성 이상체 격리 냉동고 긴급 수리'},
-  {id:'q29',name:'번개 이상 폭발 진압',type:'quest',icon:'breach',diff:'normal',time:46,gold:2900,exp:230,gem:1,min_power:500,maxSlots:1,desc:'번개 속성 과충전 폭발 직전 장치 해제'},
-  {id:'q30',name:'이상 폭풍 관측소 복구',type:'quest',icon:'recon',diff:'normal',time:44,gold:2700,exp:215,gem:1,min_power:420,maxSlots:1,desc:'바람 속성 이상 기류로 파손된 관측소 수리'},
-  {id:'q31',name:'독성 풀 속성 포자 제거',type:'quest',icon:'contain',diff:'normal',time:52,gold:3300,exp:265,gem:1,min_power:600,maxSlots:1,desc:'풀 속성 독성 포자 확산 차단'},
-  {id:'q32',name:'침수 구역 배수 작업',type:'quest',icon:'contain',diff:'normal',time:50,gold:3100,exp:250,gem:1,min_power:550,maxSlots:1,desc:'물 속성 이상 침수 구역 배수 처리'},
-  {id:'q33',name:'ARCH 연락망 복선 구축',type:'quest',icon:'recon',diff:'normal',time:40,gold:2500,exp:200,gem:1,min_power:350,maxSlots:1,desc:'이상 간섭 우회 비상 통신 라인 개설'},
-  {id:'q34',name:'탈주 감염체 재포획',type:'quest',icon:'sentinel',diff:'normal',time:55,gold:3400,exp:270,gem:1,min_power:750,maxSlots:1,desc:'격리 시설 탈출 소형 감염체 포획'},
+  {id:'q7',name:'중등급 개체 격리',type:'quest',icon:'sentinel',diff:'normal',time:45,gold:2500,exp:200,gem:0,min_power:400,maxSlots:1,elem:'무',desc:'단독 행동 중등급 이상체 포착. 현장 포획 후 지정 격리 시설 이송'},
+  {id:'q8',name:'붕괴 시설 데이터 회수',type:'quest',icon:'recon',diff:'normal',time:40,gold:3000,exp:250,gem:1,min_power:600,maxSlots:1,elem:'무',desc:'구조 불안정 시설 내부 진입. 핵심 서버 데이터 확보 후 철수'},
+  {id:'q9',name:'이상 노출자 긴급 이송',type:'quest',icon:'contain',diff:'normal',time:50,gold:2800,exp:220,gem:1,min_power:500,maxSlots:1,elem:'무',desc:'속성 이상에 노출된 인원 발생. 안전 구역까지 호위 이송'},
+  {id:'q10',name:'잔존 개체 소거',type:'quest',icon:'sentinel',diff:'normal',time:55,gold:3500,exp:280,gem:1,min_power:800,maxSlots:1,elem:'무',desc:'작전 종료 구역에 잔류 개체 잔존. 완전 소거 후 구역 안전 확인'},
+  {id:'q11',name:'봉인 장치 재가동',type:'quest',icon:'breach',diff:'normal',time:45,gold:3000,exp:240,gem:1,min_power:550,maxSlots:1,elem:'무',desc:'약화된 봉인 장치 기능 저하 확인. 재설정 및 출력 안정화 조치'},
+  {id:'q12',name:'수원지 오염 정화',type:'quest',icon:'contain',diff:'normal',time:50,gold:3200,exp:260,gem:1,min_power:700,maxSlots:1,elem:'물',desc:'물 속성 이상으로 수원지 오염 진행 중. 정화 장비 투입 및 수질 복구'},
+  {id:'q27',name:'고열 반응 개체 추적',type:'quest',icon:'sentinel',diff:'normal',time:48,gold:2700,exp:210,gem:1,min_power:450,maxSlots:1,elem:'불',desc:'불 속성 불안정 열원 개체 이동 감지. 추적 후 무력화'},
+  {id:'q28',name:'저온 격리 설비 복구',type:'quest',icon:'contain',diff:'normal',time:42,gold:2600,exp:205,gem:1,min_power:400,maxSlots:1,elem:'얼음',desc:'얼음 속성 격리 유지 장비 기능 이상. 현장 긴급 수리'},
+  {id:'q29',name:'과충전 장치 안정화',type:'quest',icon:'breach',diff:'normal',time:46,gold:2900,exp:230,gem:1,min_power:500,maxSlots:1,elem:'번개',desc:'번개 속성 에너지 과충전 상태 장치 확인. 방전 유도 및 출력 안정화'},
+  {id:'q30',name:'기상 관측소 기능 복원',type:'quest',icon:'recon',diff:'normal',time:44,gold:2700,exp:215,gem:1,min_power:420,maxSlots:1,elem:'바람',desc:'바람 속성 이상으로 관측 설비 손상. 센서 교체 및 기능 복원'},
+  {id:'q31',name:'유해 포자 확산 차단',type:'quest',icon:'contain',diff:'normal',time:52,gold:3300,exp:265,gem:1,min_power:600,maxSlots:1,elem:'풀',desc:'풀 속성 이상 포자 공기 중 확산 감지. 발생원 밀봉 및 확산 억제'},
+  {id:'q32',name:'침수 구역 배수 작업',type:'quest',icon:'contain',diff:'normal',time:50,gold:3100,exp:250,gem:1,min_power:550,maxSlots:1,elem:'물',desc:'물 속성 이상으로 수위 급상승 구역 발생. 배수 장비 투입 및 안정화'},
+  {id:'q33',name:'우회 통신선 개설',type:'quest',icon:'recon',diff:'normal',time:40,gold:2500,exp:200,gem:1,min_power:350,maxSlots:1,elem:'무',desc:'이상 간섭으로 기존 통신망 두절. 우회 경로 임시 통신 라인 구축'},
+  {id:'q34',name:'탈주 개체 재포획',type:'quest',icon:'sentinel',diff:'normal',time:55,gold:3400,exp:270,gem:1,min_power:750,maxSlots:1,elem:'무',desc:'격리 실패로 이탈한 개체 추적. 위치 특정 후 재포획 및 이송'},
   // Hard (PWR 1500~3000, 시간 60~80초)
-  {id:'q13',name:'경계 구역 순찰',type:'quest',icon:'zone',diff:'hard',time:60,gold:5000,exp:400,gem:1,min_power:1500,maxSlots:1,desc:'A등급 이상 지대 단독 순찰'},
-  {id:'q14',name:'차원 균열 봉인',type:'quest',icon:'breach',diff:'hard',time:80,gold:7000,exp:550,gem:2,min_power:2500,maxSlots:1,desc:'소규모 균열 단독 봉인'},
-  {id:'q15',name:'이상체 추적·처리',type:'quest',icon:'sentinel',diff:'hard',time:70,gold:6000,exp:480,gem:2,min_power:2000,maxSlots:1,desc:'도주 중인 A등급 이상체 추적'},
-  {id:'q16',name:'폭주 센티넬 제압',type:'quest',icon:'boss',diff:'hard',time:75,gold:6500,exp:500,gem:2,min_power:2500,maxSlots:1,desc:'폭주한 아군 센티넬 긴급 진정'},
-  {id:'q17',name:'침식 지대 정찰',type:'quest',icon:'recon',diff:'hard',time:65,gold:5500,exp:420,gem:1,min_power:1800,maxSlots:1,desc:'고농도 침식 지역 정밀 정찰'},
-  {id:'q18',name:'이상 유물 회수',type:'quest',icon:'zone',diff:'hard',time:75,gold:6500,exp:500,gem:2,min_power:2800,maxSlots:1,desc:'위험 이상 유물 안전 확보·운반'},
-  {id:'q35',name:'불 속성 핵 결정 회수',type:'quest',icon:'boss',diff:'hard',time:72,gold:6200,exp:490,gem:2,min_power:2200,maxSlots:1,desc:'불 속성 이상체 내부 핵 결정 추출·회수'},
-  {id:'q36',name:'빙결 봉인 강화',type:'quest',icon:'breach',diff:'hard',time:68,gold:5800,exp:450,gem:2,min_power:1900,maxSlots:1,desc:'얼음 속성 고위험 봉인 구역 봉인력 증폭'},
-  {id:'q37',name:'번개 폭주 장치 해체',type:'quest',icon:'breach',diff:'hard',time:78,gold:6800,exp:530,gem:2,min_power:2700,maxSlots:1,desc:'번개 속성 폭주 에너지 장치 안전 해체'},
-  {id:'q38',name:'이상 눈폭풍 진원 봉쇄',type:'quest',icon:'zone',diff:'hard',time:76,gold:6600,exp:510,gem:2,min_power:2600,maxSlots:1,desc:'바람·얼음 복합 이상 눈폭풍 발생원 봉쇄'},
-  {id:'q39',name:'풀 속성 군락 핵심부 소각',type:'quest',icon:'sentinel',diff:'hard',time:70,gold:6100,exp:475,gem:2,min_power:2100,maxSlots:1,desc:'풀 속성 이상 식물 군락 핵심부 제거'},
-  {id:'q40',name:'해저 이상 반응 조사',type:'quest',icon:'recon',diff:'hard',time:65,gold:5600,exp:430,gem:1,min_power:1700,maxSlots:1,desc:'물 속성 해저 이상 반응 지점 단독 정찰'},
-  {id:'q41',name:'고층 빌딩 차원 열점 봉인',type:'quest',icon:'breach',diff:'hard',time:80,gold:7200,exp:560,gem:2,min_power:3000,maxSlots:1,desc:'도심 고층부에 발생한 차원 열점 봉인'},
-  {id:'q42',name:'ARCH 내부 스파이 추적',type:'quest',icon:'recon',diff:'hard',time:74,gold:6400,exp:495,gem:2,min_power:2300,maxSlots:1,desc:'이상 단체 침투 요원 단독 추적·제거'},
+  {id:'q13',name:'고위험 구역 단독 순찰',type:'quest',icon:'zone',diff:'hard',time:60,gold:5000,exp:400,gem:1,min_power:1500,maxSlots:1,elem:'무',desc:'위험 등급 상향 구역 진입. 단독 감시 및 돌발 상황 즉각 대응'},
+  {id:'q14',name:'공간 균열 긴급 봉쇄',type:'quest',icon:'breach',diff:'hard',time:80,gold:7000,exp:550,gem:2,min_power:2500,maxSlots:1,elem:'무',desc:'공간 불안정 지점 확대 진행 중. 봉인 장비 투입 후 균열 봉쇄'},
+  {id:'q15',name:'상위 개체 위치 추적',type:'quest',icon:'sentinel',diff:'hard',time:70,gold:6000,exp:480,gem:2,min_power:2000,maxSlots:1,elem:'무',desc:'상위 등급 이상체 활동 징후 포착. 이동 경로 추적 및 교전 허가'},
+  {id:'q16',name:'폭주 개체 긴급 진압',type:'quest',icon:'boss',diff:'hard',time:75,gold:6500,exp:500,gem:2,min_power:2500,maxSlots:1,elem:'무',desc:'통제 불능 상태 진입 개체 확인. 즉시 진압 및 무력화'},
+  {id:'q17',name:'고농도 침식 지대 정찰',type:'quest',icon:'recon',diff:'hard',time:65,gold:5500,exp:420,gem:1,min_power:1800,maxSlots:1,elem:'무',desc:'오염 농도 위험 수준 구역. 방호복 착용 후 내부 탐사 및 데이터 수집'},
+  {id:'q18',name:'위험 유물 회수 작전',type:'quest',icon:'zone',diff:'hard',time:75,gold:6500,exp:500,gem:2,min_power:2800,maxSlots:1,elem:'무',desc:'이상 에너지 반응 물체 발견. 현장 확보 후 특수 용기에 밀봉 이송'},
+  {id:'q35',name:'고에너지 핵 반응체 회수',type:'quest',icon:'boss',diff:'hard',time:72,gold:6200,exp:490,gem:2,min_power:2200,maxSlots:1,elem:'불',desc:'불 속성 고에너지 응집체 노출. 열 차폐 장비 투입 후 추출 및 회수'},
+  {id:'q36',name:'불안정 봉인 긴급 강화',type:'quest',icon:'breach',diff:'hard',time:68,gold:5800,exp:450,gem:2,min_power:1900,maxSlots:1,elem:'얼음',desc:'얼음 속성 봉인 구역 안정성 저하 감지. 이중 봉인 적용 및 출력 증폭'},
+  {id:'q37',name:'폭주 장비 긴급 해체',type:'quest',icon:'breach',diff:'hard',time:78,gold:6800,exp:530,gem:2,min_power:2700,maxSlots:1,elem:'번개',desc:'번개 속성 에너지 장치 과부하 임계 도달. 안전 해체 절차 진행'},
+  {id:'q38',name:'이상 기상 발생원 봉쇄',type:'quest',icon:'zone',diff:'hard',time:76,gold:6600,exp:510,gem:2,min_power:2600,maxSlots:1,elem:'바람',desc:'바람 속성 이상 기상 현상 확대 중. 발생원 특정 후 차단 장비 투입'},
+  {id:'q39',name:'대규모 군락 핵심부 제거',type:'quest',icon:'sentinel',diff:'hard',time:70,gold:6100,exp:475,gem:2,min_power:2100,maxSlots:1,elem:'풀',desc:'풀 속성 이상 생장 구역 급속 확산. 중심부 제거로 확산 차단'},
+  {id:'q40',name:'수중 이상 지점 심층 탐사',type:'quest',icon:'recon',diff:'hard',time:65,gold:5600,exp:430,gem:1,min_power:1700,maxSlots:1,elem:'물',desc:'물 속성 이상 반응 수중 좌표 확인. 잠수 장비 투입 후 현장 탐사'},
+  {id:'q41',name:'도심 열점 긴급 봉인',type:'quest',icon:'breach',diff:'hard',time:80,gold:7200,exp:560,gem:2,min_power:3000,maxSlots:1,elem:'불',desc:'불 속성 공간 이상 지점 도심 출현. 민간 소개 후 긴급 봉인 작전 개시'},
+  {id:'q42',name:'내부 위협 요소 색출',type:'quest',icon:'recon',diff:'hard',time:74,gold:6400,exp:495,gem:2,min_power:2300,maxSlots:1,elem:'무',desc:'조직 내 비인가 접근 흔적 포착. 추적 조사 및 위협 요소 제거'},
 ];
 const EXPEDITIONS=[
   // Easy (PWR 1000~2000, 시간 60~80초)
-  {id:'ex1',name:'이상 발화 지점 조사',type:'expedition',icon:'recon',diff:'easy',time:60,gold:5000,exp:300,gem:2,min_power:1000,maxSlots:3,desc:'최대 3인 팀 파견 · Pyre 속성 발화 흔적 광역 탐색'},
-  {id:'ex2',name:'피난민 수색·구출',type:'expedition',icon:'contain',diff:'easy',time:70,gold:5500,exp:350,gem:2,min_power:1500,maxSlots:3,desc:'이상 구역 내 생존자 수색'},
-  {id:'ex3',name:'외곽 방벽 점검',type:'expedition',icon:'zone',diff:'easy',time:65,gold:4500,exp:320,gem:2,min_power:1200,maxSlots:3,desc:'도시 외곽 방어벽 순회 점검'},
-  {id:'ex16',name:'Glacies 결빙 도로 복구',type:'expedition',icon:'contain',diff:'easy',time:62,gold:4800,exp:310,gem:2,min_power:1000,maxSlots:3,desc:'Glacies 속성 이상 결빙으로 차단된 보급로 복구'},
-  {id:'ex17',name:'Verde 덩굴 침식 저지',type:'expedition',icon:'contain',diff:'easy',time:68,gold:5200,exp:330,gem:2,min_power:1300,maxSlots:3,desc:'Verde 속성 이상 덩굴 도시 침식 초기 차단'},
-  {id:'ex18',name:'번개 이상 정전 구역 복구',type:'expedition',icon:'recon',diff:'easy',time:64,gold:5000,exp:315,gem:2,min_power:1100,maxSlots:3,desc:'Fulmen 속성 이상 방전으로 정전된 구역 전력 복구'},
-  {id:'ex19',name:'Aero 이상 기류 관측',type:'expedition',icon:'recon',diff:'easy',time:60,gold:4600,exp:300,gem:2,min_power:1000,maxSlots:3,desc:'이상 기류 발생 패턴 현장 데이터 수집'},
-  {id:'ex20',name:'오염 수계 샘플 광역 채취',type:'expedition',icon:'contain',diff:'easy',time:72,gold:5800,exp:360,gem:2,min_power:1500,maxSlots:3,desc:'Aqua 속성 오염 확산 범위 다지점 샘플 채취'},
+  {id:'ex1',name:'고온 반응 구역 광역 탐색',type:'expedition',icon:'recon',diff:'easy',time:60,gold:5000,exp:300,gem:2,min_power:1000,maxSlots:3,elem:'불',desc:'불 속성 고온 반응이 산발적으로 감지되는 광역 구역. 3인 편대 투입하여 열원 분포 조사'},
+  {id:'ex2',name:'격리선 내 생존자 수색',type:'expedition',icon:'contain',diff:'easy',time:70,gold:5500,exp:350,gem:2,min_power:1500,maxSlots:3,elem:'무',desc:'이상 발생 구역 내 민간인 잔류 가능성 보고. 생존자 위치 파악 및 구조'},
+  {id:'ex3',name:'외곽 방어선 순회 점검',type:'expedition',icon:'zone',diff:'easy',time:65,gold:4500,exp:320,gem:2,min_power:1200,maxSlots:3,elem:'무',desc:'도시 외곽 방벽 구간별 순회. 구조적 손상 및 이상 반응 여부 확인'},
+  {id:'ex16',name:'결빙 보급로 복구',type:'expedition',icon:'contain',diff:'easy',time:62,gold:4800,exp:310,gem:2,min_power:1000,maxSlots:3,elem:'얼음',desc:'얼음 속성 이상으로 보급로 전면 결빙. 해빙 장비 투입 후 통행 복구'},
+  {id:'ex17',name:'이상 식생 확산 초기 차단',type:'expedition',icon:'contain',diff:'easy',time:68,gold:5200,exp:330,gem:2,min_power:1300,maxSlots:3,elem:'풀',desc:'풀 속성 비정상 식생 초기 확산 감지. 경계선 설정 및 확산 억제'},
+  {id:'ex18',name:'방전 구역 전력 복구',type:'expedition',icon:'recon',diff:'easy',time:64,gold:5000,exp:315,gem:2,min_power:1100,maxSlots:3,elem:'번개',desc:'번개 속성 방전 현상으로 광역 정전 발생. 전력 설비 점검 및 복구'},
+  {id:'ex19',name:'이상 기류 패턴 관측',type:'expedition',icon:'recon',diff:'easy',time:60,gold:4600,exp:300,gem:2,min_power:1000,maxSlots:3,elem:'바람',desc:'바람 속성 비정상 기류 발생 구역. 복수 관측점에서 데이터 수집'},
+  {id:'ex20',name:'수계 오염 다지점 조사',type:'expedition',icon:'contain',diff:'easy',time:72,gold:5800,exp:360,gem:2,min_power:1500,maxSlots:3,elem:'물',desc:'물 속성 오염 확산 범위 불명. 하천 및 지하수 다지점 샘플 채취'},
+
   // Normal (PWR 3000~8000, 시간 90~120초)
-  {id:'ex4',name:'붕괴 시설 탈환',type:'expedition',icon:'zone',diff:'normal',time:90,gold:10000,exp:700,gem:4,min_power:3000,maxSlots:3,desc:'이상체에 점령된 연구소 재확보'},
-  {id:'ex5',name:'이상 생태계 관측',type:'expedition',icon:'contain',diff:'normal',time:110,gold:14000,exp:1000,gem:5,min_power:5000,maxSlots:3,desc:'감염 지대 생태 데이터 수집'},
-  {id:'ex6',name:'이상 물질 운송 호위',type:'expedition',icon:'recon',diff:'normal',time:100,gold:12000,exp:850,gem:4,min_power:4000,maxSlots:3,desc:'연구용 이상 물질 안전 호송'},
-  {id:'ex7',name:'지하 통로 확보',type:'expedition',icon:'zone',diff:'normal',time:95,gold:11000,exp:780,gem:4,min_power:3500,maxSlots:3,desc:'지하 비상 이동 통로 개통'},
-  {id:'ex8',name:'감염 구역 소독',type:'expedition',icon:'contain',diff:'normal',time:105,gold:13000,exp:900,gem:5,min_power:4500,maxSlots:3,desc:'Verde·Aqua 속성 이상 감염 확산 차단'},
-  {id:'ex21',name:'Pyre 용암 지대 탐사',type:'expedition',icon:'recon',diff:'normal',time:100,gold:12500,exp:880,gem:4,min_power:4000,maxSlots:3,desc:'불 속성 이상 용암 분출 지대 현장 탐사'},
-  {id:'ex22',name:'Glacies 빙하 붕괴 저지',type:'expedition',icon:'contain',diff:'normal',time:108,gold:13500,exp:950,gem:5,min_power:4800,maxSlots:3,desc:'Glacies 속성 이상 빙하 붕괴 진행 저지'},
-  {id:'ex23',name:'Fulmen 폭풍 핵 위치 파악',type:'expedition',icon:'recon',diff:'normal',time:95,gold:11500,exp:800,gem:4,min_power:3800,maxSlots:3,desc:'번개 속성 이상 폭풍 발생 핵심 좌표 특정'},
-  {id:'ex24',name:'Aero 토네이도 진원 봉쇄',type:'expedition',icon:'breach',diff:'normal',time:112,gold:14500,exp:1020,gem:5,min_power:5200,maxSlots:3,desc:'바람 속성 이상 토네이도 발생원 봉인'},
-  {id:'ex25',name:'Verde 감염 삼림 정화',type:'expedition',icon:'contain',diff:'normal',time:105,gold:13200,exp:920,gem:5,min_power:4600,maxSlots:3,desc:'이상 식물에 완전 잠식된 삼림 지대 정화'},
-  {id:'ex26',name:'수몰 도시 구역 탐사',type:'expedition',icon:'zone',diff:'normal',time:98,gold:12000,exp:840,gem:4,min_power:3600,maxSlots:3,desc:'Aqua 속성 이상 침수로 수몰된 구도심 탐사'},
+  {id:'ex4',name:'점령 시설 탈환 작전',type:'expedition',icon:'zone',diff:'normal',time:90,gold:10000,exp:700,gem:4,min_power:3000,maxSlots:3,elem:'무',desc:'이상체에 점령된 연구 시설. 내부 소거 후 재확보 및 시설 안정화'},
+  {id:'ex5',name:'고농도 오염 환경 조사',type:'expedition',icon:'contain',diff:'normal',time:110,gold:14000,exp:1000,gem:5,min_power:5000,maxSlots:3,elem:'무',desc:'오염 농도 위험 수준 구역 진입. 방호 장비 착용 후 환경 데이터 수집'},
+  {id:'ex6',name:'연구 물질 경호 이송',type:'expedition',icon:'recon',diff:'normal',time:100,gold:12000,exp:850,gem:4,min_power:4000,maxSlots:3,elem:'무',desc:'고위험 연구 대상 물질 이송 임무. 호송 경로 확보 및 전 구간 경호'},
+  {id:'ex7',name:'지하 비상 경로 개통',type:'expedition',icon:'zone',diff:'normal',time:95,gold:11000,exp:780,gem:4,min_power:3500,maxSlots:3,elem:'무',desc:'지하 비상 이동 경로 붕괴 구간 확인. 구조 보강 후 통행 안전 확보'},
+  {id:'ex8',name:'오염 확산 구역 전면 정화',type:'expedition',icon:'contain',diff:'normal',time:105,gold:13000,exp:900,gem:5,min_power:4500,maxSlots:3,elem:'풀',desc:'풀 속성 오염이 확산된 구역. 정화 장비 투입하여 전면 제독 작업'},
+  {id:'ex21',name:'지속 열 분출 구역 탐사',type:'expedition',icon:'recon',diff:'normal',time:100,gold:12500,exp:880,gem:4,min_power:4000,maxSlots:3,elem:'불',desc:'불 속성 열 분출 현상 지속 구역. 열원 위치 특정 및 현장 데이터 확보'},
+  {id:'ex22',name:'구조 붕괴 진행 저지',type:'expedition',icon:'contain',diff:'normal',time:108,gold:13500,exp:950,gem:5,min_power:4800,maxSlots:3,elem:'얼음',desc:'얼음 속성 이상으로 대형 구조물 균열 진행 중. 붕괴 저지 및 보강'},
+  {id:'ex23',name:'이상 기상 중심 좌표 탐색',type:'expedition',icon:'recon',diff:'normal',time:95,gold:11500,exp:800,gem:4,min_power:3800,maxSlots:3,elem:'번개',desc:'번개 속성 비정상 기상 현상 발생. 발생 중심부 좌표 특정 임무'},
+  {id:'ex24',name:'환경 교란 발생원 차단',type:'expedition',icon:'breach',diff:'normal',time:112,gold:14500,exp:1020,gem:5,min_power:5200,maxSlots:3,elem:'바람',desc:'바람 속성 대규모 환경 교란 감지. 발생원 접근 후 차단 장비 투입'},
+  {id:'ex25',name:'침식 삼림 전면 정리',type:'expedition',icon:'contain',diff:'normal',time:105,gold:13200,exp:920,gem:5,min_power:4600,maxSlots:3,elem:'풀',desc:'풀 속성 이상으로 완전 침식된 삼림 구역. 전면 벌채 및 오염원 제거'},
+  {id:'ex26',name:'침수 구역 내부 조사',type:'expedition',icon:'zone',diff:'normal',time:98,gold:12000,exp:840,gem:4,min_power:3600,maxSlots:3,elem:'물',desc:'물 속성 이상으로 침수된 구역. 잠수 진입 후 구조 및 환경 조사'},
+
   // Hard (PWR 8000~15000, 시간 130~160초)
-  {id:'ex9',name:'지하 거점 확보',type:'expedition',icon:'zone',diff:'hard',time:130,gold:20000,exp:1800,gem:8,min_power:8000,maxSlots:3,desc:'이상체 둥지 근처 전초기지 구축'},
-  {id:'ex10',name:'이상체 군집 격퇴',type:'expedition',icon:'breach',diff:'hard',time:150,gold:25000,exp:2200,gem:10,min_power:12000,maxSlots:3,desc:'대규모 이상체 섬멸 작전'},
-  {id:'ex11',name:'포위 돌파 작전',type:'expedition',icon:'sentinel',diff:'hard',time:140,gold:22000,exp:2000,gem:9,min_power:10000,maxSlots:3,desc:'이상체에 포위된 거점 구출'},
-  {id:'ex12',name:'이상 중계탑 파괴',type:'expedition',icon:'breach',diff:'hard',time:145,gold:23000,exp:2100,gem:9,min_power:11000,maxSlots:3,desc:'이상 신호 증폭 중계탑 제거'},
-  {id:'ex27',name:'Pyre 용암 이상체 소탕',type:'expedition',icon:'sentinel',diff:'hard',time:148,gold:24000,exp:2150,gem:9,min_power:11500,maxSlots:3,desc:'불 속성 용암 지대 서식 이상체 대규모 소탕'},
-  {id:'ex28',name:'Glacies 동결 심층부 돌입',type:'expedition',icon:'zone',diff:'hard',time:155,gold:26000,exp:2300,gem:10,min_power:13000,maxSlots:3,desc:'얼음 속성 이상 동굴 심층부 강행 진입'},
-  {id:'ex29',name:'Fulmen 폭주 발전소 제압',type:'expedition',icon:'breach',diff:'hard',time:142,gold:23500,exp:2120,gem:9,min_power:11000,maxSlots:3,desc:'번개 속성 이상 에너지로 폭주한 시설 제압'},
-  {id:'ex30',name:'Aero 난기류 지대 구조',type:'expedition',icon:'contain',diff:'hard',time:138,gold:21500,exp:1950,gem:9,min_power:9500,maxSlots:3,desc:'바람 속성 이상 난기류에 고립된 민간인 구조'},
-  {id:'ex31',name:'Verde 이상 군락 핵 제거',type:'expedition',icon:'sentinel',diff:'hard',time:152,gold:25500,exp:2250,gem:10,min_power:12500,maxSlots:3,desc:'풀 속성 이상 군락 확산 핵심 개체 제거'},
-  {id:'ex32',name:'수중 이상 구조물 파괴',type:'expedition',icon:'breach',diff:'hard',time:160,gold:27000,exp:2400,gem:10,min_power:14000,maxSlots:3,desc:'Aqua 속성 이상 구조물 수중 폭파 작전'},
+  {id:'ex9',name:'전초 기지 구축 작전',type:'expedition',icon:'zone',diff:'hard',time:130,gold:20000,exp:1800,gem:8,min_power:8000,maxSlots:3,elem:'무',desc:'위험 구역 반경 2km 내 전초 거점 확보. 방어 시설 구축 후 통신 개통'},
+  {id:'ex10',name:'대규모 군집 소탕 작전',type:'expedition',icon:'breach',diff:'hard',time:150,gold:25000,exp:2200,gem:10,min_power:12000,maxSlots:3,elem:'무',desc:'개체 밀집도 임계 초과 구역 확인. 광역 제압 후 잔존 개체 완전 소거'},
+  {id:'ex11',name:'고립 거점 돌파 구출',type:'expedition',icon:'sentinel',diff:'hard',time:140,gold:22000,exp:2000,gem:9,min_power:10000,maxSlots:3,elem:'무',desc:'포위된 전방 거점 통신 두절. 포위망 돌파 후 잔류 인원 구출 및 전선 복구'},
+  {id:'ex12',name:'이상 증폭 장치 파괴',type:'expedition',icon:'breach',diff:'hard',time:145,gold:23000,exp:2100,gem:9,min_power:11000,maxSlots:3,elem:'무',desc:'비정상 신호 증폭 원인 장치 소재 특정. 접근 후 완전 파괴'},
+  {id:'ex27',name:'고온 서식 개체 소탕',type:'expedition',icon:'sentinel',diff:'hard',time:148,gold:24000,exp:2150,gem:9,min_power:11500,maxSlots:3,elem:'불',desc:'불 속성 고온 환경에 적응한 개체군 확인. 열 차폐 장비 착용 후 대규모 소탕'},
+  {id:'ex28',name:'동결 심층 구역 강행 진입',type:'expedition',icon:'zone',diff:'hard',time:155,gold:26000,exp:2300,gem:10,min_power:13000,maxSlots:3,elem:'얼음',desc:'얼음 속성 극저온 심층 구역 진입. 내한 장비 필수, 내부 탐사 및 위협 제거'},
+  {id:'ex29',name:'과부하 시설 긴급 제압',type:'expedition',icon:'breach',diff:'hard',time:142,gold:23500,exp:2120,gem:9,min_power:11000,maxSlots:3,elem:'번개',desc:'번개 속성 에너지 과부하 시설 폭주 직전. 긴급 차단 및 시설 안정화'},
+  {id:'ex30',name:'난기류 고립 인원 구조',type:'expedition',icon:'contain',diff:'hard',time:138,gold:21500,exp:1950,gem:9,min_power:9500,maxSlots:3,elem:'바람',desc:'바람 속성 이상 기류로 이동 불가 구역 발생. 고립 인원 접근 및 구조'},
+  {id:'ex31',name:'확산 핵심 개체 제거',type:'expedition',icon:'sentinel',diff:'hard',time:152,gold:25500,exp:2250,gem:10,min_power:12500,maxSlots:3,elem:'풀',desc:'풀 속성 이상 확산 중심에 핵심 개체 확인. 접근 후 제거하여 확산 차단'},
+  {id:'ex32',name:'수중 비정상 구조물 폭파',type:'expedition',icon:'breach',diff:'hard',time:160,gold:27000,exp:2400,gem:10,min_power:14000,maxSlots:3,elem:'물',desc:'물 속성 이상 에너지원으로 추정되는 수중 구조물 발견. 잠수 폭파 작전'},
+
   // Extreme (PWR 15000~25000, 시간 170~210초)
-  {id:'ex13',name:'차원 단층선 조사',type:'expedition',icon:'breach',diff:'extreme',time:200,gold:30000,exp:2500,gem:12,min_power:18000,maxSlots:3,desc:'미지 차원 단층선 침투'},
-  {id:'ex14',name:'오염 핵 파괴 작전',type:'expedition',icon:'boss',diff:'extreme',time:180,gold:28000,exp:2300,gem:11,min_power:15000,maxSlots:3,desc:'이상 오염원 핵심부 돌입·파괴'},
-  {id:'ex15',name:'차원 관문 봉쇄',type:'expedition',icon:'breach',diff:'extreme',time:190,gold:30000,exp:2500,gem:12,min_power:20000,maxSlots:3,desc:'대형 차원 관문 긴급 봉쇄 작전'},
-  {id:'ex33',name:'Pyre 화산 이상 심층 돌입',type:'expedition',icon:'boss',diff:'extreme',time:195,gold:31000,exp:2600,gem:12,min_power:19000,maxSlots:3,desc:'불 속성 이상 화산 핵심부 강습 침투'},
-  {id:'ex34',name:'Glacies 절대영도 구역 탐사',type:'expedition',icon:'zone',diff:'extreme',time:205,gold:32000,exp:2700,gem:13,min_power:21000,maxSlots:3,desc:'Glacies 속성 절대영도에 가까운 이상 구역 탐사'},
-  {id:'ex35',name:'Fulmen 번개 폭풍 진원 침투',type:'expedition',icon:'breach',diff:'extreme',time:185,gold:29000,exp:2400,gem:12,min_power:16000,maxSlots:3,desc:'Fulmen 속성 초대형 번개 폭풍 발생 핵심 침투'},
-  {id:'ex36',name:'이면 세계 경계 탐사',type:'expedition',icon:'boss',diff:'extreme',time:210,gold:34000,exp:2900,gem:14,min_power:25000,maxSlots:3,desc:'차원 경계가 붕괴된 이면 세계 최전선 탐사'},
+  {id:'ex13',name:'차원 단층선 침투 조사',type:'expedition',icon:'breach',diff:'extreme',time:200,gold:30000,exp:2500,gem:12,min_power:18000,maxSlots:3,elem:'무',desc:'미확인 공간 단층 감지. 차원 경계 침투 후 내부 구조 및 데이터 확보'},
+  {id:'ex14',name:'오염 핵심부 돌입 제거',type:'expedition',icon:'boss',diff:'extreme',time:180,gold:28000,exp:2300,gem:11,min_power:15000,maxSlots:3,elem:'무',desc:'오염 확산의 근원지 좌표 특정. 중심부 강행 돌입 후 오염원 완전 제거'},
+  {id:'ex15',name:'차원 관문 긴급 폐쇄',type:'expedition',icon:'breach',diff:'extreme',time:190,gold:30000,exp:2500,gem:12,min_power:20000,maxSlots:3,elem:'무',desc:'대형 공간 개방 현상 확대 중. 봉쇄 장비 최대 출력 투입하여 긴급 폐쇄'},
+  {id:'ex33',name:'심층 열원 강습 침투',type:'expedition',icon:'boss',diff:'extreme',time:195,gold:31000,exp:2600,gem:12,min_power:19000,maxSlots:3,elem:'불',desc:'불 속성 고열 반응 중심부 접근 불가 판정 구역. 열 차폐 극한 장비 투입 후 강습'},
+  {id:'ex34',name:'극저온 환경 구역 조사',type:'expedition',icon:'zone',diff:'extreme',time:205,gold:32000,exp:2700,gem:13,min_power:21000,maxSlots:3,elem:'얼음',desc:'얼음 속성 이상 극한 저온 구역. 생존 한계 환경에서의 제한 시간 조사'},
+  {id:'ex35',name:'초대형 기상 이상 핵 침투',type:'expedition',icon:'breach',diff:'extreme',time:185,gold:29000,exp:2400,gem:12,min_power:16000,maxSlots:3,elem:'번개',desc:'번개 속성 초대형 기상 이상 현상 중심부. 방전 차폐 후 핵심부 진입'},
+  {id:'ex36',name:'차원 경계 붕괴 최전선 조사',type:'expedition',icon:'boss',diff:'extreme',time:210,gold:34000,exp:2900,gem:14,min_power:25000,maxSlots:3,elem:'무',desc:'차원 경계 자체가 붕괴 중인 최전선. 통신 두절 예상, 독립 작전 수행 필수'},
 ];
 const DUNGEONS=[
   // Normal (PWR 5000~8000, 시간 90~110초)
-  {id:'dg1',name:'오염된 지하 수로',type:'dungeon',icon:'zone',diff:'normal',time:90,gold:15000,exp:1500,gem:8,min_power:5000,maxSlots:2,desc:'Aqua 속성 — 2인 필수'},
-  {id:'dg2',name:'이상 공명 연구소',type:'dungeon',icon:'contain',diff:'normal',time:95,gold:16000,exp:1600,gem:8,min_power:6000,maxSlots:2,desc:'봉인 실패한 실험 구역'},
-  {id:'dg3',name:'침식된 병원 폐허',type:'dungeon',icon:'contain',diff:'normal',time:100,gold:17000,exp:1700,gem:9,min_power:7000,maxSlots:2,desc:'Verde 속성 감염이 퍼진 폐병원'},
-  {id:'dg4',name:'버려진 지하철 역사',type:'dungeon',icon:'zone',diff:'normal',time:110,gold:18000,exp:1800,gem:9,min_power:8000,maxSlots:2,desc:'이상체가 서식하는 폐쇄 역사'},
-  {id:'dg15',name:'결빙 냉동 창고',type:'dungeon',icon:'zone',diff:'normal',time:92,gold:15500,exp:1550,gem:8,min_power:5200,maxSlots:2,desc:'Glacies 속성 이상으로 완전 결빙된 물류 창고'},
-  {id:'dg16',name:'폐쇄 발전소 내부',type:'dungeon',icon:'breach',diff:'normal',time:96,gold:16200,exp:1620,gem:8,min_power:6200,maxSlots:2,desc:'Fulmen 속성 이상 과전류가 흐르는 폐 발전소'},
-  {id:'dg17',name:'타오르는 폐공장',type:'dungeon',icon:'zone',diff:'normal',time:98,gold:16500,exp:1650,gem:9,min_power:6500,maxSlots:2,desc:'Pyre 속성 이상 연소 반응이 지속되는 공장 폐허'},
-  {id:'dg18',name:'난기류 옥상 구역',type:'dungeon',icon:'zone',diff:'normal',time:90,gold:15000,exp:1500,gem:8,min_power:5000,maxSlots:2,desc:'Aero 속성 이상 기류로 접근 불가한 고층 옥상'},
-  {id:'dg19',name:'침잠한 지하 주차장',type:'dungeon',icon:'contain',diff:'normal',time:104,gold:17200,exp:1720,gem:9,min_power:7200,maxSlots:2,desc:'Aqua 속성 이상으로 침수된 지하 주차 구역'},
-  {id:'dg20',name:'균류 감염 식품 창고',type:'dungeon',icon:'contain',diff:'normal',time:108,gold:17800,exp:1780,gem:9,min_power:7800,maxSlots:2,desc:'Verde 속성 이상 균류가 만연한 밀폐 창고'},
+  {id:'dg1',name:'오염 지하 수로',type:'dungeon',icon:'zone',diff:'normal',time:90,gold:15000,exp:1500,gem:8,min_power:5000,maxSlots:2,elem:'물',desc:'물 속성 이상 오염이 확인된 지하 수로. 2인 편대 진입 후 내부 소거'},
+  {id:'dg2',name:'이상 공명 실험동',type:'dungeon',icon:'contain',diff:'normal',time:95,gold:16000,exp:1600,gem:8,min_power:6000,maxSlots:2,elem:'무',desc:'봉인 실패한 연구 시설 내부. 잔류 이상 에너지 반응 제거'},
+  {id:'dg3',name:'침식된 폐병원',type:'dungeon',icon:'contain',diff:'normal',time:100,gold:17000,exp:1700,gem:9,min_power:7000,maxSlots:2,elem:'풀',desc:'풀 속성 감염이 전 층에 확산된 폐병원. 내부 정화 필수'},
+  {id:'dg4',name:'폐쇄 지하철 역사',type:'dungeon',icon:'zone',diff:'normal',time:110,gold:18000,exp:1800,gem:9,min_power:8000,maxSlots:2,elem:'무',desc:'이상체 서식이 확인된 폐쇄 역사. 내부 구조 복잡, 경계 유지'},
+  {id:'dg15',name:'전면 결빙 물류 창고',type:'dungeon',icon:'zone',diff:'normal',time:92,gold:15500,exp:1550,gem:8,min_power:5200,maxSlots:2,elem:'얼음',desc:'얼음 속성 이상으로 완전 결빙된 대형 창고. 내부 온도 영하 40도 이하'},
+  {id:'dg16',name:'과전류 폐발전소',type:'dungeon',icon:'breach',diff:'normal',time:96,gold:16200,exp:1620,gem:8,min_power:6200,maxSlots:2,elem:'번개',desc:'번개 속성 이상 과전류가 순환하는 폐 발전소. 절연 장비 필수'},
+  {id:'dg17',name:'잔화 공장 폐허',type:'dungeon',icon:'zone',diff:'normal',time:98,gold:16500,exp:1650,gem:9,min_power:6500,maxSlots:2,elem:'불',desc:'불 속성 이상 연소 반응이 자발적으로 지속되는 폐공장'},
+  {id:'dg18',name:'난기류 고층 옥상',type:'dungeon',icon:'zone',diff:'normal',time:90,gold:15000,exp:1500,gem:8,min_power:5000,maxSlots:2,elem:'바람',desc:'바람 속성 이상 기류로 접근 불가 판정된 고층 옥상 구역'},
+  {id:'dg19',name:'침수 지하 주차장',type:'dungeon',icon:'contain',diff:'normal',time:104,gold:17200,exp:1720,gem:9,min_power:7200,maxSlots:2,elem:'물',desc:'물 속성 이상으로 완전 침수된 지하 주차 구역. 잠수 장비 필요'},
+  {id:'dg20',name:'균류 만연 밀폐 창고',type:'dungeon',icon:'contain',diff:'normal',time:108,gold:17800,exp:1780,gem:9,min_power:7800,maxSlots:2,elem:'풀',desc:'풀 속성 이상 균류가 전면 확산된 식품 저장 시설. 방독 장비 착용'},
   // Hard (PWR 12000~25000, 시간 140~180초)
-  {id:'dg5',name:'붕괴 기억의 탑',type:'dungeon',icon:'zone',diff:'hard',time:140,gold:30000,exp:3000,gem:15,min_power:12000,maxSlots:2,desc:'A등급 이상 — 협력 전술 필요'},
-  {id:'dg6',name:'역전된 폐허',type:'dungeon',icon:'breach',diff:'hard',time:160,gold:35000,exp:3500,gem:18,min_power:18000,maxSlots:2,desc:'Aero 속성 중력 역전 이상 구역'},
-  {id:'dg7',name:'얼어붙은 갱도',type:'dungeon',icon:'zone',diff:'hard',time:150,gold:32000,exp:3200,gem:16,min_power:15000,maxSlots:2,desc:'Glacies 속성 냉기 이상체가 점거한 지하 갱도'},
-  {id:'dg8',name:'맹독의 온실',type:'dungeon',icon:'contain',diff:'hard',time:165,gold:36000,exp:3600,gem:18,min_power:20000,maxSlots:2,desc:'Verde 속성 이상 식물이 범람한 밀폐 구역'},
-  {id:'dg9',name:'잊혀진 제단',type:'dungeon',icon:'breach',diff:'hard',time:155,gold:33000,exp:3300,gem:17,min_power:16000,maxSlots:2,desc:'고대 이상 에너지가 잔류하는 제단'},
-  {id:'dg10',name:'열화된 용광로',type:'dungeon',icon:'sentinel',diff:'hard',time:170,gold:38000,exp:3800,gem:19,min_power:22000,maxSlots:2,desc:'Pyre 속성 폭열 이상체가 점거한 제련 시설'},
-  {id:'dg21',name:'전류 범람 지하 연구동',type:'dungeon',icon:'breach',diff:'hard',time:145,gold:31000,exp:3100,gem:16,min_power:13000,maxSlots:2,desc:'Fulmen 속성 이상 전류가 흐르는 봉쇄 연구 시설'},
-  {id:'dg22',name:'수몰 도시 기반 시설',type:'dungeon',icon:'zone',diff:'hard',time:158,gold:34500,exp:3450,gem:17,min_power:19000,maxSlots:2,desc:'Aqua 속성 이상 침수로 수몰된 도시 핵심 시설'},
-  {id:'dg23',name:'화염 터널 지하 요새',type:'dungeon',icon:'sentinel',diff:'hard',time:168,gold:37000,exp:3700,gem:19,min_power:21000,maxSlots:2,desc:'Pyre 속성 이상체가 구축한 지하 화염 요새'},
-  {id:'dg24',name:'번개 폭풍의 탑 옥상',type:'dungeon',icon:'breach',diff:'hard',time:162,gold:35500,exp:3550,gem:18,min_power:19500,maxSlots:2,desc:'Fulmen 속성 번개 폭풍이 집중되는 초고층 옥상부'},
-  {id:'dg25',name:'독기 가득한 지하 동굴',type:'dungeon',icon:'contain',diff:'hard',time:172,gold:38500,exp:3850,gem:19,min_power:23000,maxSlots:2,desc:'Verde·Aqua 복합 속성 독기가 만연한 천연 동굴'},
-  {id:'dg26',name:'냉기 결빙 군사 기지',type:'dungeon',icon:'zone',diff:'hard',time:178,gold:39500,exp:3950,gem:20,min_power:24000,maxSlots:2,desc:'Glacies 속성 이상으로 완전 결빙된 구 군사 기지'},
+  {id:'dg5',name:'붕괴 기억의 탑',type:'dungeon',icon:'zone',diff:'hard',time:140,gold:30000,exp:3000,gem:15,min_power:12000,maxSlots:2,elem:'무',desc:'내부 공간이 비정상적으로 왜곡된 폐탑. A등급 이상 편성 필요'},
+  {id:'dg6',name:'중력 역전 폐허',type:'dungeon',icon:'breach',diff:'hard',time:160,gold:35000,exp:3500,gem:18,min_power:18000,maxSlots:2,elem:'바람',desc:'바람 속성 이상으로 중력 방향이 뒤틀린 구역. 이동 자체가 위험'},
+  {id:'dg7',name:'냉기 점거 지하 갱도',type:'dungeon',icon:'zone',diff:'hard',time:150,gold:32000,exp:3200,gem:16,min_power:15000,maxSlots:2,elem:'얼음',desc:'얼음 속성 이상체가 점거한 지하 갱도. 내부 극저온 환경'},
+  {id:'dg8',name:'맹독 밀폐 온실',type:'dungeon',icon:'contain',diff:'hard',time:165,gold:36000,exp:3600,gem:18,min_power:20000,maxSlots:2,elem:'풀',desc:'풀 속성 이상 식물이 범람한 밀폐 온실. 독성 포자 농도 위험 수준'},
+  {id:'dg9',name:'잔류 에너지 고대 제단',type:'dungeon',icon:'breach',diff:'hard',time:155,gold:33000,exp:3300,gem:17,min_power:16000,maxSlots:2,elem:'무',desc:'고대 이상 에너지가 잔류하는 제단. 접근 시 정신 간섭 주의'},
+  {id:'dg10',name:'폭열 제련 시설',type:'dungeon',icon:'sentinel',diff:'hard',time:170,gold:38000,exp:3800,gem:19,min_power:22000,maxSlots:2,elem:'불',desc:'불 속성 폭열 이상체가 점거한 제련 시설. 내부 온도 800도 이상'},
+  {id:'dg21',name:'전류 범람 봉쇄 연구동',type:'dungeon',icon:'breach',diff:'hard',time:145,gold:31000,exp:3100,gem:16,min_power:13000,maxSlots:2,elem:'번개',desc:'번개 속성 이상 전류가 벽면과 바닥을 순환하는 봉쇄 연구 시설'},
+  {id:'dg22',name:'수몰 도시 핵심 시설',type:'dungeon',icon:'zone',diff:'hard',time:158,gold:34500,exp:3450,gem:17,min_power:19000,maxSlots:2,elem:'물',desc:'물 속성 이상 침수로 수몰된 도시 기반 시설. 수중 전투 가능 인원 편성'},
+  {id:'dg23',name:'지하 화염 요새',type:'dungeon',icon:'sentinel',diff:'hard',time:168,gold:37000,exp:3700,gem:19,min_power:21000,maxSlots:2,elem:'불',desc:'불 속성 이상체가 내부에 구축한 화염 요새. 다층 구조 주의'},
+  {id:'dg24',name:'낙뢰 집중 초고층 옥상',type:'dungeon',icon:'breach',diff:'hard',time:162,gold:35500,exp:3550,gem:18,min_power:19500,maxSlots:2,elem:'번개',desc:'번개 속성 낙뢰가 집중되는 초고층 옥상부. 절연 장비 최대 등급 필요'},
+  {id:'dg25',name:'독기 만연 천연 동굴',type:'dungeon',icon:'contain',diff:'hard',time:172,gold:38500,exp:3850,gem:19,min_power:23000,maxSlots:2,elem:'풀',desc:'풀, 물 복합 속성 독기가 가득한 천연 동굴. 복합 방호 장비 필수'},
+  {id:'dg26',name:'결빙 군사 기지',type:'dungeon',icon:'zone',diff:'hard',time:178,gold:39500,exp:3950,gem:20,min_power:24000,maxSlots:2,elem:'얼음',desc:'얼음 속성 이상으로 완전 결빙된 구 군사 기지. 장비 동결 위험'},
   // Extreme (PWR 28000~50000, 시간 200~280초)
-  {id:'dg11',name:'공허의 교차점',type:'dungeon',icon:'breach',diff:'extreme',time:200,gold:50000,exp:5000,gem:25,min_power:28000,maxSlots:2,desc:'최고 위험 이상 구역 — 속성 팀 필수'},
-  {id:'dg12',name:'이면 세계 심층부',type:'dungeon',icon:'boss',diff:'extreme',time:240,gold:60000,exp:6000,gem:30,min_power:35000,maxSlots:2,desc:'최고 난이도 이상 구역'},
-  {id:'dg13',name:'소멸의 회랑',type:'dungeon',icon:'breach',diff:'extreme',time:220,gold:55000,exp:5500,gem:28,min_power:32000,maxSlots:2,desc:'존재 자체가 소멸하는 불안정 공간'},
-  {id:'dg14',name:'시간 역류 지대',type:'dungeon',icon:'breach',diff:'extreme',time:260,gold:65000,exp:6500,gem:32,min_power:40000,maxSlots:2,desc:'시간 흐름이 뒤틀린 이차원 공간'},
-  {id:'dg27',name:'Pyre 화산 핵심부',type:'dungeon',icon:'boss',diff:'extreme',time:210,gold:52000,exp:5200,gem:26,min_power:30000,maxSlots:2,desc:'불 속성 이상 화산 내부 마그마 핵심 구역'},
-  {id:'dg28',name:'Glacies 절대 결빙 지대',type:'dungeon',icon:'zone',diff:'extreme',time:230,gold:57000,exp:5700,gem:29,min_power:33000,maxSlots:2,desc:'얼음 속성 이상이 극도로 응축된 절대 동결 구역'},
-  {id:'dg29',name:'Fulmen 초전도 지하 미로',type:'dungeon',icon:'breach',diff:'extreme',time:215,gold:53000,exp:5300,gem:27,min_power:31000,maxSlots:2,desc:'번개 속성 이상 초전도 에너지로 가득 찬 지하 미로'},
-  {id:'dg30',name:'Aero 중력 붕괴 고층부',type:'dungeon',icon:'breach',diff:'extreme',time:225,gold:56000,exp:5600,gem:28,min_power:32500,maxSlots:2,desc:'바람 속성 이상으로 중력이 붕괴된 초고층 구역'},
-  {id:'dg31',name:'Verde 원시 군락 심층',type:'dungeon',icon:'boss',diff:'extreme',time:250,gold:62000,exp:6200,gem:31,min_power:37000,maxSlots:2,desc:'풀 속성 이상 원시 식물이 지배하는 지하 심층부'},
-  {id:'dg32',name:'Aqua 심해 이상 구조물',type:'dungeon',icon:'zone',diff:'extreme',time:270,gold:67000,exp:6700,gem:33,min_power:43000,maxSlots:2,desc:'물 속성 이상 에너지가 응집된 심해 구조물 내부'},
-  {id:'dg33',name:'차원 붕괴 중심점',type:'dungeon',icon:'boss',diff:'extreme',time:280,gold:70000,exp:7000,gem:35,min_power:50000,maxSlots:2,desc:'모든 속성 이상이 교차하는 차원 붕괴 최중심부'},
+  {id:'dg11',name:'다중 속성 교차점',type:'dungeon',icon:'breach',diff:'extreme',time:200,gold:50000,exp:5000,gem:25,min_power:28000,maxSlots:2,elem:'무',desc:'복수 속성 이상 반응이 동시 교차하는 지점. 속성 혼성 편대 필수'},
+  {id:'dg12',name:'이면 심층부',type:'dungeon',icon:'boss',diff:'extreme',time:240,gold:60000,exp:6000,gem:30,min_power:35000,maxSlots:2,elem:'무',desc:'관측 한계를 초과한 이면 세계 심층 구역. 최고 난이도'},
+  {id:'dg13',name:'소멸 회랑',type:'dungeon',icon:'breach',diff:'extreme',time:220,gold:55000,exp:5500,gem:28,min_power:32000,maxSlots:2,elem:'무',desc:'존재 자체가 소멸하는 불안정 공간. 체류 시간 엄수 필수'},
+  {id:'dg14',name:'시간 역류 지대',type:'dungeon',icon:'breach',diff:'extreme',time:260,gold:65000,exp:6500,gem:32,min_power:40000,maxSlots:2,elem:'무',desc:'시간 흐름이 비정상적으로 뒤틀린 이차원 공간. 인지 장애 위험'},
+  {id:'dg27',name:'화산 핵심 마그마층',type:'dungeon',icon:'boss',diff:'extreme',time:210,gold:52000,exp:5200,gem:26,min_power:30000,maxSlots:2,elem:'불',desc:'불 속성 이상 화산 내부 마그마 핵심 구역. 열 차폐 한계 초과 환경'},
+  {id:'dg28',name:'절대 결빙 지대',type:'dungeon',icon:'zone',diff:'extreme',time:230,gold:57000,exp:5700,gem:29,min_power:33000,maxSlots:2,elem:'얼음',desc:'얼음 속성 이상이 극도로 응축된 절대 동결 구역. 장비 동결 불가피'},
+  {id:'dg29',name:'초전도 지하 미로',type:'dungeon',icon:'breach',diff:'extreme',time:215,gold:53000,exp:5300,gem:27,min_power:31000,maxSlots:2,elem:'번개',desc:'번개 속성 초전도 에너지가 충만한 지하 미로. 접촉 시 즉사 위험'},
+  {id:'dg30',name:'중력 붕괴 고층부',type:'dungeon',icon:'breach',diff:'extreme',time:225,gold:56000,exp:5600,gem:28,min_power:32500,maxSlots:2,elem:'바람',desc:'바람 속성 이상으로 중력이 완전히 붕괴된 초고층 구역'},
+  {id:'dg31',name:'원시 군락 심층부',type:'dungeon',icon:'boss',diff:'extreme',time:250,gold:62000,exp:6200,gem:31,min_power:37000,maxSlots:2,elem:'풀',desc:'풀 속성 이상 원시 식물이 지배하는 지하 심층부. 자체 생태계 형성'},
+  {id:'dg32',name:'심해 이상 구조물',type:'dungeon',icon:'zone',diff:'extreme',time:270,gold:67000,exp:6700,gem:33,min_power:43000,maxSlots:2,elem:'물',desc:'물 속성 이상 에너지가 응집된 심해 구조물. 수압 및 이상 반응 이중 위험'},
+  {id:'dg33',name:'차원 붕괴 중심점',type:'dungeon',icon:'boss',diff:'extreme',time:280,gold:70000,exp:7000,gem:35,min_power:50000,maxSlots:2,elem:'무',desc:'모든 속성 이상이 교차하는 차원 붕괴 최중심부. 최정예 편대만 투입 가능'},
 ];
 const RAIDS=[
   // Hard (PWR 20000~35000, 시간 180~240초)
-  {id:'rd1',name:'철갑 이상체 골렘',type:'raid',icon:'boss',diff:'hard',time:180,gold:40000,exp:5000,gem:25,min_power:20000,maxSlots:3,elem:'얼음',desc:'Glacies 속성 기계형 특급 이상체 — 최대 3인'},
-  {id:'rd2',name:'혈풍의 마수',type:'raid',icon:'boss',diff:'hard',time:200,gold:45000,exp:5500,gem:28,min_power:25000,maxSlots:3,elem:'바람',desc:'Aero 속성 폭주 이상체 — 최대 3인'},
-  {id:'rd3',name:'심연의 해마',type:'raid',icon:'boss',diff:'hard',time:220,gold:50000,exp:6000,gem:30,min_power:30000,maxSlots:4,elem:'물',desc:'Aqua 속성 심해 이상체 — 최대 4인'},
-  {id:'rd4',name:'포식자 만티코어',type:'raid',icon:'boss',diff:'hard',time:240,gold:55000,exp:6500,gem:32,min_power:35000,maxSlots:3,elem:'풀',desc:'Verde 속성 맹독 이상체 — 최대 3인'},
-  {id:'rd12',name:'폭염의 살라만더',type:'raid',icon:'boss',diff:'hard',time:190,gold:42000,exp:5200,gem:26,min_power:22000,maxSlots:3,elem:'불',desc:'Pyre 속성 화염 이상 파충류 — 최대 3인'},
-  {id:'rd13',name:'전격 군주 라이코스',type:'raid',icon:'boss',diff:'hard',time:210,gold:47000,exp:5700,gem:29,min_power:27000,maxSlots:3,elem:'번개',desc:'Fulmen 속성 이상 전격 수호자 — 최대 3인'},
-  {id:'rd14',name:'냉혈 설표 폴라리스',type:'raid',icon:'boss',diff:'hard',time:195,gold:43000,exp:5300,gem:27,min_power:23000,maxSlots:3,elem:'얼음',desc:'Glacies 속성 절대 영역의 포식자 — 최대 3인'},
-  {id:'rd15',name:'독무 거미 아라크네',type:'raid',icon:'boss',diff:'hard',time:215,gold:48000,exp:5800,gem:29,min_power:28000,maxSlots:4,elem:'풀',desc:'Verde 속성 이상 독기 포식자 — 최대 4인'},
-  {id:'rd16',name:'격류 하마 토렌트',type:'raid',icon:'boss',diff:'hard',time:225,gold:51000,exp:6100,gem:31,min_power:31000,maxSlots:4,elem:'물',desc:'Aqua 속성 격류 이상체 — 최대 4인'},
-  {id:'rd17',name:'폭풍 독수리 게일',type:'raid',icon:'boss',diff:'hard',time:185,gold:41000,exp:5100,gem:26,min_power:21000,maxSlots:3,elem:'바람',desc:'Aero 속성 강풍 이상 조류 — 최대 3인'},
-  {id:'rd18',name:'용암 하운드 엠버',type:'raid',icon:'boss',diff:'hard',time:230,gold:52000,exp:6200,gem:31,min_power:32000,maxSlots:3,elem:'불',desc:'Pyre 속성 용암 서식 맹수 이상체 — 최대 3인'},
-  {id:'rd19',name:'번개 뱀 볼텍스',type:'raid',icon:'boss',diff:'hard',time:235,gold:53000,exp:6300,gem:32,min_power:33000,maxSlots:4,elem:'번개',desc:'Fulmen 속성 번개 방출 이상 파충류 — 최대 4인'},
+  {id:'rd1',name:'철갑 골렘',type:'raid',icon:'boss',diff:'hard',time:180,gold:40000,exp:5000,gem:25,min_power:20000,maxSlots:3,elem:'얼음',desc:'얼음 속성 기계형 특급 이상체. 외피 경도 극한, 관절부 집중 타격 필요'},
+  {id:'rd2',name:'혈풍의 마수',type:'raid',icon:'boss',diff:'hard',time:200,gold:45000,exp:5500,gem:28,min_power:25000,maxSlots:3,elem:'바람',desc:'바람 속성 폭주 이상체. 고속 이동으로 포착 난이도 극상'},
+  {id:'rd3',name:'심연의 해마',type:'raid',icon:'boss',diff:'hard',time:220,gold:50000,exp:6000,gem:30,min_power:30000,maxSlots:4,elem:'물',desc:'물 속성 심해 서식 이상체. 수중 전투 대비 편성 필요'},
+  {id:'rd4',name:'포식자 만티코어',type:'raid',icon:'boss',diff:'hard',time:240,gold:55000,exp:6500,gem:32,min_power:35000,maxSlots:3,elem:'풀',desc:'풀 속성 맹독 보유 이상체. 독성 공격 범위 광역, 해독 장비 필수'},
+  {id:'rd12',name:'폭염의 살라만더',type:'raid',icon:'boss',diff:'hard',time:190,gold:42000,exp:5200,gem:26,min_power:22000,maxSlots:3,elem:'불',desc:'불 속성 화염 이상 파충류. 주변 온도 급상승, 열 차폐 필수'},
+  {id:'rd13',name:'전격 군주 라이코스',type:'raid',icon:'boss',diff:'hard',time:210,gold:47000,exp:5700,gem:29,min_power:27000,maxSlots:3,elem:'번개',desc:'번개 속성 전격 방출형 이상체. 절연 장비 없이 접근 불가'},
+  {id:'rd14',name:'냉혈 설표 폴라리스',type:'raid',icon:'boss',diff:'hard',time:195,gold:43000,exp:5300,gem:27,min_power:23000,maxSlots:3,elem:'얼음',desc:'얼음 속성 절대 영역 포식자. 접촉 시 동결 위험'},
+  {id:'rd15',name:'독무 거미 아라크네',type:'raid',icon:'boss',diff:'hard',time:215,gold:48000,exp:5800,gem:29,min_power:28000,maxSlots:4,elem:'풀',desc:'풀 속성 독기 포식자. 광역 독무 방출, 방독 장비 전원 착용'},
+  {id:'rd16',name:'격류 하마 토렌트',type:'raid',icon:'boss',diff:'hard',time:225,gold:51000,exp:6100,gem:31,min_power:31000,maxSlots:4,elem:'물',desc:'물 속성 격류 이상체. 수류 조작으로 지형 변형, 수중 대응 편성 필요'},
+  {id:'rd17',name:'폭풍 독수리 게일',type:'raid',icon:'boss',diff:'hard',time:185,gold:41000,exp:5100,gem:26,min_power:21000,maxSlots:3,elem:'바람',desc:'바람 속성 강풍 이상 조류. 공중 기동, 원거리 공격 수단 확보 필요'},
+  {id:'rd18',name:'용암 하운드 엠버',type:'raid',icon:'boss',diff:'hard',time:230,gold:52000,exp:6200,gem:31,min_power:32000,maxSlots:3,elem:'불',desc:'불 속성 용암 서식 맹수. 지면 접촉 시 용암화, 기동성 확보 필수'},
+  {id:'rd19',name:'번개 뱀 볼텍스',type:'raid',icon:'boss',diff:'hard',time:235,gold:53000,exp:6300,gem:32,min_power:33000,maxSlots:4,elem:'번개',desc:'번개 속성 방전형 이상 파충류. 연쇄 방전 공격, 분산 대형 유지'},
   // Extreme (PWR 40000~90000, 시간 280~400초)
-  {id:'rd5',name:'공허 지배자',type:'raid',icon:'boss',diff:'extreme',time:280,gold:80000,exp:10000,gem:50,min_power:40000,maxSlots:4,elem:'바람',desc:'Aero 속성 차원 관리 개체 — 최대 4인'},
-  {id:'rd6',name:'뇌왕 테슬론',type:'raid',icon:'boss',diff:'extreme',time:300,gold:100000,exp:12000,gem:60,min_power:50000,maxSlots:4,elem:'번개',desc:'Fulmen 속성 최상위 이상체 — 최대 4인'},
-  {id:'rd7',name:'대침식 리바이어던',type:'raid',icon:'boss',diff:'extreme',time:340,gold:140000,exp:16000,gem:80,min_power:60000,maxSlots:5,elem:'물',desc:'Aqua 속성 최대 침식 개체 — 최대 5인'},
-  {id:'rd8',name:'빙결의 군주',type:'raid',icon:'boss',diff:'extreme',time:360,gold:160000,exp:18000,gem:90,min_power:70000,maxSlots:5,elem:'얼음',desc:'Glacies 속성 재앙급 이상체 — 최대 5인'},
-  {id:'rd9',name:'업화의 왕 이그니스',type:'raid',icon:'boss',diff:'extreme',time:380,gold:180000,exp:20000,gem:100,min_power:75000,maxSlots:5,elem:'불',desc:'Pyre 속성 멸망급 이상체 — 최대 5인'},
-  {id:'rd10',name:'붉은 균열의 신',type:'raid',icon:'boss',diff:'extreme',time:400,gold:200000,exp:22000,gem:120,min_power:80000,maxSlots:6,elem:'불',desc:'Pyre 속성 최상위 이상체 — 최대 6인'},
-  {id:'rd11',name:'종말의 설계자',type:'raid',icon:'boss',diff:'extreme',time:400,gold:250000,exp:25000,gem:150,min_power:90000,maxSlots:6,elem:'번개',desc:'Fulmen 속성 차원 붕괴를 계획하는 최종 개체'},
-  {id:'rd20',name:'원시 식물신 가이아스',type:'raid',icon:'boss',diff:'extreme',time:290,gold:85000,exp:10500,gem:52,min_power:42000,maxSlots:4,elem:'풀',desc:'Verde 속성 이상 식물 지배 원시 개체 — 최대 4인'},
-  {id:'rd21',name:'심해 지배자 아비살',type:'raid',icon:'boss',diff:'extreme',time:320,gold:115000,exp:13500,gem:67,min_power:53000,maxSlots:4,elem:'물',desc:'Aqua 속성 심해 최강 이상체 — 최대 4인'},
-  {id:'rd22',name:'냉기의 여왕 크리오스',type:'raid',icon:'boss',diff:'extreme',time:350,gold:150000,exp:17000,gem:85,min_power:65000,maxSlots:5,elem:'얼음',desc:'Glacies 속성 절대 냉기 지배자 — 최대 5인'},
-  {id:'rd23',name:'폭풍 군주 사이클론',type:'raid',icon:'boss',diff:'extreme',time:310,gold:108000,exp:13000,gem:65,min_power:52000,maxSlots:4,elem:'바람',desc:'Aero 속성 초대형 폭풍 군주 — 최대 4인'},
-  {id:'rd24',name:'천뢰의 황제 스톰카이저',type:'raid',icon:'boss',diff:'extreme',time:330,gold:125000,exp:14500,gem:72,min_power:57000,maxSlots:5,elem:'번개',desc:'Fulmen 속성 하늘을 지배하는 번개 황제 — 최대 5인'},
-  {id:'rd25',name:'용염 군주 볼케이노스',type:'raid',icon:'boss',diff:'extreme',time:370,gold:170000,exp:19000,gem:95,min_power:72000,maxSlots:5,elem:'불',desc:'Pyre 속성 화산 지배 이상체 — 최대 5인'},
-  {id:'rd26',name:'거대 독수 이무기 베놈드래곤',type:'raid',icon:'boss',diff:'extreme',time:355,gold:155000,exp:17500,gem:88,min_power:67000,maxSlots:5,elem:'풀',desc:'Verde 속성 독기 지배 고대 이상체 — 최대 5인'},
-  {id:'rd27',name:'심연의 어머니 아비시아',type:'raid',icon:'boss',diff:'extreme',time:385,gold:185000,exp:21000,gem:108,min_power:78000,maxSlots:6,elem:'물',desc:'Aqua 속성 심연 최상위 지배자 — 최대 6인'},
-  {id:'rd28',name:'영원한 겨울 요르문간드',type:'raid',icon:'boss',diff:'extreme',time:395,gold:195000,exp:21500,gem:115,min_power:82000,maxSlots:6,elem:'얼음',desc:'Glacies 속성 세계 결빙을 야기하는 이상체 — 최대 6인'},
-  {id:'rd29',name:'차원 폭풍의 신 아네모스',type:'raid',icon:'boss',diff:'extreme',time:390,gold:190000,exp:21000,gem:110,min_power:80000,maxSlots:6,elem:'바람',desc:'Aero 속성 차원 폭풍 그 자체인 이상 신격 — 최대 6인'},
-  {id:'rd30',name:'이면의 군주 카오스코어',type:'raid',icon:'boss',diff:'extreme',time:400,gold:300000,exp:30000,gem:180,min_power:100000,maxSlots:6,elem:'번개',desc:'모든 속성을 초월한 이면 세계 최종 지배자 — 최대 6인'},
+  {id:'rd5',name:'공허 지배자',type:'raid',icon:'boss',diff:'extreme',time:280,gold:80000,exp:10000,gem:50,min_power:40000,maxSlots:4,elem:'바람',desc:'바람 속성 차원 관리급 개체. 공간 왜곡 능력 보유, 최정예 4인 편대 투입'},
+  {id:'rd6',name:'뇌왕 테슬론',type:'raid',icon:'boss',diff:'extreme',time:300,gold:100000,exp:12000,gem:60,min_power:50000,maxSlots:4,elem:'번개',desc:'번개 속성 최상위 이상체. 반경 500m 전역 방전, 생존 자체가 과제'},
+  {id:'rd7',name:'대침식 리바이어던',type:'raid',icon:'boss',diff:'extreme',time:340,gold:140000,exp:16000,gem:80,min_power:60000,maxSlots:5,elem:'물',desc:'물 속성 최대급 침식 개체. 해역 전체를 지배하는 재앙급 존재'},
+  {id:'rd8',name:'빙결의 군주',type:'raid',icon:'boss',diff:'extreme',time:360,gold:160000,exp:18000,gem:90,min_power:70000,maxSlots:5,elem:'얼음',desc:'얼음 속성 재앙급 이상체. 접근만으로 생체 기능 동결 진행'},
+  {id:'rd9',name:'업화의 왕 이그니스',type:'raid',icon:'boss',diff:'extreme',time:380,gold:180000,exp:20000,gem:100,min_power:75000,maxSlots:5,elem:'불',desc:'불 속성 멸망급 이상체 출현. 반경 5km 즉시 소개, 최정예 편대 투입 인가'},
+  {id:'rd10',name:'붉은 균열의 신',type:'raid',icon:'boss',diff:'extreme',time:400,gold:200000,exp:22000,gem:120,min_power:80000,maxSlots:6,elem:'불',desc:'불 속성 최상위 이상체. 공간 균열을 동반하는 화염 신격 존재'},
+  {id:'rd11',name:'종말의 설계자',type:'raid',icon:'boss',diff:'extreme',time:400,gold:250000,exp:25000,gem:150,min_power:90000,maxSlots:6,elem:'번개',desc:'번개 속성 차원 붕괴를 유도하는 최종 개체. 전 병력 총동원 승인'},
+  {id:'rd20',name:'원시 식물신 가이아스',type:'raid',icon:'boss',diff:'extreme',time:290,gold:85000,exp:10500,gem:52,min_power:42000,maxSlots:4,elem:'풀',desc:'풀 속성 원시 개체. 지표면 전체를 침식하는 식물 지배자'},
+  {id:'rd21',name:'심해 지배자 아비살',type:'raid',icon:'boss',diff:'extreme',time:320,gold:115000,exp:13500,gem:67,min_power:53000,maxSlots:4,elem:'물',desc:'물 속성 심해 최강 이상체. 수압 조작으로 주변 공간 자체를 압축'},
+  {id:'rd22',name:'냉기의 여왕 크리오스',type:'raid',icon:'boss',diff:'extreme',time:350,gold:150000,exp:17000,gem:85,min_power:65000,maxSlots:5,elem:'얼음',desc:'얼음 속성 절대 냉기 지배자. 존재 주변 모든 분자 운동 정지'},
+  {id:'rd23',name:'폭풍 군주 사이클론',type:'raid',icon:'boss',diff:'extreme',time:310,gold:108000,exp:13000,gem:65,min_power:52000,maxSlots:4,elem:'바람',desc:'바람 속성 초대형 폭풍 군주. 기상 자체를 무기로 사용하는 개체'},
+  {id:'rd24',name:'천뢰의 황제 스톰카이저',type:'raid',icon:'boss',diff:'extreme',time:330,gold:125000,exp:14500,gem:72,min_power:57000,maxSlots:5,elem:'번개',desc:'번개 속성 하늘을 지배하는 이상 신격. 낙뢰 범위 제한 불가'},
+  {id:'rd25',name:'용염 군주 볼케이노스',type:'raid',icon:'boss',diff:'extreme',time:370,gold:170000,exp:19000,gem:95,min_power:72000,maxSlots:5,elem:'불',desc:'불 속성 화산 지배 이상체. 지각 변동을 동반하는 초고열 개체'},
+  {id:'rd26',name:'거대 독수 베놈드래곤',type:'raid',icon:'boss',diff:'extreme',time:355,gold:155000,exp:17500,gem:88,min_power:67000,maxSlots:5,elem:'풀',desc:'풀 속성 고대 이상체. 독기 방출 범위 수 km, 광역 해독 수단 필수'},
+  {id:'rd27',name:'심연의 어머니 아비시아',type:'raid',icon:'boss',diff:'extreme',time:385,gold:185000,exp:21000,gem:108,min_power:78000,maxSlots:6,elem:'물',desc:'물 속성 심연 최상위 지배자. 해저 전역에 영향력을 행사하는 개체'},
+  {id:'rd28',name:'영원한 겨울 요르문간드',type:'raid',icon:'boss',diff:'extreme',time:395,gold:195000,exp:21500,gem:115,min_power:82000,maxSlots:6,elem:'얼음',desc:'얼음 속성 세계 규모 결빙을 야기하는 이상체. 존재 자체가 재앙'},
+  {id:'rd29',name:'차원 폭풍의 신 아네모스',type:'raid',icon:'boss',diff:'extreme',time:390,gold:190000,exp:21000,gem:110,min_power:80000,maxSlots:6,elem:'바람',desc:'바람 속성 차원 폭풍 그 자체인 이상 신격. 공간 안정성 완전 소실'},
+  {id:'rd30',name:'이면의 군주 카오스코어',type:'raid',icon:'boss',diff:'extreme',time:400,gold:300000,exp:30000,gem:180,min_power:100000,maxSlots:6,elem:'번개',desc:'모든 속성을 초월한 이면 세계 최종 지배자. 전 병력 총동원 승인'},
 ];
 
 function allContent(){return [...QUESTS,...EXPEDITIONS,...DUNGEONS,...RAIDS];}
@@ -1818,7 +1821,7 @@ function renderQuestList(){
   el.innerHTML=valid.map(aq=>{
     const q=aq.quest;
     const rem=Math.max(0,Math.ceil((aq.expireAt-now)/1000));
-    const mElem=getMissionElem(q.id);
+    const mElem=q.elem||'무';
     const ec=fieldColor(mElem);
     return `<div class="op-row" style="border-left:3px solid ${ec};cursor:pointer" onclick="openSelect('${q.id}')">
       <div class="op-icon" style="background:${fieldBg(mElem)}">${fieldIcon(mElem,18)}</div>
@@ -1841,7 +1844,7 @@ function renderExpeditionList(){
   const items=pool.map(i=>EXPEDITIONS[i]).filter(Boolean);
   if(!items.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">파견 목록 로딩 중</div></div>`;return;}
   el.innerHTML=items.map(q=>{
-    const mElem=getMissionElem(q.id);
+    const mElem=q.elem||'무';
     const ec=fieldColor(mElem);
     return `<div class="op-row" style="border-left:3px solid ${ec};cursor:pointer" onclick="openSelect('${q.id}')">
       <div class="op-icon" style="background:${fieldBg(mElem)}">${fieldIcon(mElem,18)}</div>
@@ -1863,7 +1866,7 @@ function renderDungeonGrid(){
   const items=pool.map(i=>DUNGEONS[i]).filter(Boolean);
   if(!items.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">구역 로딩 중</div></div>`;return;}
   el.innerHTML=items.map(q=>{
-    const mElem=getMissionElem(q.id);
+    const mElem=q.elem||'무';
     const ec=fieldColor(mElem);
     return `<div class="content-card" style="border-top:3px solid ${ec}">
       <div class="cc-header">
@@ -1889,7 +1892,7 @@ function renderRaidGrid(){
   // 현재 진행 중인 레이드 id 목록
   const activeRaidIds=S.missions.filter(m=>m.type==='raid').map(m=>m.content.id);
   el.innerHTML=items.map(q=>{
-    const rElem=q.elem||getMissionElem(q.id);
+    const rElem=q.elem||'무';
     const ec=fieldColor(rElem);
     const isActive=activeRaidIds.includes(q.id);
     return `<div class="content-card" style="border-top:3px solid ${ec};${isActive?'opacity:0.5':''}">
@@ -1918,7 +1921,7 @@ function missionRowHTML(m){
   const sr=Math.round(m.successChance*100);
   const srClass=sr>=70?'sr-high':sr>=40?'sr-mid':'sr-low';
   const typeLabel={quest:'의뢰',expedition:'파견',dungeon:'이상구역',raid:'진압'}[m.type]||m.type;
-  const mElem=getMissionElem(m.content.id);
+  const mElem=m.content.elem||'무';
   const ec=fieldColor(mElem);
   return `<div class="mission-row" style="border-left:3px solid ${ec}">
     <div class="mission-top">
@@ -1965,7 +1968,7 @@ function openSelect(contentId){
   _selContent=content; _selIds=[];
   const avail=S.hunters.filter(h=>!h.busy&&!isIncapacitated(h));
   if(!avail.length){notify('투입 가능한 요원이 없습니다.','err');return;}
-  const mElem=getMissionElem(content.id);
+  const mElem=content.elem||'무';
   const mEc=fieldColor(mElem);
   showModal(`
     <div class="modal-title">${content.name}</div>
@@ -2015,7 +2018,7 @@ function setSelSort(s){
 
 function renderSelGrid(){
   const grid=document.getElementById('sel-pick-grid');if(!grid)return;
-  const mElem=getMissionElem(_selContent.id);
+  const mElem=_selContent.elem||'무';
   let avail=S.hunters.filter(h=>!h.busy);
   if(_selFilter==='special')avail=avail.filter(h=>h.isSpecial);
   else if(_selFilter==='normal')avail=avail.filter(h=>!h.isSpecial);
@@ -2066,7 +2069,7 @@ function updateSelInfo(){
   if(!_selIds.length){infoEl.style.display='none';confirmBtn.disabled=true;return;}
   const totalPwr=_selIds.reduce((s,id)=>{const h=S.hunters.find(x=>x.id===id);return s+(h?power(h):0);},0);
   const sr=calcSuccessRate(totalPwr,_selContent,_selIds);
-  const mElem=getMissionElem(_selContent.id);
+  const mElem=_selContent.elem||'무';
   const synergy=calcSynergy(_selIds);
   const col=sr>=0.7?'var(--success)':sr>=0.4?'var(--warn)':'var(--danger)';
   const synergyLabel=synergy>1?`<div class="sel-info-row"><span>시너지</span><span style="color:var(--success);font-weight:700">×${synergy.toFixed(2)}</span></div>`:'';
@@ -2125,7 +2128,7 @@ function calcSynergy(hunterIds){
 }
 
 function calcSuccessRate(totalPwr,content,hunterIds){
-  const missionElem=getMissionElem(content.id);
+  const missionElem=content.elem||'무';
   const hunters=(hunterIds||[]).map(id=>S.hunters.find(x=>x.id===id)).filter(Boolean);
   let elemMult=1.0;
   if(hunters.length){
