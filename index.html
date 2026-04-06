@@ -1820,10 +1820,10 @@ function renderQuestList(){
   if(!valid.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">등록된 의뢰 없음 · 잠시 후 갱신됩니다</div></div>`;return;}
   el.innerHTML=valid.map(aq=>{
     const q=aq.quest;
-    const rem=Math.max(0,Math.ceil((aq.expireAt-now)/1000));
+	const isActive=S.missions.some(m=>m.content.id===q.id);
     const mElem=q.elem||'무';
     const ec=fieldColor(mElem);
-    return `<div class="op-row" style="border-left:3px solid ${ec};cursor:pointer" onclick="openSelect('${q.id}')">
+    return `<div class="op-row" style="border-left:3px solid ${ec};${isActive?'opacity:0.5;pointer-events:none':'cursor:pointer'}" ${isActive?'':`onclick="openSelect('${q.id}')"`}>
       <div class="op-icon" style="background:${fieldBg(mElem)}">${fieldIcon(mElem,18)}</div>
       <div class="op-body">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
@@ -1833,7 +1833,6 @@ function renderQuestList(){
         <div class="op-desc">${q.desc}</div>
         ${mcStatsHTML(q)}
       </div>
-      <div class="op-expire" style="flex-shrink:0">${fmtTime(rem)}</div>
     </div>`;
   }).join('');
 }
@@ -1844,9 +1843,10 @@ function renderExpeditionList(){
   const items=pool.map(i=>EXPEDITIONS[i]).filter(Boolean);
   if(!items.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">파견 목록 로딩 중</div></div>`;return;}
   el.innerHTML=items.map(q=>{
+    const isActive=S.missions.some(m=>m.content.id===q.id);
     const mElem=q.elem||'무';
     const ec=fieldColor(mElem);
-    return `<div class="op-row" style="border-left:3px solid ${ec};cursor:pointer" onclick="openSelect('${q.id}')">
+    return `<div class="op-row" style="border-left:3px solid ${ec};${isActive?'opacity:0.5;pointer-events:none':'cursor:pointer'}" ${isActive?'':`onclick="openSelect('${q.id}')"`}>
       <div class="op-icon" style="background:${fieldBg(mElem)}">${fieldIcon(mElem,18)}</div>
       <div class="op-body">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
@@ -1866,9 +1866,10 @@ function renderDungeonGrid(){
   const items=pool.map(i=>DUNGEONS[i]).filter(Boolean);
   if(!items.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">구역 로딩 중</div></div>`;return;}
   el.innerHTML=items.map(q=>{
+    const isActive=S.missions.some(m=>m.content.id===q.id);
     const mElem=q.elem||'무';
     const ec=fieldColor(mElem);
-    return `<div class="content-card" style="border-top:3px solid ${ec}">
+    return `<div class="content-card" style="border-top:3px solid ${ec};${isActive?'opacity:0.5':''}">
       <div class="cc-header">
         <div class="cc-icon" style="background:${fieldBg(mElem)}">${fieldIcon(mElem,18)}</div>
         <div>
@@ -1878,7 +1879,7 @@ function renderDungeonGrid(){
       </div>
       <div class="cc-body">
         ${mcStatsHTML(q)}
-        <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="openSelect('${q.id}')">침투 개시</button>
+        ${isActive?`<button class="btn" style="width:100%;margin-top:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text3);cursor:not-allowed" disabled>진행 중</button>`:`<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="openSelect('${q.id}')">침투 개시</button>`}
       </div>
     </div>`;
   }).join('');
@@ -1965,6 +1966,7 @@ let _selContent=null, _selIds=[], _selFilter='all', _selSort='pwr';
 function openSelect(contentId){
   const content=findContent(contentId);
   if(!content)return;
+  if(S.missions.some(m=>m.content.id===contentId)){notify('이미 진행 중인 작전입니다','err');return;}
   _selContent=content; _selIds=[];
   const avail=S.hunters.filter(h=>!h.busy&&!isIncapacitated(h));
   if(!avail.length){notify('투입 가능한 요원이 없습니다.','err');return;}
@@ -2165,6 +2167,18 @@ function confirmSelect(){
   const endTime=Date.now()+content.time*1000;
   const mission={id:Date.now(),content,hunterIds:[..._selIds],type:content.type,endTime,successChance:sr};
   S.missions.push(mission);
+  if(content.type==='quest'){
+    S.activeQuests=S.activeQuests.filter(aq=>aq.quest.id!==content.id);
+  } else if(content.type==='expedition'){
+    const idx=EXPEDITIONS.findIndex(e=>e.id===content.id);
+    if(idx>=0) S.expeditionPool=S.expeditionPool.filter(i=>i!==idx);
+  } else if(content.type==='dungeon'){
+    const idx=DUNGEONS.findIndex(d=>d.id===content.id);
+    if(idx>=0) S.dungeonPool=S.dungeonPool.filter(i=>i!==idx);
+  } else if(content.type==='raid'){
+    const idx=RAIDS.findIndex(r=>r.id===content.id);
+    if(idx>=0) S.raidPool=S.raidPool.filter(i=>i!==idx);
+  }
   _selIds.forEach(id=>{const h=S.hunters.find(x=>x.id===id);if(h)h.busy=true;});
   const names=mission.hunterIds.map(id=>{const h=S.hunters.find(x=>x.id===id);return h?h.name:'?';}).join(', ');
   addLog(`작전 파견: [${content.name}] — ${names}`,'' );
@@ -2273,21 +2287,25 @@ function tickRefreshTimers(){
     S.activeQuests=pool.map(q=>({quest:q,expireAt:now+QUEST_REFRESH}));
     document.getElementById('mob-dot-quest')&&(document.getElementById('mob-dot-quest').style.display='block');
     saveState();
+	renderQuestList();
   }
   if(S.lastExpeditionRefresh>0 && now-S.lastExpeditionRefresh>EXPED_REFRESH){
     S.lastExpeditionRefresh=now;
     S.expeditionPool=Array.from({length:EXPEDITIONS.length},(_,i)=>i).sort(()=>Math.random()-.5);
     saveState();
+	renderExpeditionList();
   }
   if(S.lastDungeonRefresh>0 && now-S.lastDungeonRefresh>DUNGEON_REFRESH){
     S.lastDungeonRefresh=now;
     S.dungeonPool=Array.from({length:DUNGEONS.length},(_,i)=>i).sort(()=>Math.random()-.5);
     saveState();
+	renderDungeonGrid();
   }
   if(S.lastRaidRefresh>0 && now-S.lastRaidRefresh>RAID_REFRESH){
     S.lastRaidRefresh=now;
     S.raidPool=Array.from({length:RAIDS.length},(_,i)=>i).sort(()=>Math.random()-.5);
     saveState();
+	renderRaidGrid();
   }
 }
 
