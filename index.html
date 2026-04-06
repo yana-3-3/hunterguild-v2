@@ -256,8 +256,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .training-slot.empty-slot{border-style:dashed;cursor:pointer}
 .training-slot.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
 .training-slot.filled-slot{border-color:var(--border2)}
-.training-bench-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;max-height:220px;overflow-y:auto;padding:2px}
-.bench-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:.15s;text-align:center}
+.training-bench-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;max-height:280px;overflow-y:auto;padding:2px}
+.bench-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:.15s;text-align:center}
 .bench-item:hover{border-color:var(--accent)}
 .bench-item.disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
 
@@ -1330,6 +1330,10 @@ const SKIN_DB = {
     default: 'https://i.ibb.co/Z1hPyJPy/image.png',
     bloom: null  // 개화 일러스트 URL (없으면 null)
   },
+  '신드롬': {
+    default: 'https://i.ibb.co/4g3pyycD/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
   '루비': {
     default: 'https://i.ibb.co/dsztzHfZ/image.png',
     bloom: null  // 개화 일러스트 URL (없으면 null)
@@ -1457,6 +1461,7 @@ function sortList(list,key,ctx){
   else if(key==='lv')list.sort((a,b)=>((b.level||1)-(a.level||1))*dir);
   else if(key==='rank')list.sort((a,b)=>((rankOrd[a.rank]??9)-(rankOrd[b.rank]??9))*dir);
   else if(key==='elem')list.sort((a,b)=>((elemOrd[a.elem]??9)-(elemOrd[b.elem]??9))*dir);
+  else if(key==='runaway')list.sort((a,b)=>((b.runaway||0)-(a.runaway||0))*dir);
   else if(key==='exp')list.sort((a,b)=>(feedExp(b)-feedExp(a))*dir);
   else if(key==='adv'&&arguments[3])list.sort((a,b)=>(elemBonus(b.elem,arguments[3])-elemBonus(a.elem,arguments[3]))*dir);
   else if(key==='match'&&arguments[3]){const tgt=arguments[3];list.sort((a,b)=>{const sa=tgt&&a.elem===tgt?0:1;const sb=tgt&&b.elem===tgt?0:1;return ((sa-sb)||power(b)-power(a))*dir;});}
@@ -2635,23 +2640,23 @@ function renderTraining(){
         slots.push(`<div class="training-slot filled-slot" style="border-color:${sc}30">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
             <div style="text-align:center">
-              <div style="background:${sc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,18)}</div>
-              <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div>
-              <div style="font-size:9px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div>
+              <div style="background:${sc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,22)}</div>
+			  <div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div>
+			  <div style="font-size:11px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div>
             </div>
             <div style="font-size:16px;color:var(--text3)">⇄</div>
             <div style="text-align:center">
-              <div style="background:${gc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,18)}</div>
-              <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div>
-              <div style="font-size:9px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div>
+              <div style="background:${gc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,22)}</div>
+			  <div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div>
+			  <div style="font-size:11px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div>
             </div>
           </div>
           ${sameTag}
-          <div style="font-size:9px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">
+          <div style="font-size:11px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">
             ATK ×${bonus.atkMult.toFixed(2)} · DEF +${bonus.defBonus} · SPD +${bonus.spdBonus}<br>
             폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)}
           </div>
-          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:9px;width:100%" onclick="removePair(${i})">해제</button>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:11px;width:100%" onclick="removePair(${i})">해제</button>
         </div>`);
       } else {
         S.pairSlots.splice(i,1);i--;
@@ -2679,18 +2684,18 @@ function renderTraining(){
   sBench.innerHTML=sentinels.length?`<div class="training-bench-grid">${sentinels.map(h=>{
     const fc=fieldColor(h.elem||'');
     return `<div class="bench-item" onclick="startPairing(${h.id},'sentinel')">
-      <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,18)}</div>
-      <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-      <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+      <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,20)}</div>
+	  <div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+	  <div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
     </div>`;
   }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">페어링 가능한 센티넬 없음</div>';
 
   gBench.innerHTML=guides.length?`<div class="training-bench-grid">${guides.map(h=>{
     const fc=fieldColor(h.elem||'');
     return `<div class="bench-item" onclick="startPairing(${h.id},'guide')">
-      <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,18)}</div>
-      <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-      <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+      <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,20)}</div>
+	  <div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+	  <div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
     </div>`;
   }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">페어링 가능한 가이드 없음</div>';
 }
@@ -2712,12 +2717,12 @@ function renderTrainingSlots(){
         const sameTag=bonus.sameElem?`<span style="color:var(--success);font-size:9px;font-weight:700">속성 일치!</span>`:'';
         slots.push(`<div class="training-slot filled-slot" style="border-color:${sc}30">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-            <div style="text-align:center"><div style="background:${sc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div><div style="font-size:9px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div></div>
+            <div style="text-align:center"><div style="background:${sc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,22)}</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div><div style="font-size:11px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div></div>
             <div style="font-size:16px;color:var(--text3)">⇄</div>
-            <div style="text-align:center"><div style="background:${gc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div><div style="font-size:9px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div></div>
+            <div style="text-align:center"><div style="background:${gc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,22)}</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div><div style="font-size:11px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div></div>
           </div>${sameTag}
-          <div style="font-size:9px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">ATK ×${bonus.atkMult.toFixed(2)} · DEF +${bonus.defBonus} · SPD +${bonus.spdBonus}<br>폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)}</div>
-          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:9px;width:100%" onclick="removePair(${i})">해제</button>
+          <div style="font-size:11px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">ATK ×${bonus.atkMult.toFixed(2)} · DEF +${bonus.defBonus} · SPD +${bonus.spdBonus}<br>폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)}</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:11px;width:100%" onclick="removePair(${i})">해제</button>
         </div>`);
       } else {slots.push(emptyPairSlot(i));}
     } else {slots.push(emptyPairSlot(i));}
@@ -3716,39 +3721,39 @@ function rebuildBench(tab,role){
     bench.innerHTML=list.length?`<div class="training-bench-grid">${list.map(h=>{
       const fc=fieldColor(h.elem||'');const rw=h.runaway||0;const incap=h.incapacitated;
       return `<div class="bench-item" onclick="startGuidingSentinel(${h.id})" style="${incap?'border-color:rgba(220,38,38,0.3)':''}">
-        <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,18)}</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-        <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
-        <div class="runaway-bar" style="margin-top:3px"><div class="runaway-fill" style="width:${rw}%"></div></div>
-        <div style="font-size:8px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace">폭주 ${Math.round(rw)}%</div>
-        ${incap?'<div style="font-size:7px;color:var(--danger);font-weight:700">행동불능</div>':''}
+        <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,20)}</div>
+		<div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+		<div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
+		<div class="runaway-bar" style="margin-top:1px"><div class="runaway-fill" style="width:${rw}%"></div></div>
+		<div style="font-size:10px;color:${rw>60?'var(--danger)':'var(--warn)'};font-weight:600">폭주 ${Math.round(rw)}%</div>
+		${incap?'<div style="font-size:9px;color:var(--danger);font-weight:700">행동불능</div>':''}
       </div>`;
     }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">센티넬 없음</div>';
   } else if(tab==='guiding'&&!isS){
     bench.innerHTML=list.length?`<div class="training-bench-grid">${list.map(h=>{
       const fc=fieldColor(h.elem||'');
       return `<div class="bench-item" onclick="startGuidingGuide(${h.id})">
-        <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,18)}</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-        <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+        <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,20)}</div>
+		<div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+		<div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
       </div>`;
     }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">가이드 없음</div>';
   } else if(tab==='pairing'&&isS){
     bench.innerHTML=list.length?`<div class="training-bench-grid">${list.map(h=>{
       const fc=fieldColor(h.elem||'');
       return `<div class="bench-item" onclick="startPairing(${h.id},'sentinel')">
-        <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,18)}</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-        <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+        <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,20)}</div>
+		<div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+		<div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
       </div>`;
     }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">페어링 가능한 센티넬 없음</div>';
   } else {
     bench.innerHTML=list.length?`<div class="training-bench-grid">${list.map(h=>{
       const fc=fieldColor(h.elem||'');
       return `<div class="bench-item" onclick="startPairing(${h.id},'guide')">
-        <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,18)}</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-        <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+        <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,20)}</div>
+		<div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+		<div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
       </div>`;
     }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">페어링 가능한 가이드 없음</div>';
   }
@@ -3757,6 +3762,7 @@ function rebuildBench(tab,role){
 function benchFilterBar(tab,role){
   const f=_benchFilter[tab+role];
   const s=_benchSort[tab+role];
+  const runawayBtn=(tab==='guiding'&&role==='S')?`<button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','runaway')">폭주순</button>`:'';
   return `<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
     <button class="btn ${f==='all'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchFilter('${tab}','${role}','all')">전체</button>
     <button class="btn ${f==='normal'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchFilter('${tab}','${role}','normal')">일반</button>
@@ -3766,6 +3772,7 @@ function benchFilterBar(tab,role){
     <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','lv')">레벨순</button>
     <button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','rank')">등급순</button>
     <button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','elem')">속성순</button>
+    ${runawayBtn}
   </div>`;
 }
 
@@ -3795,25 +3802,25 @@ function renderGuiding(){
         const sc=fieldColor(s.elem||'');
         const gc=fieldColor(g.elem||'');
         const rw=s.runaway||0;
-        const incapTag=s.incapacitated?`<span style="font-size:8px;color:var(--danger);font-weight:700;background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px">행동불능</span>`:'';
+        const incapTag=s.incapacitated?`<span style="font-size:10px;color:var(--danger);font-weight:700;background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px">행동불능</span>`:'';
         slots.push(`<div class="training-slot filled-slot" style="border-color:${sc}30">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
             <div style="text-align:center">
-              <div style="background:${sc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,18)}</div>
-              <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div>
-              <div style="font-size:9px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div>
+              <div style="background:${sc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,22)}</div>
+			  <div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div>
+			  <div style="font-size:11px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div>
             </div>
             <div style="font-size:16px;color:var(--text3)">⇄</div>
             <div style="text-align:center">
-              <div style="background:${gc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,18)}</div>
-              <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div>
-              <div style="font-size:9px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div>
+              <div style="background:${gc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,22)}</div>
+			  <div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div>
+			  <div style="font-size:11px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div>
             </div>
           </div>
           ${incapTag}
           <div class="runaway-bar" style="margin-top:6px"><div class="runaway-fill" style="width:${rw}%"></div></div>
-          <div style="font-size:9px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace;margin-top:2px">폭주 ${Math.round(rw)}%${rw>0?' · 해소 중':' · 안정'}</div>
-          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:9px;width:100%" onclick="removeGuiding(${i})">해제</button>
+          <div style="font-size:11px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace;margin-top:2px">폭주 ${Math.round(rw)}%${rw>0?' · 해소 중':' · 안정'}</div>
+		  <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:11px;width:100%" onclick="removeGuiding(${i})">해제</button>
         </div>`);
       } else {
         S.guidingSlots.splice(i,1);i--;
@@ -3842,21 +3849,21 @@ function renderGuiding(){
     const rw=h.runaway||0;
     const incap=h.incapacitated;
     return `<div class="bench-item" onclick="startGuidingSentinel(${h.id})" style="${incap?'border-color:rgba(220,38,38,0.3)':''}">
-      <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,18)}</div>
-      <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-      <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
-      <div class="runaway-bar" style="margin-top:3px"><div class="runaway-fill" style="width:${rw}%"></div></div>
-      <div style="font-size:8px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace">폭주 ${Math.round(rw)}%</div>
-      ${incap?'<div style="font-size:7px;color:var(--danger);font-weight:700">행동불능</div>':''}
+      <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,20)}</div>
+	  <div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+	  <div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
+	  <div class="runaway-bar" style="margin-top:1px"><div class="runaway-fill" style="width:${rw}%"></div></div>
+	  <div style="font-size:10px;color:${rw>60?'var(--danger)':'var(--warn)'};font-weight:600">폭주 ${Math.round(rw)}%</div>
+	  ${incap?'<div style="font-size:9px;color:var(--danger);font-weight:700">행동불능</div>':''}
     </div>`;
   }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">센티넬 없음</div>';
 
   gBench.innerHTML=guides.length?`<div class="training-bench-grid">${guides.map(h=>{
     const fc=fieldColor(h.elem||'');
     return `<div class="bench-item" onclick="startGuidingGuide(${h.id})">
-      <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,18)}</div>
-      <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
-      <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+      <div style="background:${fc}12;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,20)}</div>
+	  <div style="font-size:12px;font-weight:700;color:var(--text)">${h.name}</div>
+	  <div style="font-size:11px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',12)} ${h.elem||'?'}</div>
     </div>`;
   }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">가이드 없음</div>';
 }
@@ -3874,16 +3881,16 @@ function renderGuidingSlots(){
       if(s&&g){
         const sc=fieldColor(s.elem||'');const gc=fieldColor(g.elem||'');
         const rw=s.runaway||0;
-        const incapTag=s.incapacitated?`<span style="font-size:8px;color:var(--danger);font-weight:700;background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px">행동불능</span>`:'';
+        const incapTag=s.incapacitated?`<span style="font-size:10px;color:var(--danger);font-weight:700;background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px">행동불능</span>`:'';
         slots.push(`<div class="training-slot filled-slot" style="border-color:${sc}30">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-            <div style="text-align:center"><div style="background:${sc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div><div style="font-size:9px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div></div>
+            <div style="text-align:center"><div style="background:${sc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,22)}</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div><div style="font-size:11px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div></div>
             <div style="font-size:16px;color:var(--text3)">⇄</div>
-            <div style="text-align:center"><div style="background:${gc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,18)}</div><div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div><div style="font-size:9px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div></div>
+            <div style="text-align:center"><div style="background:${gc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,22)}</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div><div style="font-size:11px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div></div>
           </div>${incapTag}
           <div class="runaway-bar" style="margin-top:6px"><div class="runaway-fill" style="width:${rw}%"></div></div>
-          <div style="font-size:9px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace;margin-top:2px">폭주 ${Math.round(rw)}%${rw>0?' · 해소 중':' · 안정'}</div>
-          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:9px;width:100%" onclick="removeGuiding(${i})">해제</button>
+          <div style="font-size:11px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace;margin-top:2px">폭주 ${Math.round(rw)}%${rw>0?' · 해소 중':' · 안정'}</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:11px;width:100%" onclick="removeGuiding(${i})">해제</button>
         </div>`);
       } else {S.guidingSlots.splice(i,1);i--;slots.push(emptyGuidingSlot(i));}
     } else {slots.push(emptyGuidingSlot(i));}
@@ -3900,49 +3907,53 @@ function emptyGuidingSlot(i){
 
 let _guidingPending=null;
 
+let _guidingPickSort='pwr';
 function startGuidingSentinel(id){
   if(S.guidingSlots.length>=GUIDING_SLOTS){notify('슬롯이 가득 찼습니다','err');return;}
   const h=S.hunters.find(x=>x.id===id);if(!h)return;
   _guidingPending={id,role:'sentinel'};
-  // 가이드 선택 모달
-  const guidingIds=S.guidingSlots.flatMap(g=>[g.sentinelId,g.guideId]);
-  const candidates=S.hunters.filter(x=>x.role==='가이드'&&!guidingIds.includes(x.id)&&!x.busy);
-  if(!candidates.length){notify('배치 가능한 가이드가 없습니다','err');_guidingPending=null;return;}
-  const picks=candidates.map(c=>{
-    const fc=fieldColor(c.elem||'');
-    return `<div class="pick-item" onclick="confirmGuiding(${c.id})">
-      <div class="p-avatar" style="background:${fc}12">${strokify(SVG.guide,fc,16)}</div>
-      <div class="p-name">${c.name}</div>
-      <div class="p-info" style="color:var(--text2)">${c.rank} Lv.${c.level||1}</div>
-      <div class="p-info">${fieldIcon(c.elem||'',10)} ${c.elem||'?'}</div>
-    </div>`;
-  }).join('');
-  showModal(`
-    <div class="modal-title">${h.name}의 가이드 선택</div>
-    <div class="pick-grid">${picks}</div>
-    <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="_guidingPending=null;closeModal()">취소</button>
-  `);
+  renderGuidingPickModal(h,'가이드','guide');
 }
-
 function startGuidingGuide(id){
   if(S.guidingSlots.length>=GUIDING_SLOTS){notify('슬롯이 가득 찼습니다','err');return;}
   const h=S.hunters.find(x=>x.id===id);if(!h)return;
   _guidingPending={id,role:'guide'};
+  renderGuidingPickModal(h,'센티넬','sentinel');
+}
+function setGuidingPickSort(s){
+  if(_guidingPickSort===s)toggleSortDir('guidingPick',s);
+  else{_guidingPickSort=s;_sortDir['guidingPick_'+s]=1;}
+  const h=S.hunters.find(x=>x.id===_guidingPending.id);
+  if(h)renderGuidingPickModal(h,_guidingPending.role==='sentinel'?'가이드':'센티넬',_guidingPending.role==='sentinel'?'guide':'sentinel');
+}
+function renderGuidingPickModal(h,targetLabel,targetIcon){
   const guidingIds=S.guidingSlots.flatMap(g=>[g.sentinelId,g.guideId]);
-  const candidates=S.hunters.filter(x=>x.role==='센티넬'&&!guidingIds.includes(x.id)&&(!x.busy||x.incapacitated));
-  if(!candidates.length){notify('배치 가능한 센티넬이 없습니다','err');_guidingPending=null;return;}
+  const targetRole=targetLabel;
+  let candidates=S.hunters.filter(x=>x.role===targetRole&&!guidingIds.includes(x.id)&&(!x.busy||x.incapacitated));
+  if(!candidates.length){notify(`배치 가능한 ${targetLabel}이(가) 없습니다`,'err');_guidingPending=null;return;}
+  sortList(candidates,_guidingPickSort,'guidingPick');
+  const s=_guidingPickSort;
+  const sortBar=`<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
+    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('pwr')">전투력</button>
+    <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('lv')">레벨순</button>
+    <button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('rank')">등급순</button>
+    <button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('elem')">속성순</button>
+    ${targetLabel==='센티넬'?`<button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('runaway')">폭주순</button>`:''}
+  </div>`;
   const picks=candidates.map(c=>{
     const fc=fieldColor(c.elem||'');const rw=c.runaway||0;
+    const rwInfo=c.role==='센티넬'?`<div style="font-size:10px;color:${rw>60?'var(--danger)':'var(--warn)'};font-weight:600">폭주 ${Math.round(rw)}%</div>${c.incapacitated?'<div style="font-size:9px;color:var(--danger);font-weight:700">행동불능</div>':''}`:'';
     return `<div class="pick-item" onclick="confirmGuiding(${c.id})">
-      <div class="p-avatar" style="background:${fc}12">${strokify(SVG.sentinel,fc,16)}</div>
+      <div class="p-avatar" style="background:${fc}12">${strokify(SVG[targetIcon],fc,16)}</div>
       <div class="p-name">${c.name}</div>
       <div class="p-info" style="color:var(--text2)">${c.rank} Lv.${c.level||1}</div>
-      <div style="font-size:8px;color:${rw>60?'var(--danger)':'var(--warn)'}">폭주 ${Math.round(rw)}%</div>
-      ${c.incapacitated?'<div style="font-size:7px;color:var(--danger);font-weight:700">행동불능</div>':''}
+      <div class="p-info">${fieldIcon(c.elem||'',10)} ${c.elem||'?'}</div>
+      ${rwInfo}
     </div>`;
   }).join('');
   showModal(`
-    <div class="modal-title">${h.name}에게 배정할 센티넬 선택</div>
+    <div class="modal-title">${h.name}의 ${targetLabel} 선택</div>
+    ${sortBar}
     <div class="pick-grid">${picks}</div>
     <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="_guidingPending=null;closeModal()">취소</button>
   `);
@@ -3953,20 +3964,28 @@ function openGuidingPick(){
   const guidingIds=(S.guidingSlots||[]).flatMap(g=>[g.sentinelId,g.guideId]);
   const sentinels=S.hunters.filter(h=>h.role==='센티넬'&&!guidingIds.includes(h.id)&&(!h.busy||h.incapacitated));
   if(!sentinels.length){notify('배치 가능한 센티넬이 없습니다','err');return;}
+  sortList(sentinels,_guidingPickSort,'guidingPick');
+  const s=_guidingPickSort;
+  const sortBar=`<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
+    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('pwr')">전투력</button>
+    <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('lv')">레벨순</button>
+    <button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('runaway')">폭주순</button>
+  </div>`;
   const picks=sentinels.map(h=>{
     const fc=fieldColor(h.elem||'');const rw=h.runaway||0;
     return `<div class="pick-item" onclick="closeModal();setTimeout(()=>startGuidingSentinel(${h.id}),150)">
       <div class="p-avatar" style="background:${fc}12">${strokify(SVG.sentinel,fc,16)}</div>
       <div class="p-name">${h.name}</div>
       <div class="p-info" style="color:var(--text2)">${h.rank} Lv.${h.level||1}</div>
-      <div style="font-size:8px;color:${rw>60?'var(--danger)':'var(--warn)'}">폭주 ${Math.round(rw)}%</div>
-      ${h.incapacitated?'<div style="font-size:7px;color:var(--danger);font-weight:700">행동불능</div>':''}
+      <div style="font-size:10px;color:${rw>60?'var(--danger)':'var(--warn)'};font-weight:600">폭주 ${Math.round(rw)}%</div>
+      ${h.incapacitated?'<div style="font-size:9px;color:var(--danger);font-weight:700">행동불능</div>':''}
     </div>`;
   }).join('');
   showModal(`
     <div class="modal-title">가이딩할 센티넬 선택</div>
+    ${sortBar}
     <div class="pick-grid">${picks}</div>
-    <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="closeModal()">닫기</button>
+    <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="closeModal()">취소</button>
   `);
 }
 
