@@ -2102,7 +2102,7 @@ function renderExpeditionList(){
 
 function renderDungeonGrid(){
   const el=document.getElementById('dungeon-grid');if(!el)return;
-  const pool=(S.dungeonPool||[0,1,2,3,4,5]).slice(0,8);
+  const pool=(S.dungeonPool||[0,1,2,3,4,5]).slice(0,6);
   const items=pool.map(i=>DUNGEONS[i]).filter(Boolean);
   if(!items.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">구역 로딩 중</div></div>`;return;}
   el.innerHTML=items.map(q=>{
