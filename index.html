@@ -679,6 +679,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     요원 명단
     <span class="nav-badge" id="agent-badge">0</span>
   </button>
+  <button class="nav-item" onclick="goTab('missions')" id="nav-missions" style="position:relative">
+    <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    미션
+    <span class="mission-nav-dot" id="mission-nav-dot"></span>
+  </button>
 
   <div class="nav-group">작전</div>
   <button class="nav-item" onclick="goTab('quest')" id="nav-quest">
@@ -715,16 +720,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M2 9h20"/></svg>
     분해
   </button>
+  <div class="nav-group">모집</div>
   <button class="nav-item" onclick="goTab('gacha')" id="nav-gacha">
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    요원 모집
-  </button>
-
-  <div class="nav-group">임무</div>
-  <button class="nav-item" onclick="goTab('missions')" id="nav-missions" style="position:relative">
-    <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-    미션
-    <span class="mission-nav-dot" id="mission-nav-dot"></span>
+    요원
   </button>
 
   <div class="nav-group">기타</div>
