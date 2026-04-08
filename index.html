@@ -1095,11 +1095,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   <div id="gacha-normal" style="display:block">
     <div class="gacha-hero">
       <div class="gacha-title">일반 모집</div>
-      <div class="gacha-sub">D~A 등급 센티넬 & 가이드 · 골드 사용</div>
+      <div class="gacha-sub">D~S 등급 센티넬 & 가이드 · 골드 사용</div>
       <div class="rate-row">
+        <div class="rate-item">뱅가드 (S) <strong>3%</strong></div>
         <div class="rate-item">에이전트 (A) <strong>15%</strong></div>
         <div class="rate-item">에이전트 (B) <strong>30%</strong></div>
-        <div class="rate-item">애콜라이트 (C) <strong>35%</strong></div>
+        <div class="rate-item">애콜라이트 (C) <strong>32%</strong></div>
         <div class="rate-item">애콜라이트 (D) <strong>20%</strong></div>
       </div>
       <div class="gacha-btns">
@@ -1439,9 +1440,9 @@ const RUNAWAY_SYM={
 };
 
 // 센티넬 이름 풀 (각성자)
-const SENTINEL_NAMES=['카이로','발렌','에리카','도미트리','아셀라','제이런','나이아','코르빈','레이나','자피르','오르카','테사','브루노','솔리스','케이튼','아마라','디란','유리아','노르발','세라','타이온','아크라','비어린','라이트','헥터','칼리','세이버','린트','모건','자쿠','레비','탈론','볼트','그레이','던칸','제스퍼','로그','플린트','커스','아이나','데카','벨릭','크로스','바이퍼','엣지','스톰','레이든','아론','닉스','판테온','루크','가넷','슬레이트','오닉스','마르크','블레이즈','케인','도저','렉스','아스트라','제네스','템페','피닉스','울프','아처','드레드','크라운','호크','스트라이크','이반','사일러','제트','매그넘','로크','하운드','피어스','배럿','쉐도우','리퍼'];
+const SENTINEL_NAMES=['카이로','발렌','에리카','도미트리','아셀라','제이런','나이아','코르빈','레이나','자피르','오르카','테사','브루노','솔리스','케이튼','아마라','디란','유리아','노르발','세라','타이온','아크라','비어린','라이트','헥터','칼리','세이버','린트','모건','자쿠','레비','탈론','볼트','그레이','던칸','제스퍼','로그','플린트','커스','아이나','데카','벨릭','크로스','바이퍼','엣지','스톰','레이든','아론','닉스','판테온','루크','가넷','슬레이트','오닉스','마르크','블레이즈','케인','도저','렉스','아스트라','제네스','템페','피닉스','울프','아처','드레드','크라운','호크','스트라이크','이반','사일러','제트','매그넘','로크','하운드','피어스','배럿','쉐도우','리퍼','래드','셰릴','뱅크','타이거','크러셔','베인','코발트','사이먼','래쉬','매버릭','인서전','아스팔트','가드너','카논','브릭스','트리거','라이징','크루거','반더','앤빌','사르도','피크','포지','램지','스파이크','거스','마샬','록웰','브레이커','이클리스'];
 // 가이드 이름 풀 (하모니 부서)
-const GUIDE_NAMES=['루시','안셀','미에르','페이','타빗','로렌','이클립스','마리온','베켓','사라이','알야','코드','세피아','나타','드레이크','올리아','반','에이나','심버','피아트','이리스','아리아','세레나','하늘','노바','비비안','에코','루나','스텔라','프리즘','하프','벨루가','클레어','로즈','실버','도나','리엘','미스트','시엔나','아쿠아','허브','유칼리','민트','오팔','재스민','코랄','세이지','에밀','라벤더','뮤즈','나이아','카멜리아','에테르','비올라','아이비','글로리아','퓨리아','하모니','아이린','제피라','디바','가이아','판도라','실피드','아테나','티아라','레이첼','마야'];
+const GUIDE_NAMES=['루시','안셀','미에르','페이','타빗','로렌','이클립스','마리온','베켓','사라이','알야','코드','세피아','나타','드레이크','올리아','반','에이나','심버','피아트','이리스','아리아','세레나','하늘','노바','비비안','에코','루나','스텔라','프리즘','하프','벨루가','클레어','로즈','실버','도나','리엘','미스트','시엔나','아쿠아','허브','유칼리','민트','오팔','재스민','코랄','세이지','에밀','라벤더','뮤즈','나이아','카멜리아','에테르','비올라','아이비','글로리아','퓨리아','하모니','아이린','제피라','디바','가이아','판도라','실피드','아테나','티아라','레이첼','마야','소피르','아젤리아','블리스','세노','나디아','리제','루체','티안','포레스','아네모','솔레이','밀라','에이블','플로라','네뷸라','아뮬렛','시린','사틴','로터스','벨라미','크레센','유나','튤립','라이라','셀레나','아스틸베','리셋','소르베','에바','린드블룸'];
 
 const ROLES=['센티넬','가이드'];
 // 스펙 분배: 센티넬은 ATK 최강·공격 특화, 가이드는 DEF/SPD 강·지원 특화
@@ -2994,7 +2995,7 @@ function renderSpecialRoster(){
 }
 
 // 일반 모집 확률 (D~A만) — 골드 사용
-const NORMAL_WEIGHTS={A:15,B:30,C:35,D:20};
+const NORMAL_WEIGHTS={S:3,A:15,B:30,C:32,D:20};
 const NORMAL_COST_1=5000, NORMAL_COST_10=50000;
 
 // 특수 모집 확률 (SS~D) — 다이아 사용
@@ -3034,7 +3035,7 @@ function makeAgentNormal(tier){
   const namePool=isSentinel?SENTINEL_NAMES:GUIDE_NAMES;
   const name=namePool[Math.floor(Math.random()*namePool.length)];
   const elem=FIELDS[Math.floor(Math.random()*FIELDS.length)];
-  const base={A:[55,100],B:[35,70],C:[20,45],D:[10,25]}[tier]||[10,25];
+  const base={S:[80,140],A:[55,100],B:[35,70],C:[20,45],D:[10,25]}[tier]||[10,25];
   const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a));
   let atk,def,spd;
   if(isSentinel){
@@ -3043,7 +3044,7 @@ function makeAgentNormal(tier){
     atk=rnd(base[0]*0.4,base[1]*0.4);def=rnd(base[0]*1.2,base[1]*1.2);spd=rnd(base[0]*1.3,base[1]*1.3);
   }
   const runaway=0;
-  const focusBase={A:[20,35],B:[12,25],C:[8,18],D:[4,10]}[tier]||[4,10];
+  const focusBase={S:[30,50],A:[20,35],B:[12,25],C:[8,18],D:[4,10]}[tier]||[4,10];
   const focus=isSentinel?0:rnd(focusBase[0],focusBase[1]);
   return {id,name,rank:tier,role,elem,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),level:1,exp:0,awakening:0,busy:false,runaway,focus};
 }
@@ -3073,7 +3074,7 @@ function makeAgentSpecial(tier){
     return {id,name:pick.name,rank:tier,role:pick.role,elem:pick.field,group:pick.group,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),level:1,exp:0,awakening:0,busy:false,runaway,focus,isSpecial:true};
   } else {
     // 일반 풀에서 뽑기
-    return makeAgentNormal(tier==='SS'?'A':tier==='S'?'A':tier);
+    return makeAgentNormal(tier==='SS'?'A':tier);
   }
 }
 
