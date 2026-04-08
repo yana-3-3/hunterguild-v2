@@ -5247,8 +5247,8 @@ function renderGuiding(){
 
   // 벤치: 가이딩 슬롯에 배치되지 않은 센티넬/가이드
   const guidingIds=S.guidingSlots.flatMap(g=>[g.sentinelId,g.guideId]);
-  let sentinels=S.hunters.filter(h=>h.role==='센티넬'&&!guidingIds.includes(h.id));
-  let guides=S.hunters.filter(h=>h.role==='가이드'&&!guidingIds.includes(h.id));
+  let sentinels=S.hunters.filter(h=>h.role==='센티넬'&&!guidingIds.includes(h.id)&&!h.busy);
+  let guides=S.hunters.filter(h=>h.role==='가이드'&&!guidingIds.includes(h.id)&&!h.busy);
   sentinels=applyBenchFilterSort([...sentinels],'guiding','S');
   guides=applyBenchFilterSort([...guides],'guiding','G');
 
