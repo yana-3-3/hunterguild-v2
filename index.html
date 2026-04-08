@@ -597,6 +597,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .mission-progress{font-size:11px;color:var(--text3);margin-top:2px;font-family:'Outfit',sans-serif}
 .mission-progress-bar{width:80px;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
 .mission-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
+.mission-item{position:relative}
+.mission-bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:#fff;font-size:12px;font-weight:500;padding:8px 14px;border-radius:8px;white-space:nowrap;z-index:100;pointer-events:none;animation:bubbleIn .18s ease-out;box-shadow:0 4px 16px rgba(30,32,48,0.18);max-width:90vw;white-space:normal;text-align:center;line-height:1.5}
+.mission-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--text)}
+@keyframes bubbleIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes bubbleOut{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(4px)}}
 .dash-mission-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:.2s;box-shadow:var(--shadow);flex:1}
 .dash-mission-box:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow-hover)}
 .dash-mission-box .dm-title{font-weight:700;font-size:13px;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:6px}
@@ -5248,12 +5253,12 @@ function checkMissionReset(){
         const m=DAILY_MISSION_POOL.find(x=>x.id===mid);
         return m&&m.check(S.dailyActionLog||{});
       });
-      if(allDone){
+      if(allDone&&!S.dailyActionLog._daysAllDailyCounted){
         S.weeklyActionLog=S.weeklyActionLog||{};
         S.weeklyActionLog.daysAllDaily=(S.weeklyActionLog.daysAllDaily||0)+1;
       }
-      // 어제 임무 10회 이상?
-      if((S.dailyActionLog.anyMission||0)>=10){
+      // 어제 임무 10회 이상? (실시간 반영 안 된 경우만)
+      if((S.dailyActionLog.anyMission||0)>=10 && !S.dailyActionLog._days10counted){
         S.weeklyActionLog=S.weeklyActionLog||{};
         S.weeklyActionLog.days10missions=(S.weeklyActionLog.days10missions||0)+1;
       }
@@ -5335,6 +5340,24 @@ function logMissionAction(key,val,extra){
     S.dailyActionLog.reachLv30=1;
     S.weeklyActionLog.reachLv30=1;
   }
+  // ── 하루에 임무 10회 달성 시 즉시 주간에 반영 ──
+  if(key==='anyMission' && (S.dailyActionLog.anyMission||0)>=10 && !S.dailyActionLog._days10counted){
+    S.dailyActionLog._days10counted=true;
+    S.weeklyActionLog=S.weeklyActionLog||{};
+    S.weeklyActionLog.days10missions=(S.weeklyActionLog.days10missions||0)+1;
+  }
+  // ── 일일 미션 전체 완료 시 즉시 주간에 반영 ──
+  if(S.dailyMissions&&S.dailyMissions.length>0&&!S.dailyActionLog._daysAllDailyCounted){
+    const allDone=S.dailyMissions.every(mid=>{
+      const dm=DAILY_MISSION_POOL.find(x=>x.id===mid);
+      return dm&&dm.check(S.dailyActionLog||{});
+    });
+    if(allDone){
+      S.dailyActionLog._daysAllDailyCounted=true;
+      S.weeklyActionLog=S.weeklyActionLog||{};
+      S.weeklyActionLog.daysAllDaily=(S.weeklyActionLog.daysAllDaily||0)+1;
+    }
+  }
   // 게이지 업데이트
   S.dailyGauge=recalcMissionGauge('daily');
   S.weeklyGauge=recalcMissionGauge('weekly');
@@ -5374,6 +5397,27 @@ function updateMissionBadge(){
     for(let t=1;t*20<=100;t++){if(wg>=t*20&&!(S.weeklyClaimed||{})[t]){hasClaimable=true;break;}}
   }
   dot.style.display=hasClaimable?'block':'none';
+}
+
+// ── 미션 말풍선 ──
+let _bubbleTimer=null;
+let _bubbleActive=false;
+function showMissionBubble(el,text){
+  // 기존 말풍선 제거
+  document.querySelectorAll('.mission-bubble').forEach(b=>b.remove());
+  if(_bubbleTimer){clearTimeout(_bubbleTimer);_bubbleTimer=null;}
+  _bubbleActive=false;
+  if(!text)return;
+  const bubble=document.createElement('div');
+  bubble.className='mission-bubble';
+  bubble.textContent=text;
+  el.appendChild(bubble);
+  _bubbleActive=true;
+  _bubbleTimer=setTimeout(()=>{
+    bubble.style.animation='bubbleOut .15s ease-in forwards';
+    setTimeout(()=>{bubble.remove();_bubbleActive=false;},150);
+    _bubbleTimer=null;
+  },2500);
 }
 
 // ── 미션 렌더링 ──
@@ -5435,9 +5479,9 @@ function renderMissions(){
     </div>`;
   }
 
-  // 미션 리스트
+  // 미션 리스트 (말풍선 표시 중이면 리스트 갱신 스킵)
   const listArea=document.getElementById('mission-list-area');
-  if(listArea&&ids){
+  if(listArea&&ids&&!_bubbleActive){
     let html='';
     ids.forEach(mid=>{
       const m=pool.find(x=>x.id===mid);
@@ -5447,7 +5491,23 @@ function renderMissions(){
       const pct=Math.min(100,(progress/m.goal)*100);
       const goalStr=m.goal>=10000?fmtNum(m.goal):m.goal;
       const progStr=m.goal>=10000?fmtNum(Math.min(progress,m.goal)):Math.min(progress,m.goal);
-      html+=`<div class="mission-item${done?' done':''}">
+      // ── 복합 미션 세부 진행도 말풍선 텍스트 ──
+      let bubbleText='';
+      if(m.id==='wm9'){
+        bubbleText=`의뢰 ${Math.min(5,log.questDone||0)}/5 · 파견 ${Math.min(5,log.expDone||0)}/5 · 이상 ${Math.min(5,log.dgDone||0)}/5 · 진압 ${Math.min(5,log.raidDone||0)}/5`;
+      } else if(m.id==='wm8'){
+        bubbleText=`불 ${Math.min(3,log.fireDone||0)}/3 · 물 ${Math.min(3,log.waterDone||0)}/3 · 풀 ${Math.min(3,log.grassDone||0)}/3 · 번개 ${Math.min(3,log.lightningDone||0)}/3 · 바람 ${Math.min(3,log.windDone||0)}/3 · 얼음 ${Math.min(3,log.iceDone||0)}/3`;
+      } else if(m.id==='wm31'){
+        bubbleText=`달성일 ${Math.min(3,log.days10missions||0)}/3 · 오늘 임무 ${S.dailyActionLog?.anyMission||0}회`;
+      } else if(m.id==='wm32'){
+        bubbleText=`달성일 ${Math.min(5,log.daysAllDaily||0)}/5`;
+      } else if(m.id==='wm17'){
+        bubbleText=`완료한 종류 ${log.uniqueMissions?Object.keys(log.uniqueMissions).length:0}/20종`;
+      } else if(m.id==='wm24'){
+        bubbleText=`레벨업한 요원 ${log.uniqueLevelUp?Object.keys(log.uniqueLevelUp).length:0}/15명`;
+      }
+      const bubbleClick=bubbleText?` onclick="showMissionBubble(this,\`${bubbleText}\`)" style="cursor:pointer"`:'';
+      html+=`<div class="mission-item${done?' done':''}"${bubbleClick}>
         <div class="mission-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div class="mission-info">
           <div class="mission-name">${m.name}</div>
