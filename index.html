@@ -4212,12 +4212,12 @@ function renderGym(){
 
   // 슬롯 구매 버튼
   if(getGymSlotCount() < GYM_MAX_SLOTS){
-    buyArea.innerHTML = `<div style="margin-top:8px;display:flex;align-items:center;gap:10px">
+    buyArea.innerHTML = `<div style="margin-top:8px;display:flex;align-items:center;gap:10px;padding-bottom:60px">
       <button class="btn btn-token btn-sm" onclick="buyGymSlot()">슬롯 추가 (D ${GYM_SLOT_COST})</button>
       <span style="font-size:12px;color:var(--text3)">${getGymSlotCount()} / ${GYM_MAX_SLOTS} 슬롯</span>
     </div>`;
   } else {
-    buyArea.innerHTML = `<div style="font-size:12px;color:var(--text3);margin-top:8px">최대 슬롯 도달 (${GYM_MAX_SLOTS})</div>`;
+    buyArea.innerHTML = `<div style="font-size:12px;color:var(--text3);margin-top:8px;padding-bottom:60px">최대 슬롯 도달 (${GYM_MAX_SLOTS})</div>`;
   }
 }
 
