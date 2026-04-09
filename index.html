@@ -1316,6 +1316,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     </div>
   </div>
 
+  <div class="section-label" style="margin-top:24px">쿠폰</div>
+  <div class="settings-card">
+    <div class="settings-row" style="flex-wrap:wrap;gap:10px">
+      <div class="settings-info" style="flex:1;min-width:180px">
+        <div class="settings-title">쿠폰 코드 입력</div>
+        <div class="settings-desc">쿠폰 코드를 입력하여 보상을 수령하세요.</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input id="coupon-input" placeholder="쿠폰 코드 입력" style="padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;background:var(--surface2);color:var(--text);outline:none;width:180px" onkeydown="if(event.key==='Enter')redeemCoupon()" />
+        <button class="btn btn-primary btn-sm" onclick="redeemCoupon()">사용</button>
+      </div>
+    </div>
+  </div>
+
   <div class="section-label" style="margin-top:24px">위험 구역</div>
   <div class="settings-card" style="border-color:rgba(239,68,68,0.2)">
     <div class="settings-row">
@@ -1983,6 +1997,7 @@ let S={
   dailyMissions:null, weeklyMissions:null,
   dailyProgress:{}, weeklyProgress:{},
   dailyGauge:0, weeklyGauge:0,
+  usedCoupons:[],
   dailyClaimed:{}, weeklyClaimed:{},
   lastDailyReset:0, lastWeeklyReset:0,
   dailyActionLog:{}, weeklyActionLog:{},
@@ -5579,12 +5594,7 @@ function checkMissionReset(){
         S.weeklyActionLog.days10missions=(S.weeklyActionLog.days10missions||0)+1;
       }
     }
-    // 일일 게이지 보상 수령 횟수 -> 주간에 반영
-    const dailyClaimedCount=Object.keys(S.dailyClaimed||{}).length;
-    if(dailyClaimedCount>0){
-      S.weeklyActionLog=S.weeklyActionLog||{};
-      S.weeklyActionLog.dailyRewardsClaimed=(S.weeklyActionLog.dailyRewardsClaimed||0)+dailyClaimedCount;
-    }
+    // 일일 게이지 보상 수령 횟수는 claimMissionReward에서 즉시 반영되므로 여기선 생략
     // 리셋
     const pool=[...Array(DAILY_MISSION_POOL.length).keys()];
     const shuffled=pool.sort(()=>Math.random()-0.5);
@@ -5689,6 +5699,10 @@ function claimMissionReward(type,tier){
   claimed[tier]=true;
   if(type==='daily'){
     S.gold+=20000;
+    // 즉시 주간 미션에 반영
+    S.weeklyActionLog=S.weeklyActionLog||{};
+    S.weeklyActionLog.dailyRewardsClaimed=(S.weeklyActionLog.dailyRewardsClaimed||0)+1;
+    S.weeklyGauge=recalcMissionGauge('weekly');
     addLog(`[일일 미션] ${needed}pt 보상 수령 — G +20,000`,'good');
     notify('✓ 일일 미션 보상: 골드 20,000 획득!','ok');
   } else {
@@ -6864,8 +6878,140 @@ function init(){
 }
 
 // ═══════════════════════════════════════
-// OWNER LOGIN
+// COUPON SYSTEM
 // ═══════════════════════════════════════
+const COUPON_DB = {
+  // ── 쿠폰 등록 방법 ──
+  // 'CODE': { rewards: { dia:0, gold:0, shards:0, crystals:{}, agents:['이름1','이름2'] }, desc:'설명' }
+  // dia: 다이아, gold: 골드, shards: 결정 파편
+  // crystals: { '불':1, '물':2 } 형태로 속성별 결정 지급
+  // agents: 특수 요원 이름 배열 (S_CODEX 또는 SECRET_POOL에 있는 이름)
+  //   ※ 단일 요원도 배열로: agents:['헬리오스']
+  //   ※ 여러 명: agents:['해일','산타','애쉬']
+  //
+  'L0VENAVI': { rewards: { dia:1500, agents:['바이브','노아','에덴','루비','카토','자이안','피카','헬리오스'] }, desc:'♡' },
+};
+
+function redeemCoupon() {
+  const input = document.getElementById('coupon-input');
+  if (!input) return;
+  const code = input.value.trim().toUpperCase();
+  if (!code) { notify('쿠폰 코드를 입력해주세요.', 'err'); return; }
+
+  const coupon = COUPON_DB[code];
+  if (!coupon) { notify('유효하지 않은 쿠폰 코드입니다.', 'err'); return; }
+
+  S.usedCoupons = S.usedCoupons || [];
+  if (S.usedCoupons.includes(code)) { notify('이미 사용한 쿠폰입니다.', 'err'); return; }
+
+  // 보상 지급
+  const r = coupon.rewards;
+  const rewardLines = [];
+  const addedAgents = [];
+
+  if (r.gold) { S.gold += r.gold; rewardLines.push({ icon: '💰', label: '골드', val: '+' + fmtNum(r.gold), color: 'var(--gold)' }); }
+  if (r.dia) { S.dia += r.dia; rewardLines.push({ icon: '💎', label: '다이아', val: '+' + fmtNum(r.dia), color: 'var(--accent)' }); }
+  if (r.shards) { S.shards += r.shards; rewardLines.push({ icon: '🔮', label: '결정 파편', val: '+' + r.shards, color: 'var(--guide)' }); }
+  if (r.crystals) {
+    S.crystals = S.crystals || { '불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0 };
+    for (const [elem, cnt] of Object.entries(r.crystals)) {
+      S.crystals[elem] = (S.crystals[elem] || 0) + cnt;
+      const ec = { '불':'var(--pyre)','물':'var(--aqua)','풀':'var(--verde)','번개':'var(--fulmen)','바람':'var(--aero)','얼음':'var(--glacies)','무':'var(--text3)' }[elem] || 'var(--text)';
+      rewardLines.push({ icon: '✦', label: elem + ' 결정', val: '+' + cnt, color: ec });
+    }
+  }
+  if (r.agents && r.agents.length > 0) {
+    const allPool = [...(S_CODEX || []), ...(SECRET_POOL || [])];
+    r.agents.forEach(agentName => {
+      const pick = allPool.find(c => c.name === agentName);
+      if (!pick) return;
+      const id = S.nextId++;
+      const isSentinel = pick.role === '센티넬';
+      const base = { SS:[120,200], S:[80,140], A:[55,100], C:[20,45] }[pick.rank] || [40,80];
+      const rnd = (a, b) => a + Math.floor(Math.random() * (b - a));
+      let atk, def, spd;
+      if (isSentinel) {
+        atk = rnd(base[0]*1.4, base[1]*1.4); def = rnd(base[0]*0.5, base[1]*0.5); spd = rnd(base[0]*0.8, base[1]*0.8);
+      } else {
+        atk = rnd(base[0]*0.4, base[1]*0.4); def = rnd(base[0]*1.2, base[1]*1.2); spd = rnd(base[0]*1.3, base[1]*1.3);
+      }
+      const focusBase = { SS:[40,60], S:[30,50], A:[20,35], C:[8,18] }[pick.rank] || [15,30];
+      const focus = isSentinel ? 0 : rnd(focusBase[0], focusBase[1]);
+      const agent = {
+        id, name: pick.name, rank: pick.rank, role: pick.role,
+        elem: pick.field, group: pick.group,
+        atk: Math.round(atk), def: Math.round(def), spd: Math.round(spd),
+        level: 1, exp: 0, awakening: 0, busy: false,
+        runaway: 0, focus, isSpecial: true
+      };
+      S.hunters.push(agent);
+      if (!S.codexSeen.includes(pick.name)) S.codexSeen.push(pick.name);
+      if (!S.skinAcquiredAt) S.skinAcquiredAt = {};
+      if (!S.skinAcquiredAt[pick.name + '::default']) S.skinAcquiredAt[pick.name + '::default'] = Date.now();
+      addedAgents.push(pick);
+    });
+  }
+
+  // 사용 기록
+  S.usedCoupons.push(code);
+  input.value = '';
+
+  // 로그
+  const logMsgs = [];
+  if (r.gold) logMsgs.push(`G +${fmtNum(r.gold)}`);
+  if (r.dia) logMsgs.push(`D +${fmtNum(r.dia)}`);
+  if (r.shards) logMsgs.push(`파편 +${r.shards}`);
+  if (r.crystals) Object.entries(r.crystals).forEach(([e, c]) => logMsgs.push(`${e}결정 +${c}`));
+  addedAgents.forEach(a => logMsgs.push(`[${a.rank}] ${a.name}`));
+  addLog(`[쿠폰] ${coupon.desc || code} — ${logMsgs.join(', ')}`, 'good');
+
+  recalcStats(); updateAchBadge();
+  saveState(); render();
+
+  // 모달 표시
+  showCouponResultModal(coupon.desc || code, rewardLines, addedAgents);
+}
+
+function showCouponResultModal(title, rewardLines, agents) {
+  const tierColor = r => ({ SS: 'var(--tier-ss)', S: 'var(--tier-s)', A: 'var(--tier-a)', C: 'var(--tier-c)' }[r] || 'var(--text3)');
+
+  let html = `
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:32px;margin-bottom:6px">🎁</div>
+      <div class="modal-title" style="margin-bottom:2px">쿠폰 사용 완료!</div>
+      <div style="font-size:12px;color:var(--text3)">${title}</div>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:10px;letter-spacing:0.5px">보상 내역</div>`;
+
+  if (rewardLines.length > 0) {
+    rewardLines.forEach(rl => {
+      html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px;color:var(--text)">${rl.icon} ${rl.label}</span>
+        <span style="font-size:14px;font-weight:700;color:${rl.color};font-family:'Outfit',sans-serif">${rl.val}</span>
+      </div>`;
+    });
+  }
+
+  if (agents.length > 0) {
+    agents.forEach(a => {
+      const tc = tierColor(a.rank);
+      const roleBadge = a.role === '센티넬'
+        ? '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--sentinel-bg);color:var(--sentinel);font-weight:600">센티넬</span>'
+        : '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--guide-bg);color:var(--guide);font-weight:600">가이드</span>';
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px;font-weight:800;color:${tc};font-family:'Outfit',sans-serif;min-width:24px">${a.rank}</span>
+        <span style="font-size:14px;font-weight:700;color:var(--text);flex:1">${a.name}</span>
+        ${roleBadge}
+      </div>`;
+    });
+  }
+
+  html += `</div>
+    <button class="btn btn-primary" style="width:100%" onclick="closeModal()">확인</button>`;
+
+  showModal(html);
+}
 const OWNER_ID = 'yana0913';
 const OWNER_PW_HASH = '56ab42ed9a7ad843b83538af59f6765a299ce9d3ea7dddd6c39a984a21dfcf0d';
 let _isOwner = false;
