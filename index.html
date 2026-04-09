@@ -3146,7 +3146,7 @@ function doGachaSpecial(count){
     S.stats.totalSummons++;
     S.specialPulls=(S.specialPulls||0)+1;
     if(tier==='SS'){S.stats.sSummons++;S.pitySS=0;}
-    if(tier==='S'){S.stats.sSummons++;S.pity=0;}
+    if(tier==='S'){S.stats.sSummons++;if(agent.isSpecial)S.pity=0;}
   }
   
 // 30회 보너스 체크
