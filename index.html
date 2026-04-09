@@ -4841,6 +4841,9 @@ function doFeedExp(){
   S.stats.totalFeeds=(S.stats.totalFeeds||0)+1;
   addLog(`강화: ${h.name}에 ${names.join(', ')} 투입 (+${actualExp} EXP)`,'good');
   notify(`✓ ${h.name} EXP +${actualExp}`,'ok');
+  // ── 미션 추적 ──
+  logMissionAction('resonanceDone',1);
+  // ── 미션 추적 끝 ──
   _feedSelected=[];saveState();render();renderEnhance();renderGrowthModal();
 }
 
