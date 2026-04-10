@@ -7480,7 +7480,7 @@ function _redeemLocal(code){
     for(const [el,n] of Object.entries(r.crystals)){S.crystals[el]=(S.crystals[el]||0)+n;rewardLines.push({icon:'✦',label:el+' 결정',val:'+'+n,color:'var(--text)'});}
   }
   if(r.agents&&r.agents.length>0){
-    const allPool=[...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];
+    const allPool=[...(typeof SPECIAL_POOL!=='undefined'?SPECIAL_POOL:[]),...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];
     r.agents.forEach(nm=>{
       const pick=allPool.find(c=>c.name===nm);if(!pick)return;
       const id=S.nextId++;const isSent=pick.role==='센티넬';
@@ -7497,7 +7497,7 @@ function _redeemLocal(code){
     });
   }
   notify('쿠폰 사용 완료: '+(coupon.desc||''),'ok');
-  const grantedAgents=(r.agents||[]).map(nm=>{const allPool=[...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];const p=allPool.find(c=>c.name===nm);return p?{name:p.name,rank:p.rank,role:p.role}:{name:nm,rank:'?',role:''};});
+  const grantedAgents=(r.agents||[]).map(nm=>{const allPool=[...(typeof SPECIAL_POOL!=='undefined'?SPECIAL_POOL:[]),...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];const p=allPool.find(c=>c.name===nm);return p?{name:p.name,rank:p.rank,role:p.role}:{name:nm,rank:'?',role:''};});
   showCouponResultModal(coupon.desc||'쿠폰 보상', rewardLines, grantedAgents);
   if(typeof render==='function')render();
 }
