@@ -7430,6 +7430,7 @@ async function redeemCoupon(){
   }catch(e){console.error(e);notify('쿠폰 처리 실패: '+e.message,'err');}
 }
 function _redeemLocal(code){
+  const COUPONS=window.COUPONS||{};
   const coupon=COUPONS[code];if(!coupon)return;
   const r=coupon.rewards;const rewardLines=[];
   if(r.gold){S.gold+=r.gold;rewardLines.push({icon:'💰',label:'골드',val:'+'+fmtNum(r.gold),color:'var(--gold)'});}
