@@ -7482,7 +7482,9 @@ function _redeemLocal(code){
   if(r.agents&&r.agents.length>0){
     const allPool=[...(typeof SPECIAL_POOL!=='undefined'?SPECIAL_POOL:[]),...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];
     r.agents.forEach(nm=>{
-      const pick=allPool.find(c=>c.name===nm);if(!pick)return;
+      const pick=allPool.find(c=>c.name===nm);
+      if(!pick){console.warn('[COUPON] 특수 요원 못 찾음:',nm,'| 풀 크기:',allPool.length);notify('특수 요원 데이터 없음: '+nm,'warn');return;}
+      console.log('[COUPON] 지급 시도:',pick.name,'| S.agents 길이(전):',(S.agents||[]).length);
       const id=S.nextId++;const isSent=pick.role==='센티넬';
       const base={SS:[120,200],S:[80,140],A:[55,100],C:[20,45]}[pick.rank]||[40,80];
       const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a));
@@ -7494,6 +7496,7 @@ function _redeemLocal(code){
       S.agents=S.agents||[];
       S.agents.push({id,name:pick.name,rank:pick.rank,role:pick.role,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),focus,level:1,exp:0,elem:pick.field||'무',field:pick.field||'무',group:pick.group||'',awakening:0,busy:false,runaway:0,isSpecial:true});
       rewardLines.push({icon:'⭐',label:pick.name,val:'GET',color:'var(--gold)'});
+	  console.log('[COUPON] 지급 후 S.agents 길이:',S.agents.length,'| 마지막:',S.agents[S.agents.length-1]);
     });
   }
   notify('쿠폰 사용 완료: '+(coupon.desc||''),'ok');
