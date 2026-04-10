@@ -7492,7 +7492,7 @@ function _redeemLocal(code){
       const fb2={SS:[40,60],S:[30,50],A:[20,35],C:[8,18]}[pick.rank]||[15,30];
       const focus=isSent?0:rnd(fb2[0],fb2[1]);
       S.agents=S.agents||[];
-      S.agents.push({id,name:pick.name,rank:pick.rank,role:pick.role,atk,def,spd,focus,lv:1,exp:0,field:pick.field||'무'});
+      S.agents.push({id,name:pick.name,rank:pick.rank,role:pick.role,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),focus,level:1,exp:0,elem:pick.field||'무',field:pick.field||'무',group:pick.group||'',awakening:0,busy:false,runaway:0,isSpecial:true});
       rewardLines.push({icon:'⭐',label:pick.name,val:'GET',color:'var(--gold)'});
     });
   }
