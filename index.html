@@ -7177,9 +7177,27 @@ async function doReset(){
   clearTimeout(_fbSaveTimer);
   // 유저 명시적 초기화 → Firebase도 즉시 덮어쓰기 (팻말 무시)
   if(window._fbReady && window._fbUser){
+    const uid=window._fbUser.uid;
     try{
-      await window._fbSetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid),{data:'',updatedAt:Date.now()});
+      await window._fbSetDoc(window._fbDoc(window._fbDb,'saves',uid),{data:'',updatedAt:Date.now()});
     }catch(e){console.warn('[ARCH] reset cloud failed',e);}
+    // 쿠폰 사용 기록도 초기화 (해당 유저의 usedBy만 삭제)
+    try{
+      const fb=window.firebaseFs,db=window.firebaseDb;
+      if(fb&&db){
+        const snap=await fb.getDocs(fb.collection(db,'coupons'));
+        const promises=[];
+        snap.forEach(d=>{
+          const data=d.data();
+          const usedBy=data.usedBy||{};
+          if(typeof usedBy==='object'&&!Array.isArray(usedBy)&&usedBy[uid]!=null){
+            promises.push(fb.updateDoc(fb.doc(db,'coupons',d.id),{['usedBy.'+uid]:fb.deleteField()}));
+          }
+        });
+        if(promises.length)await Promise.all(promises);
+        console.log('[ARCH] coupon usedBy cleared for',uid,'(',promises.length,'coupons)');
+      }
+    }catch(e){console.warn('[ARCH] reset coupons failed',e);}
   }
   location.reload();
 }
