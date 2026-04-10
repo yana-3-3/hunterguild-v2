@@ -7458,6 +7458,7 @@ function _redeemLocal(code){
     });
   }
   notify('쿠폰 사용 완료: '+(coupon.desc||''),'ok');
+  showCouponResultModal(coupon.desc||'쿠폰 보상', rewardLines, r.agents||[]);
   if(typeof render==='function')render();
 }
 
