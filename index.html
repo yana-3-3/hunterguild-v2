@@ -7416,10 +7416,11 @@ async function redeemCoupon(){
     if(!snap.exists()){notify('존재하지 않는 쿠폰','err');return;}
     const c=snap.data();
     if(c.expiresAt&&Date.now()>c.expiresAt){notify('만료된 쿠폰','err');return;}
-    const usedBy=c.usedBy||[];
-    if(usedBy.includes(uid)){notify('이미 사용한 쿠폰','err');return;}
-    if(c.maxUses&&usedBy.length>=c.maxUses){notify('사용 한도 초과','err');return;}
-    await fb.updateDoc(ref,{usedBy:fb.arrayUnion(uid)});
+    const usedBy=c.usedBy||{};
+    const userCount=(typeof usedBy==='object'&&!Array.isArray(usedBy))?(usedBy[uid]||0):((usedBy.includes&&usedBy.includes(uid))?1:0);
+    const limit=c.maxUsesPerUser||1;
+    if(userCount>=limit){notify('사용 한도 초과 (유저당 '+limit+'회)','err');return;}
+    await fb.updateDoc(ref,{['usedBy.'+uid]:userCount+1});
     COUPONS[code]={rewards:c.reward||{},desc:c.desc||'쿠폰 보상'};
     _redeemLocal(code);
     input.value='';
@@ -7647,7 +7648,7 @@ async function openAdminPanel(){
         <input id="ac-agents" class="ac-inp" placeholder="선택된 요원 (쉼표구분)" style="margin-top:6px">
         <div class="ac-grid" style="margin-top:10px">
           <div><label class="ac-lbl">만료일</label><input id="ac-exp" class="ac-inp" type="date"></div>
-          <div><label class="ac-lbl">최대 사용 횟수</label><input id="ac-max" class="ac-inp" type="number" placeholder="무제한"></div>
+          <div><label class="ac-lbl">사용 횟수</label><input id="ac-max" class="ac-inp" type="number" placeholder="무제한"></div>
         </div>
         <div style="display:flex;gap:8px;margin-top:16px">
           <button class="ac-btn ac-btn-pri" style="flex:2" onclick="saveCoupon()">💾 저장</button>
@@ -7664,9 +7665,9 @@ window.acTab=function(i){const ts=document.querySelectorAll('.ac-tab');ts.forEac
 
 window.resetForm=function(){_acEdit=null;['ac-code','ac-desc','ac-gold','ac-dia','ac-shards','ac-crystals','ac-agents','ac-exp','ac-max'].forEach(id=>document.getElementById(id).value='');['ac-c-gold','ac-c-dia','ac-c-shards'].forEach(id=>document.getElementById(id).checked=false);document.getElementById('ac-code').disabled=false;};
 
-window.editCoupon=function(code){const c=(window._coupons||[]).find(x=>x.code===code);if(!c)return;_acEdit=code;acTab(1);const r=c.reward||{};document.getElementById('ac-code').value=c.code;document.getElementById('ac-code').disabled=true;document.getElementById('ac-desc').value=c.desc||'';document.getElementById('ac-gold').value=r.gold||'';document.getElementById('ac-c-gold').checked=!!r.gold;document.getElementById('ac-dia').value=r.dia||'';document.getElementById('ac-c-dia').checked=!!r.dia;document.getElementById('ac-shards').value=r.shards||'';document.getElementById('ac-c-shards').checked=!!r.shards;document.getElementById('ac-crystals').value=r.crystals?JSON.stringify(r.crystals):'';document.getElementById('ac-agents').value=(r.agents||[]).join(', ');document.getElementById('ac-max').value=c.maxUses||'';if(c.expiresAt)document.getElementById('ac-exp').value=new Date(c.expiresAt).toISOString().slice(0,10);};
+window.editCoupon=function(code){const c=(window._coupons||[]).find(x=>x.code===code);if(!c)return;_acEdit=code;acTab(1);const r=c.reward||{};document.getElementById('ac-code').value=c.code;document.getElementById('ac-code').disabled=true;document.getElementById('ac-desc').value=c.desc||'';document.getElementById('ac-gold').value=r.gold||'';document.getElementById('ac-c-gold').checked=!!r.gold;document.getElementById('ac-dia').value=r.dia||'';document.getElementById('ac-c-dia').checked=!!r.dia;document.getElementById('ac-shards').value=r.shards||'';document.getElementById('ac-c-shards').checked=!!r.shards;document.getElementById('ac-crystals').value=r.crystals?JSON.stringify(r.crystals):'';document.getElementById('ac-agents').value=(r.agents||[]).join(', ');document.getElementById('ac-max').value=c.maxUsesPerUser||c.maxUses||'';if(c.expiresAt)document.getElementById('ac-exp').value=new Date(c.expiresAt).toISOString().slice(0,10);};
 
-window.saveCoupon=async function(){const fb=window.firebaseFs,db=window.firebaseDb;const code=document.getElementById('ac-code').value.trim().toUpperCase();if(!code)return alert('쿠폰 코드를 입력하세요');const reward={};if(document.getElementById('ac-c-gold').checked){const v=+document.getElementById('ac-gold').value;if(v)reward.gold=v;}if(document.getElementById('ac-c-dia').checked){const v=+document.getElementById('ac-dia').value;if(v)reward.dia=v;}if(document.getElementById('ac-c-shards').checked){const v=+document.getElementById('ac-shards').value;if(v)reward.shards=v;}const cr=document.getElementById('ac-crystals').value.trim();if(cr){try{reward.crystals=JSON.parse(cr);}catch(e){return alert('속성 결정 JSON 형식 오류');}}const ag=document.getElementById('ac-agents').value.trim();if(ag)reward.agents=ag.split(',').map(x=>x.trim()).filter(Boolean);if(!Object.keys(reward).length)return alert('보상을 하나 이상 설정하세요');const desc=document.getElementById('ac-desc').value.trim();const exp=document.getElementById('ac-exp').value;const mx=+document.getElementById('ac-max').value;const data={reward,usedBy:[]};if(desc)data.desc=desc;if(exp)data.expiresAt=new Date(exp).getTime();if(mx)data.maxUses=mx;const ex=(window._coupons||[]).find(c=>c.code===code);if(ex)data.usedBy=ex.usedBy||[];try{await fb.setDoc(fb.doc(db,'coupons',code),data);document.getElementById('ac-modal').remove();openAdminPanel();}catch(e){alert('저장 실패: '+e.message);}};
+window.saveCoupon=async function(){const fb=window.firebaseFs,db=window.firebaseDb;const code=document.getElementById('ac-code').value.trim().toUpperCase();if(!code)return alert('쿠폰 코드를 입력하세요');const reward={};if(document.getElementById('ac-c-gold').checked){const v=+document.getElementById('ac-gold').value;if(v)reward.gold=v;}if(document.getElementById('ac-c-dia').checked){const v=+document.getElementById('ac-dia').value;if(v)reward.dia=v;}if(document.getElementById('ac-c-shards').checked){const v=+document.getElementById('ac-shards').value;if(v)reward.shards=v;}const cr=document.getElementById('ac-crystals').value.trim();if(cr){try{reward.crystals=JSON.parse(cr);}catch(e){return alert('속성 결정 JSON 형식 오류');}}const ag=document.getElementById('ac-agents').value.trim();if(ag)reward.agents=ag.split(',').map(x=>x.trim()).filter(Boolean);if(!Object.keys(reward).length)return alert('보상을 하나 이상 설정하세요');const desc=document.getElementById('ac-desc').value.trim();const exp=document.getElementById('ac-exp').value;const mx=+document.getElementById('ac-max').value;const data={reward,usedBy:{}};if(desc)data.desc=desc;if(exp)data.expiresAt=new Date(exp).getTime();if(mx)data.maxUsesPerUser=mx;const ex=(window._coupons||[]).find(c=>c.code===code);if(ex&&ex.usedBy&&!Array.isArray(ex.usedBy))data.usedBy=ex.usedBy;
 
 
 window.acTestWipeLocal=function(){if(!confirm('🧪 테스트 모드\n\n로컬스토리지만 삭제하고 리로드합니다.\nFirebase 데이터는 건드리지 않아요.\n\n리로드 후 Firebase에서 데이터가 정상 복구되는지 확인하세요.\n\n진행할까요?'))return;try{localStorage.removeItem('arch1');}catch(e){}console.log('[ARCH TEST] local wiped, reloading...');location.reload();};
