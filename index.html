@@ -6771,6 +6771,11 @@ function executeDismantleAll(){
 
 function craftCrystal(){
   if((S.shards||0)<10){notify('결정 파편이 부족합니다 (필요: 10)','err');return;}
+  if(!S.crystals || typeof S.crystals !== 'object'){
+    S.crystals = {'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0};
+  }
+  // ⬇ 추가: 누락된 속성 키 모두 보강
+  FIELDS.forEach(f => { if(typeof S.crystals[f] !== 'number') S.crystals[f] = 0; });
   S.shards-=10;
   const elem=FIELDS[Math.floor(Math.random()*FIELDS.length)];
   S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0};
