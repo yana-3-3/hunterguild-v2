@@ -3182,11 +3182,13 @@ function rollTierNormal(){
   return 'D';
 }
 
+var _pityGuaranteedS=false;
 function rollTierSpecial(){
   S.pity++;
   S.pitySS=(S.pitySS||0)+1;
+  _pityGuaranteedS=false;
   if(S.pitySS>=300){S.pitySS=0;return 'SS';}
-  if(S.pity>=100){S.pity=0;return 'S';}
+  if(S.pity>=100){S.pity=0;_pityGuaranteedS=true;return 'S';}
   const r=Math.random()*100;
   let acc=0;
   for(const[tier,w] of Object.entries(SPECIAL_WEIGHTS)){acc+=w;if(r<acc)return tier;}
@@ -3219,7 +3221,7 @@ function makeAgentSpecial(tier){
   // 해당 티어의 특수 요원 후보
   const specials=SPECIAL_POOL.filter(c=>c.rank===tier);
   // 특수 요원 등장 확률: SS=100%, S/A/C=50%, B/D=0%(이름 없음)
-  const useSpecial=specials.length>0 && (tier==='SS' || Math.random()<0.5);
+  const useSpecial=specials.length>0 && (tier==='SS' || _pityGuaranteedS || Math.random()<0.5);
 
   if(useSpecial){
     const pick=specials[Math.floor(Math.random()*specials.length)];
