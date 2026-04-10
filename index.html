@@ -7460,7 +7460,7 @@ async function redeemCoupon(){
     const usedBy=c.usedBy||{};
     const userCount=(typeof usedBy==='object'&&!Array.isArray(usedBy))?(usedBy[uid]||0):((usedBy.includes&&usedBy.includes(uid))?1:0);
     const limit=c.maxUsesPerUser||1;
-    if(userCount>=limit){notify('사용 한도 초과 (유저당 '+limit+'회)','err');return;}
+    if(userCount>=limit){notify('사용 한도 초과 (유저당 '+limit+'회) [debug: uid='+uid+' usedBy='+JSON.stringify(usedBy)+']','err');return;}
     await fb.updateDoc(ref,{['usedBy.'+uid]:userCount+1});
     COUPONS[code]={rewards:c.reward||{},desc:c.desc||'쿠폰 보상'};
     _redeemLocal(code);
