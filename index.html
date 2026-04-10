@@ -7440,7 +7440,6 @@ const COUPON_DB = {
   //   ※ 여러 명: agents:['해일','산타','애쉬']
   //
   'L0VENAVI2': { rewards: { dia:1500, agents:['바이브','노아','에덴','루비','카토','자이안','피카','헬리오스'] }, desc:'♡' },
-  'L0VE0411': { rewards: { dia:500, agents:['오버로드'] }, desc:'♡' },
 };
 
 async function redeemCoupon(){
@@ -7498,7 +7497,8 @@ function _redeemLocal(code){
     });
   }
   notify('쿠폰 사용 완료: '+(coupon.desc||''),'ok');
-  showCouponResultModal(coupon.desc||'쿠폰 보상', rewardLines, r.agents||[]);
+  const grantedAgents=(r.agents||[]).map(nm=>{const allPool=[...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];const p=allPool.find(c=>c.name===nm);return p?{name:p.name,rank:p.rank,role:p.role}:{name:nm,rank:'?',role:''};});
+  showCouponResultModal(coupon.desc||'쿠폰 보상', rewardLines, grantedAgents);
   if(typeof render==='function')render();
 }
 
