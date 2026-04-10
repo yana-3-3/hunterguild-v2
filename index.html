@@ -361,7 +361,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   .main{grid-template-columns:1fr}
   .sidebar{display:none}
   .mob-nav{display:block}
-  .content{padding:14px 12px;padding-bottom:130px}
+  .content{padding:14px 12px;padding-bottom:170px}
   /* ── 헤더 다크 HUD ── */
   .header{padding:0 12px;gap:6px;background:linear-gradient(135deg,#1e2030,#2a2d45);border-bottom:none}
   .logo{font-size:14px;gap:6px;color:#fff;-webkit-text-stroke:0.5px #fff}
@@ -473,7 +473,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   .logo{font-size:13px;gap:4px}
   .chip{padding:2px 6px;font-size:9px}
   .arch-rank{padding:2px 6px;font-size:8px}
-  .content{padding:10px 8px;padding-bottom:90px}
+  .content{padding:10px 8px;padding-bottom:130px}
   .stat-row{gap:5px}
   .stat-box{padding:10px 8px;border-radius:10px}
   .stat-val{font-size:18px}
@@ -7127,11 +7127,31 @@ function importData(e){
   reader.readAsText(file);
   e.target.value='';
 }
-function confirmImport(){
+async function confirmImport(){
   if(!window._pendingImport)return;
   S={...S,...window._pendingImport};
   window._pendingImport=null;
-  saveState();closeModal();
+
+  // ── 즉시 저장 (디바운스 없이) ──
+  const serialized=JSON.stringify(S);
+
+  // 1) 로컬스토리지 즉시
+  try{localStorage.setItem('arch1',serialized);}catch(e){}
+
+  // 2) Firebase 즉시 (await로 완료 보장, _saveEnabled 무시 — 유저 명시적 행위)
+  if(window._fbReady && window._fbUser){
+    try{
+      await window._fbSetDoc(
+        window._fbDoc(window._fbDb,'saves',window._fbUser.uid),
+        {data:serialized,updatedAt:Date.now()}
+      );
+      _fbLastSaved=serialized;
+      _fbPendingData=null;
+      clearTimeout(_fbSaveTimer);
+    }catch(e){console.warn('[ARCH] import: cloud save failed',e);}
+  }
+
+  closeModal();
   notify('✓ 데이터 불러오기 완료 — 새로고침합니다','ok');
   setTimeout(()=>location.reload(),800);
 }
@@ -7151,6 +7171,10 @@ function confirmReset(){
 }
 async function doReset(){
   localStorage.removeItem('arch1');
+  // 디바운스 타이머에 남아있는 이전 데이터가 끼어들지 않도록 클리어
+  _fbPendingData=null;
+  _fbLastSaved='';
+  clearTimeout(_fbSaveTimer);
   // 유저 명시적 초기화 → Firebase도 즉시 덮어쓰기 (팻말 무시)
   if(window._fbReady && window._fbUser){
     try{
