@@ -7185,10 +7185,8 @@ async function doReset(){
       const docs=[];snap.forEach(d=>docs.push(d));
       for(let i=0;i<docs.length;i++){
         const d=docs[i],data=d.data(),usedBy=data.usedBy||{};
-        if(typeof usedBy==='object'&&!Array.isArray(usedBy)&&usedBy[uid]!=null){
-          const newUsedBy=Object.assign({},usedBy);
-          delete newUsedBy[uid];
-          await fb.setDoc(fb.doc(db,'coupons',d.id),Object.assign({},data,{usedBy:newUsedBy}));
+        if(typeof usedBy==='object'&&!Array.isArray(usedBy)&&usedBy[uid]){
+          await fb.updateDoc(fb.doc(db,'coupons',d.id),{['usedBy.'+uid]:0});
         }
       }
     }catch(e){console.warn('[ARCH] coupon reset fail',e);}
